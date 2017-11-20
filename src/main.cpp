@@ -84,10 +84,10 @@ int main(int argc, char* argv[]) {
   game.initializeMap(30, 30);
   game.getMap().getTile(12, 12).setTile("img/tile_pavement.png", true); //Add one solid block for collision testing
 
-  game.addCharacter(sf::Vector2u(0 * TILESIZE, 0 * TILESIZE), 1);
-  game.addCharacter(sf::Vector2u(4 * TILESIZE, 4 * TILESIZE), 1);
-  game.addCharacter(sf::Vector2u(8 * TILESIZE, 8 * TILESIZE), 2);
-  game.addCharacter(sf::Vector2u(10 * TILESIZE, 10 * TILESIZE), 2);
+  game.addCharacter(sf::Vector2u(0, 0), 1);
+  game.addCharacter(sf::Vector2u(4, 4), 1);
+  game.addCharacter(sf::Vector2u(8, 8), 2);
+  game.addCharacter(sf::Vector2u(10, 10), 2);
 
   //The size of the character or map vector should not change after initialization
   characterShapes.resize(game.getMap().getCharacters().size());
@@ -156,16 +156,18 @@ int main(int argc, char* argv[]) {
 			//std::cout << "Clicked on the gamescreen" << std::endl;
 
 			//std::cout << App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).x << " " << App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).y << std::endl;
-			unsigned int xCoord = App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).x;
-			unsigned int yCoord = App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).y;
+			
+			// Click x and y in map tile coordinates
+			unsigned int xCoord = App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).x / TILESIZE;
+			unsigned int yCoord = App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).y / TILESIZE;
 
 			//std::cout << xCoord - (xCoord % TILESIZE) << " " << yCoord - (yCoord % TILESIZE) << std::endl;
 			for (unsigned int i = 0; i < game.getMap().getCharacters().size(); ++i) {
 				if (game.getMap().getCharacters()[i].getTeam() == game.getCurrentPlayer() &&
-					game.getMap().getCharacters()[i].getPositionX() <= xCoord &&
-					game.getMap().getCharacters()[i].getPositionX() + TILESIZE >= xCoord &&
-					game.getMap().getCharacters()[i].getPositionY() <= yCoord &&
-					game.getMap().getCharacters()[i].getPositionY() + TILESIZE >= yCoord) {
+					game.getMap().getCharacters()[i].getPosition().x <= xCoord &&
+					game.getMap().getCharacters()[i].getPosition().x + 1 >= xCoord &&
+					game.getMap().getCharacters()[i].getPosition().y <= yCoord &&
+					game.getMap().getCharacters()[i].getPosition().y + 1 >= yCoord) {
 					game.setSelectedCharacter(i); //Select clicked character
 					break;
 				} else {
@@ -229,7 +231,7 @@ int main(int argc, char* argv[]) {
 
 		for (auto &character : game.getMap().getCharacters()) {
 			if (character.isMoving()) {
-				character.move();
+				character.move(timeStep / 1000000.0f);
 			}
 		}
 
@@ -273,18 +275,18 @@ int main(int argc, char* argv[]) {
 	//Draw characters
 	for (unsigned int i = 0; i < game.getMap().getCharacters().size(); ++i) {
 		characterShapes[i] = sf::Sprite();
-		characterShapes[i].setPosition(game.getMap().getCharacters()[i].getPositionX(), game.getMap().getCharacters()[i].getPositionY());
+		characterShapes[i].setPosition(game.getMap().getCharacters()[i].getRenderPosition().x, game.getMap().getCharacters()[i].getRenderPosition().y);
 		if (i == game.getSelectedCharacter()) {
-			selectedCharacter.setPosition(game.getMap().getCharacters()[i].getPositionX(), game.getMap().getCharacters()[i].getPositionY());
+			selectedCharacter.setPosition(game.getMap().getCharacters()[i].getRenderPosition().x, game.getMap().getCharacters()[i].getRenderPosition().y);
 			App.draw(selectedCharacter);
 		}
 		if (game.getMap().getCharacters()[i].getTeam() == 1) {
 			characterShapes[i].setTexture(texPlayer1);
-			characterShapes[i].setTextureRect(sf::IntRect(game.getMap().getCharacters()[i].getDirection() * TILESIZE, (game.getMap().getCharacters()[i].getAnimationFrame() / (TILESIZE / NUM_ANIMATIONS)) * TILESIZE, TILESIZE, TILESIZE));
+			characterShapes[i].setTextureRect(sf::IntRect(game.getMap().getCharacters()[i].getDirection() * TILESIZE, game.getMap().getCharacters()[i].getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
 		}
 		else {
 			characterShapes[i].setTexture(texPlayer2);
-			characterShapes[i].setTextureRect(sf::IntRect(game.getMap().getCharacters()[i].getDirection() * TILESIZE, (game.getMap().getCharacters()[i].getAnimationFrame() / (TILESIZE / NUM_ANIMATIONS)) * TILESIZE, TILESIZE, TILESIZE));
+			characterShapes[i].setTextureRect(sf::IntRect(game.getMap().getCharacters()[i].getDirection() * TILESIZE, game.getMap().getCharacters()[i].getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
 		}
 
 		App.draw(characterShapes[i]);

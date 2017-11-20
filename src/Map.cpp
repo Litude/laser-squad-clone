@@ -14,11 +14,11 @@ Map::Map(unsigned int newsizeX, unsigned int newsizeY) {
 }
 
 void Map::characterMoveLeft(unsigned int charIdx) {
-	if (characters[charIdx].getPositionX() > 0) {
-		if (getTile((characters[charIdx].getPositionX() / TILESIZE) - 1, characters[charIdx].getPositionY() / TILESIZE).isSolid() == true) return; //check for solid block
+	if (characters[charIdx].getPosition().x > 0) {
+		if (getTile((characters[charIdx].getPosition().x) - 1, characters[charIdx].getPosition().y).isSolid() == true) return; //check for solid block
 
 		for (auto character : characters) {
-			if (character.getCollisionPosition() == sf::Vector2u(characters[charIdx].getCollisionPosition().x - TILESIZE, characters[charIdx].getCollisionPosition().y)) {
+			if (character.getPosition() == sf::Vector2u(characters[charIdx].getPosition().x - 1, characters[charIdx].getPosition().y)) {
 				return;
 			}
 		}
@@ -27,11 +27,11 @@ void Map::characterMoveLeft(unsigned int charIdx) {
 }
 
 void Map::characterMoveRight(unsigned int charIdx) {
-	if (characters[charIdx].getPositionX() < (tileMap.at(0).size() - 1) * TILESIZE) {
-		if (getTile((characters[charIdx].getPositionX() / TILESIZE) + 1, characters[charIdx].getPositionY() / TILESIZE).isSolid() == true) return; //check for solid block
+	if (characters[charIdx].getPosition().x < (tileMap.at(0).size() - 1)) {
+		if (getTile((characters[charIdx].getPosition().x) + 1, characters[charIdx].getPosition().y).isSolid() == true) return; //check for solid block
 
 		for (auto character : characters) {
-			if (character.getCollisionPosition() == sf::Vector2u(characters[charIdx].getCollisionPosition().x + TILESIZE, characters[charIdx].getCollisionPosition().y)) {
+			if (character.getPosition() == sf::Vector2u(characters[charIdx].getPosition().x + 1, characters[charIdx].getPosition().y)) {
 				return;
 			}
 		}
@@ -40,11 +40,11 @@ void Map::characterMoveRight(unsigned int charIdx) {
 }
 
 void Map::characterMoveUp(unsigned int charIdx) {
-	if (characters[charIdx].getPositionY() > 0) {
-		if (getTile(characters[charIdx].getPositionX() / TILESIZE, (characters[charIdx].getPositionY() / TILESIZE) - 1).isSolid() == true) return; //check for solid block
+	if (characters[charIdx].getPosition().y > 0) {
+		if (getTile(characters[charIdx].getPosition().x, (characters[charIdx].getPosition().y) - 1).isSolid() == true) return; //check for solid block
 
 		for (auto character : characters) {
-			if (character.getCollisionPosition() == sf::Vector2u(characters[charIdx].getCollisionPosition().x, characters[charIdx].getCollisionPosition().y - TILESIZE)) {
+			if (character.getPosition() == sf::Vector2u(characters[charIdx].getPosition().x, characters[charIdx].getPosition().y - 1)) {
 				return;
 			}
 		}
@@ -53,11 +53,11 @@ void Map::characterMoveUp(unsigned int charIdx) {
 }
 
 void Map::characterMoveDown(unsigned int charIdx) {
-	if (characters[charIdx].getPositionY() < (tileMap.at(0).size() - 1) * TILESIZE) {
-		if (getTile(characters[charIdx].getPositionX() / TILESIZE, (characters[charIdx].getPositionY() / TILESIZE) + 1).isSolid() == true) return; //check for solid block
+	if (characters[charIdx].getPosition().y < (tileMap.at(0).size() - 1) * TILESIZE) {
+		if (getTile(characters[charIdx].getPosition().x, (characters[charIdx].getPosition().y) + 1).isSolid() == true) return; //check for solid block
 
 		for (auto character : characters) {
-			if (character.getCollisionPosition() == sf::Vector2u(characters[charIdx].getCollisionPosition().x, characters[charIdx].getCollisionPosition().y + TILESIZE)) {
+			if (character.getPosition() == sf::Vector2u(characters[charIdx].getPosition().x, characters[charIdx].getPosition().y + 1)) {
 				return;
 			}
 		}

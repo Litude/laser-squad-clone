@@ -14,13 +14,12 @@ enum direction {
 
 class GameCharacter {
 public:
-	GameCharacter (sf::Vector2u position, unsigned int team) : currentPosition(position), actualPosition(position), team(team) { }
+	GameCharacter (sf::Vector2u position, unsigned int team) : currentPosition(position), previousPosition(position), team(team) { }
 	unsigned int	getActionPoints() { return actionPoints; }
 	unsigned int	getHitpoints() { return health; }
 	unsigned int	getTeam() { return team; }
-	unsigned int	getPositionX() { return currentPosition.x; }
-	unsigned int	getPositionY() { return currentPosition.y; }
-	sf::Vector2u	getCollisionPosition() { return actualPosition; }
+	sf::Vector2u	getPosition() { return currentPosition; }
+	sf::Vector2u	getRenderPosition();
 	unsigned int	getDirection() { return direction; }
 	unsigned int	getAnimationFrame() { return animation; }
 	bool			isDead() { return dead; }
@@ -29,11 +28,13 @@ public:
 	void			moveRight();
 	void			moveUp();
 	void			moveDown();
-	void			move();
+	void			move(float delta);
 
 private:
-	sf::Vector2u currentPosition; //Position used for drawing the character
-	sf::Vector2u actualPosition; //Position used for collision detection
+	sf::Vector2u currentPosition; // Position on the map in tile coordinates
+	sf::Vector2u previousPosition;
+	float moveFactor = 0;
+	float animationTime = 0;
 	direction direction = down;
 	unsigned int animation = 0;
 	bool moving = false;
