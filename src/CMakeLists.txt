@@ -11,8 +11,6 @@ endif()
 
 project(LaserSquad)
 
-set(CMAKE_PREFIX_PATH "C:/Libraries/SFML-2.4.2")
-
 # Set version information in a config.h file
 set(LaserSquad_VERSION_MAJOR 1)
 set(LaserSquad_VERSION_MINOR 0)
