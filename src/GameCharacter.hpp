@@ -28,13 +28,13 @@ public:
 	void			moveRight();
 	void			moveUp();
 	void			moveDown();
-	void			move(float delta);
+	void			move(int delta_ms);
 
 private:
 	sf::Vector2u currentPosition; // Position on the map in tile coordinates
 	sf::Vector2u previousPosition;
 	float moveFactor = 0;
-	float animationTime = 0;
+	int animationTime = 0;
 	direction direction = down;
 	unsigned int animation = 0;
 	bool moving = false;

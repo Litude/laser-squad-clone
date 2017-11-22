@@ -231,7 +231,7 @@ int main(int argc, char* argv[]) {
 
 		for (auto &character : game.getMap().getCharacters()) {
 			if (character.isMoving()) {
-				character.move(timeStep / 1000000.0f);
+				character.move(timeStep / 1000.0f);
 			}
 		}
 
