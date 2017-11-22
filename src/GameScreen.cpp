@@ -14,18 +14,18 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.addCharacter(sf::Vector2u(10, 10), 2);
 
 	//Create stationary view
-	fixedView = std::make_shared<sf::View>(App.getView());
+	fixedView = App.getView();
 
 	//Gameport view
-	gameView = std::make_shared<sf::View>(sf::View(sf::FloatRect(0, 0, WINDOW_WIDTH - MENUSIZE, WINDOW_HEIGHT)));
-	gameView->setSize(WINDOW_WIDTH - MENUSIZE, WINDOW_HEIGHT);
-	gameView->setCenter((WINDOW_WIDTH - MENUSIZE) / 2, WINDOW_HEIGHT / 2);
-	gameView->setViewport(sf::FloatRect(0, 0, static_cast<float>(WINDOW_WIDTH - MENUSIZE) / WINDOW_WIDTH, 1));
+	gameView = sf::View(sf::FloatRect(0, 0, WINDOW_WIDTH - MENUSIZE, WINDOW_HEIGHT));
+	gameView.setSize(WINDOW_WIDTH - MENUSIZE, WINDOW_HEIGHT);
+	gameView.setCenter((WINDOW_WIDTH - MENUSIZE) / 2, WINDOW_HEIGHT / 2);
+	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(WINDOW_WIDTH - MENUSIZE) / WINDOW_WIDTH, 1));
 
-	selectedCharacter = std::make_shared<sf::RectangleShape>(sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE)));
-	selectedCharacter->setOutlineColor(sf::Color::Yellow);
-	selectedCharacter->setOutlineThickness(2.0f);
-	selectedCharacter->setFillColor(sf::Color::Transparent);
+	selectedCharacter = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
+	selectedCharacter.setOutlineColor(sf::Color::Yellow);
+	selectedCharacter.setOutlineThickness(2.0f);
+	selectedCharacter.setFillColor(sf::Color::Transparent);
 
 	texPlayer1 = std::make_shared<sf::Texture>(sf::Texture());
 	if (!texPlayer1->loadFromFile("img/character1_sheet.png")) {
@@ -54,33 +54,32 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	timeAccumulator = 0;
 
 	//Interface
-	interfaceBkg = std::make_shared<sf::RectangleShape>(sf::RectangleShape(sf::Vector2f(MENUSIZE, App.getSize().y)));
-	interfaceBkg->setPosition(App.getSize().x - MENUSIZE, 0);
-	interfaceBkg->setFillColor(sf::Color::Blue);
+	interfaceBkg = sf::RectangleShape(sf::Vector2f(MENUSIZE, App.getSize().y));
+	interfaceBkg.setPosition(App.getSize().x - MENUSIZE, 0);
+	interfaceBkg.setFillColor(sf::Color::Blue);
 
 	//End turn button
-	button = std::make_shared<sf::RectangleShape>(sf::RectangleShape(sf::Vector2f(100, 80)));
-	button->setFillColor(sf::Color::Magenta);
-	button->setPosition(650, 260);
-	textEndTurn = std::make_shared<sf::Text>(sf::Text());
-	textEndTurn->setFont(*font);
-	textEndTurn->setString("End turn");
-	textEndTurn->setPosition(652, 280);
+	button = sf::RectangleShape(sf::Vector2f(100, 80));
+	button.setFillColor(sf::Color::Magenta);
+	button.setPosition(650, 260);
+	//textEndTurn = std::make_shared<sf::Text>(sf::Text());
+	textEndTurn.setFont(*font);
+	textEndTurn.setString("End turn");
+	textEndTurn.setPosition(652, 280);
 
 	//FPS counter text
-	textFPS = std::make_shared<sf::Text>(sf::Text());
-	textFPS->setFont(*font);
-	textFPS->setCharacterSize(12);
-	textFPS->setPosition(652, 0);
+	textFPS = sf::Text();
+	textFPS.setFont(*font);
+	textFPS.setCharacterSize(12);
+	textFPS.setPosition(652, 0);
 
 	//Current turn text
-	textCurTurn = std::make_shared<sf::Text>(sf::Text());
-	textCurTurn->setFont(*font);
-	textCurTurn->setCharacterSize(12);
-	textCurTurn->setPosition(652, 50);
+	textCurTurn = sf::Text();
+	textCurTurn.setFont(*font);
+	textCurTurn.setCharacterSize(12);
+	textCurTurn.setPosition(652, 50);
 
 	//The size of the character or map vector should not change after initialization
-	characterShapes.resize(game.getCharacters().size());
 	mapTiles.resize(game.getMap().getTileMap().size()*game.getMap().getTileMap().at(0).size());
 
 	for (unsigned int i = 0; i < game.getMap().getTileMap().size(); ++i) {
@@ -93,7 +92,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 int GameScreen::Run(sf::RenderWindow & App)
 {
-	textCurTurn->setString("Current turn: Player " + std::to_string(game.getCurrentPlayer()));
+	textCurTurn.setString("Current turn: Player " + std::to_string(game.getCurrentPlayer()));
 
 	while (App.isOpen()) {
 		sf::Event Event;
@@ -127,16 +126,16 @@ int GameScreen::Run(sf::RenderWindow & App)
 					break;
 
 				case sf::Keyboard::A:
-					if (gameView->getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView->move(-TILESIZE, 0);
+					if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);
 					break;
 				case sf::Keyboard::D:
-					if (gameView->getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game.getMap().getSizeX() * TILESIZE) gameView->move(TILESIZE, 0);
+					if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game.getMap().getSizeX() * TILESIZE) gameView.move(TILESIZE, 0);
 					break;
 				case sf::Keyboard::S:
-					if (gameView->getCenter().y + App.getSize().y / 2 < game.getMap().getSizeY() * TILESIZE) gameView->move(0, TILESIZE);
+					if (gameView.getCenter().y + App.getSize().y / 2 < game.getMap().getSizeY() * TILESIZE) gameView.move(0, TILESIZE);
 					break;
 				case sf::Keyboard::W:
-					if (gameView->getCenter().y - App.getSize().y / 2 > 0) gameView->move(0, -TILESIZE);
+					if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
 					break;
 				}
 				//std::cout << Event.key.code << std::endl;
@@ -154,8 +153,8 @@ int GameScreen::Run(sf::RenderWindow & App)
 					//std::cout << App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).x << " " << App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).y << std::endl;
 
 					// Click x and y in map tile coordinates
-					unsigned int xCoord = App.mapPixelToCoords(sf::Mouse::getPosition(App), *gameView).x / TILESIZE;
-					unsigned int yCoord = App.mapPixelToCoords(sf::Mouse::getPosition(App), *gameView).y / TILESIZE;
+					unsigned int xCoord = App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).x / TILESIZE;
+					unsigned int yCoord = App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).y / TILESIZE;
 
 					//std::cout << xCoord - (xCoord % TILESIZE) << " " << yCoord - (yCoord % TILESIZE) << std::endl;
 					for (unsigned int i = 0; i < game.getCharacters().size(); ++i) {
@@ -186,37 +185,37 @@ int GameScreen::Run(sf::RenderWindow & App)
 				//Update fixed interface
 
 				//Update view
-				fixedView->setSize(Event.size.width, Event.size.height);
-				fixedView->setCenter(Event.size.width / 2, Event.size.height / 2);
-				std::cout << fixedView->getCenter().x << " " << fixedView->getCenter().y << std::endl;
+				fixedView.setSize(Event.size.width, Event.size.height);
+				fixedView.setCenter(Event.size.width / 2, Event.size.height / 2);
+				std::cout << fixedView.getCenter().x << " " << fixedView.getCenter().y << std::endl;
 
 				//Update background
-				interfaceBkg->setPosition(Event.size.width - MENUSIZE, 0);
-				interfaceBkg->setSize(sf::Vector2f(MENUSIZE, Event.size.height));
+				interfaceBkg.setPosition(Event.size.width - MENUSIZE, 0);
+				interfaceBkg.setSize(sf::Vector2f(MENUSIZE, Event.size.height));
 				std::cout << Event.size.width - MENUSIZE << std::endl;
 
 				//Update FSP text
-				textFPS->setPosition(Event.size.width - MENUSIZE + 52, 0);
+				textFPS.setPosition(Event.size.width - MENUSIZE + 52, 0);
 
 				//Update turn text
-				textCurTurn->setPosition(Event.size.width - MENUSIZE + 52, 50);
+				textCurTurn.setPosition(Event.size.width - MENUSIZE + 52, 50);
 
 				//Update end turn button
-				button->setPosition(Event.size.width - MENUSIZE + 50, 260);
-				textEndTurn->setPosition(Event.size.width - MENUSIZE + 52, 280);
+				button.setPosition(Event.size.width - MENUSIZE + 50, 260);
+				textEndTurn.setPosition(Event.size.width - MENUSIZE + 52, 280);
 
 				//Update game view
-				gameView->setSize(Event.size.width - MENUSIZE, Event.size.height);
-				gameView->setCenter((Event.size.width - MENUSIZE) / 2, Event.size.height / 2); //TODO: This needs to take into account changes to the view
-				gameView->setViewport(sf::FloatRect(0, 0, static_cast<float>(Event.size.width - MENUSIZE) / Event.size.width, 1));
-				std::cout << gameView->getViewport().width << std::endl;
+				gameView.setSize(Event.size.width - MENUSIZE, Event.size.height);
+				gameView.setCenter((Event.size.width - MENUSIZE) / 2, Event.size.height / 2); //TODO: This needs to take into account changes to the view
+				gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(Event.size.width - MENUSIZE) / Event.size.width, 1));
+				std::cout << gameView.getViewport().width << std::endl;
 
 			}
 		}
 
 		currentTime = fpsclock.getElapsedTime().asMicroseconds() / 1000000.0f;
 		float fps = 1.f / (currentTime - lastTime);
-		textFPS->setString("FPS: " + std::to_string(fps));
+		textFPS.setString("FPS: " + std::to_string(fps));
 		lastTime = currentTime;
 
 		//Handle time delta dependent actions
@@ -232,22 +231,22 @@ int GameScreen::Run(sf::RenderWindow & App)
 		App.clear();
 
 		//Draw UI
-		App.setView(*fixedView);
-		App.draw(*interfaceBkg); //Must always be first since it covers the whole area and will hide anything "under" it
-		App.draw(*textFPS);
-		App.draw(*button);
-		App.draw(*textCurTurn);
-		App.draw(*textEndTurn);
+		App.setView(fixedView);
+		App.draw(interfaceBkg); //Must always be first since it covers the whole area and will hide anything "under" it
+		App.draw(textFPS);
+		App.draw(button);
+		App.draw(textCurTurn);
+		App.draw(textEndTurn);
 
 
 		//Draw game
-		App.setView(*gameView);
+		App.setView(gameView);
 
 		//Draw map
 
 		//Calculate which tiles we can actually see before drawing the map
-		int upperamount = std::max(static_cast<int>((gameView->getCenter().y - App.getSize().y / 2) / TILESIZE), 0);
-		int leftamount = std::max(static_cast<int>((gameView->getCenter().x - (App.getSize().x - MENUSIZE) / 2) / TILESIZE), 0);
+		int upperamount = std::max(static_cast<int>((gameView.getCenter().y - App.getSize().y / 2) / TILESIZE), 0);
+		int leftamount = std::max(static_cast<int>((gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2) / TILESIZE), 0);
 		int downamount = std::min(static_cast<int>(upperamount + App.getSize().y / TILESIZE), static_cast<int>(game.getMap().getSizeY() - 1));
 		int rightamount = std::min(static_cast<int>(leftamount + (App.getSize().x - MENUSIZE) / TILESIZE), static_cast<int>(game.getMap().getSizeX() - 1));
 
@@ -266,22 +265,22 @@ int GameScreen::Run(sf::RenderWindow & App)
 
 		//Draw characters
 		for (unsigned int i = 0; i < game.getCharacters().size(); ++i) {
-			characterShapes[i] = sf::Sprite();
-			characterShapes[i].setPosition(game.getCharacters()[i].getRenderPosition().x, game.getCharacters()[i].getRenderPosition().y);
+			characterShapes = sf::Sprite();
+			characterShapes.setPosition(game.getCharacters()[i].getRenderPosition().x, game.getCharacters()[i].getRenderPosition().y);
 			if (i == game.getSelectedCharacter()) {
-				selectedCharacter->setPosition(game.getCharacters()[i].getRenderPosition().x, game.getCharacters()[i].getRenderPosition().y);
-				App.draw(*selectedCharacter);
+				selectedCharacter.setPosition(game.getCharacters()[i].getRenderPosition().x, game.getCharacters()[i].getRenderPosition().y);
+				App.draw(selectedCharacter);
 			}
 			if (game.getCharacters()[i].getTeam() == 1) {
-				characterShapes[i].setTexture(*texPlayer1);
-				characterShapes[i].setTextureRect(sf::IntRect(game.getCharacters()[i].getDirection() * TILESIZE, game.getCharacters()[i].getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
+				characterShapes.setTexture(*texPlayer1);
+				characterShapes.setTextureRect(sf::IntRect(game.getCharacters()[i].getDirection() * TILESIZE, game.getCharacters()[i].getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
 			}
 			else {
-				characterShapes[i].setTexture(*texPlayer2);
-				characterShapes[i].setTextureRect(sf::IntRect(game.getCharacters()[i].getDirection() * TILESIZE, game.getCharacters()[i].getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
+				characterShapes.setTexture(*texPlayer2);
+				characterShapes.setTextureRect(sf::IntRect(game.getCharacters()[i].getDirection() * TILESIZE, game.getCharacters()[i].getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
 			}
 
-			App.draw(characterShapes[i]);
+			App.draw(characterShapes);
 		}
 
 		App.display();
