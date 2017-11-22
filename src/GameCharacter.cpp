@@ -49,7 +49,7 @@ void GameCharacter::move(int delta_ms) {
 	}
 }
 
-sf::Vector2u GameCharacter::getRenderPosition()
+sf::Vector2u GameCharacter::getRenderPosition() const
 {
 	sf::Vector2u renderPosition;
 	if (moving) {

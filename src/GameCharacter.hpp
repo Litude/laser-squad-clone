@@ -15,15 +15,15 @@ enum direction {
 class GameCharacter {
 public:
 	GameCharacter (sf::Vector2u position, unsigned int team) : currentPosition(position), previousPosition(position), team(team) { }
-	unsigned int	getActionPoints() { return actionPoints; }
-	unsigned int	getHitpoints() { return health; }
-	unsigned int	getTeam() { return team; }
-	sf::Vector2u	getPosition() { return currentPosition; }
-	sf::Vector2u	getRenderPosition();
-	unsigned int	getDirection() { return direction; }
-	unsigned int	getAnimationFrame() { return animation; }
-	bool			isDead() { return dead; }
-	bool			isMoving() { return moving; }
+	unsigned int	getActionPoints() const { return actionPoints; }
+	unsigned int	getHitpoints() const { return health; }
+	unsigned int	getTeam() const { return team; }
+	sf::Vector2u	getPosition() const { return currentPosition; }
+	sf::Vector2u	getRenderPosition() const;
+	unsigned int	getDirection() const { return direction; }
+	unsigned int	getAnimationFrame() const { return animation; }
+	bool			isDead() const { return dead; }
+	bool			isMoving() const { return moving; }
 	void			moveLeft();
 	void			moveRight();
 	void			moveUp();
