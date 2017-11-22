@@ -100,6 +100,7 @@ int GameScreen::Run(sf::RenderWindow & App)
 		while (App.pollEvent(Event)) {
 			if (Event.type == sf::Event::Closed) {
 				App.close();
+				return -1;
 			}
 			//Handle keyboard input
 			if (Event.type == sf::Event::KeyPressed) {
