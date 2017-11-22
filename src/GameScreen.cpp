@@ -80,7 +80,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	textCurTurn->setPosition(652, 50);
 
 	//The size of the character or map vector should not change after initialization
-	characterShapes.resize(game.getMap().getCharacters().size());
+	characterShapes.resize(game.getCharacters().size());
 	mapTiles.resize(game.getMap().getTileMap().size()*game.getMap().getTileMap().at(0).size());
 
 	for (unsigned int i = 0; i < game.getMap().getTileMap().size(); ++i) {
@@ -105,23 +105,23 @@ int GameScreen::Run(sf::RenderWindow & App)
 			if (Event.type == sf::Event::KeyPressed) {
 				switch (Event.key.code) {
 				case sf::Keyboard::Left:
-					if (game.getSelectedCharacter() != -1 && game.getMap().getCharacters()[game.getSelectedCharacter()].isMoving() == false) {
-						game.getMap().characterMoveLeft(game.getSelectedCharacter());
+					if (game.getSelectedCharacter() != -1 && game.getCharacters()[game.getSelectedCharacter()].isMoving() == false) {
+						game.characterMoveLeft(game.getSelectedCharacter());
 					}
 					break;
 				case sf::Keyboard::Right:
-					if (game.getSelectedCharacter() != -1 && game.getMap().getCharacters()[game.getSelectedCharacter()].isMoving() == false) {
-						game.getMap().characterMoveRight(game.getSelectedCharacter());
+					if (game.getSelectedCharacter() != -1 && game.getCharacters()[game.getSelectedCharacter()].isMoving() == false) {
+						game.characterMoveRight(game.getSelectedCharacter());
 					}
 					break;
 				case sf::Keyboard::Down:
-					if (game.getSelectedCharacter() != -1 && game.getMap().getCharacters()[game.getSelectedCharacter()].isMoving() == false) {
-						game.getMap().characterMoveDown(game.getSelectedCharacter());
+					if (game.getSelectedCharacter() != -1 && game.getCharacters()[game.getSelectedCharacter()].isMoving() == false) {
+						game.characterMoveDown(game.getSelectedCharacter());
 					}
 					break;
 				case sf::Keyboard::Up:
-					if (game.getSelectedCharacter() != -1 && game.getMap().getCharacters()[game.getSelectedCharacter()].isMoving() == false) {
-						game.getMap().characterMoveUp(game.getSelectedCharacter());
+					if (game.getSelectedCharacter() != -1 && game.getCharacters()[game.getSelectedCharacter()].isMoving() == false) {
+						game.characterMoveUp(game.getSelectedCharacter());
 					}
 					break;
 
@@ -157,12 +157,12 @@ int GameScreen::Run(sf::RenderWindow & App)
 					unsigned int yCoord = App.mapPixelToCoords(sf::Mouse::getPosition(App), *gameView).y / TILESIZE;
 
 					//std::cout << xCoord - (xCoord % TILESIZE) << " " << yCoord - (yCoord % TILESIZE) << std::endl;
-					for (unsigned int i = 0; i < game.getMap().getCharacters().size(); ++i) {
-						if (game.getMap().getCharacters()[i].getTeam() == game.getCurrentPlayer() &&
-							game.getMap().getCharacters()[i].getPosition().x <= xCoord &&
-							game.getMap().getCharacters()[i].getPosition().x + 1 >= xCoord &&
-							game.getMap().getCharacters()[i].getPosition().y <= yCoord &&
-							game.getMap().getCharacters()[i].getPosition().y + 1 >= yCoord) {
+					for (unsigned int i = 0; i < game.getCharacters().size(); ++i) {
+						if (game.getCharacters()[i].getTeam() == game.getCurrentPlayer() &&
+							game.getCharacters()[i].getPosition().x <= xCoord &&
+							game.getCharacters()[i].getPosition().x + 1 >= xCoord &&
+							game.getCharacters()[i].getPosition().y <= yCoord &&
+							game.getCharacters()[i].getPosition().y + 1 >= yCoord) {
 							game.setSelectedCharacter(i); //Select clicked character
 							break;
 						}
@@ -222,7 +222,7 @@ int GameScreen::Run(sf::RenderWindow & App)
 		double delta = clock.restart().asMicroseconds();
 		timeAccumulator += delta;
 
-		for (auto &character : game.getMap().getCharacters()) {
+		for (auto &character : game.getCharacters()) {
 			if (character.isMoving()) {
 				character.move(delta / 1000.0f);
 			}
@@ -264,20 +264,20 @@ int GameScreen::Run(sf::RenderWindow & App)
 		//}
 
 		//Draw characters
-		for (unsigned int i = 0; i < game.getMap().getCharacters().size(); ++i) {
+		for (unsigned int i = 0; i < game.getCharacters().size(); ++i) {
 			characterShapes[i] = sf::Sprite();
-			characterShapes[i].setPosition(game.getMap().getCharacters()[i].getRenderPosition().x, game.getMap().getCharacters()[i].getRenderPosition().y);
+			characterShapes[i].setPosition(game.getCharacters()[i].getRenderPosition().x, game.getCharacters()[i].getRenderPosition().y);
 			if (i == game.getSelectedCharacter()) {
-				selectedCharacter->setPosition(game.getMap().getCharacters()[i].getRenderPosition().x, game.getMap().getCharacters()[i].getRenderPosition().y);
+				selectedCharacter->setPosition(game.getCharacters()[i].getRenderPosition().x, game.getCharacters()[i].getRenderPosition().y);
 				App.draw(*selectedCharacter);
 			}
-			if (game.getMap().getCharacters()[i].getTeam() == 1) {
+			if (game.getCharacters()[i].getTeam() == 1) {
 				characterShapes[i].setTexture(*texPlayer1);
-				characterShapes[i].setTextureRect(sf::IntRect(game.getMap().getCharacters()[i].getDirection() * TILESIZE, game.getMap().getCharacters()[i].getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
+				characterShapes[i].setTextureRect(sf::IntRect(game.getCharacters()[i].getDirection() * TILESIZE, game.getCharacters()[i].getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
 			}
 			else {
 				characterShapes[i].setTexture(*texPlayer2);
-				characterShapes[i].setTextureRect(sf::IntRect(game.getMap().getCharacters()[i].getDirection() * TILESIZE, game.getMap().getCharacters()[i].getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
+				characterShapes[i].setTextureRect(sf::IntRect(game.getCharacters()[i].getDirection() * TILESIZE, game.getCharacters()[i].getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
 			}
 
 			App.draw(characterShapes[i]);

@@ -16,11 +16,17 @@ public:
 	bool							addCharacter(sf::Vector2u position, unsigned int team);
 	void							setSelectedCharacter(unsigned int idx) { selectedCharacter = idx; }
 	void							initializeMap(unsigned int xSize, unsigned int ySize) {map = Map(xSize, ySize);}
+	std::vector<GameCharacter>&		getCharacters() { return characters; }
+	void							characterMoveLeft(unsigned int charIdx);
+	void							characterMoveRight(unsigned int charIdx);
+	void							characterMoveUp(unsigned int charIdx);
+	void							characterMoveDown(unsigned int charIdx);
 
 private:
 	unsigned int					playerTurnIdx;
 	unsigned int					selectedCharacter = 1;
 	Map								map;
+	std::vector<GameCharacter>			characters;
 };
 
 #endif
