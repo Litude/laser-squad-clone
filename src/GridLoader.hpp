@@ -65,15 +65,7 @@ namespace jreader {
 			++i;
 		}
 
-		unsigned k = 0;
-		for (auto it = g.begin(); it != g.end(); ++it) {
-			std::cout << *it;
-			++k;
-			if (k == g.getWidth()) {
-				std::cout << std::endl;
-				k = 0;
-			}
-		}
+		std::cout << g << std::endl;
 
 		return g;
 	}
