@@ -1,6 +1,8 @@
 #ifndef LASER_WEAPON_HPP
 #define LASER_WEAPON_HPP
 
+#include <string>
+
 class Weapon {
 public:
 	void		Fire();
