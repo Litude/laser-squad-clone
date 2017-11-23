@@ -11,6 +11,7 @@ public:
 	MainMenuScreen(void);
 	virtual int Run(sf::RenderWindow &App);
 private:
+	bool playing;
 };
 
 #endif

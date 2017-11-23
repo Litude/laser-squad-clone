@@ -10,7 +10,7 @@
 #include "constants.hpp"
 
 int main(int argc, char* argv[]) {
-	
+
   sf::RenderWindow App(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Laser Squad");
 
   // Screens
@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
   GameScreen s1(App);
   Screens.push_back(&s1);
 
-  int screen = 1;
+  int screen = 0;
 
   //Main loop
   while (screen >= 0)
