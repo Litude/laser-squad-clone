@@ -1,19 +1,58 @@
 #include "Tile.hpp"
-#include <SFML/Graphics.hpp>
-#include "constants.hpp"
-#include <iostream>
 
-Tile::Tile() {
-	if (!texture.loadFromFile("img/tile_grass.png")) {
-		std::cout << "Could not load 'img/tile_grass.png'\n";
+TileBlock Tile::getBlock() const { return block; }
+
+TileGround Tile::getGround() const { return ground; }
+
+sf::Texture& Tile::getTexture() { return texture; }
+
+const std::vector<int>& Tile::getItems() const { return items; }
+
+bool Tile::isSolid() const { return !(block == air); }
+
+std::ostream& operator<<(std::ostream& os, const Tile& t) {
+
+	switch (t.getBlock()) {
+		case wall:
+			os << " w ";
+			break;
+		case tree:
+			os << " t ";
+			break;
+		case bush:
+			os << " b ";
+			break;
+		default:
+			os << " _ ";
+			break;
 	}
-	solid = false;
+
+	return os;
 }
 
-//Temp function for map collision detection, must be called before interface drawing is initialized to be visible on the map
-void Tile::setTile(std::string textureFileName, bool newFlag) {
-	if (!texture.loadFromFile(textureFileName)) {
-		std::cout << "Could not load '" << textureFileName << "'\n";
+void Tile::setTile(TileGround tg, TileBlock tb) {
+	ground = tg;
+	block = tb;
+	std::string filename;
+	switch (tb) {
+		case air:
+			filename = "img/tile_grass.png";
+			break;
+		case wall:
+			filename = "img/tile_pavement.png";
+			break;
+		case bush:
+			filename = "img/tile_pavement.png";
+			break;
+		case tree:
+			filename = "img/tile_pavement.png";
+			break;
+		default:
+			filename = "img/tile_grass.png";
+			break;
 	}
-	solid = newFlag;
+
+	if (!texture.loadFromFile(filename)) {
+		std::cout << "Could not load '" << filename << std::endl;
+	}
 }
