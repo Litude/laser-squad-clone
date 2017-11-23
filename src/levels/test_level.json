@@ -1,0 +1,94 @@
+{
+    "map": {
+        "size": 16,
+        "width": 4,   
+        "tiles": [
+            {
+                "ground": "grass"
+            },
+            {
+                "ground": "grass"
+            },
+            {
+                "ground": "grass"
+            },
+            {
+                "ground": "grass"
+            },
+            {
+                "ground": "grass",
+                "character": 2
+            },
+            {
+                "ground": "grass",
+                "block": "wall"
+            },
+            {
+                "ground": "grass",
+                "block": "wall"
+            },
+            {
+                "ground": "grass"
+            },
+            {
+                "ground": "grass",
+                "character": 1
+            },
+            {
+                "ground": "grass",
+                "items": [ "rifle", "pistol" ]
+            },
+            {
+                "ground": "grass"
+            },
+            {
+                "ground": "grass"
+            },
+            {
+                "ground": "grass"
+            },
+            {
+                "ground": "grass"
+            },
+            {
+                "ground": "grass"
+            },
+            {
+                "ground": "grass",
+                "block": "tree"
+            }
+        ]
+    },
+    "players": [
+        {
+            "id": 1,
+            "characters": [
+                {
+                    "charid": 1,
+                    "health": 100,
+                    "inventory": [ "pistol", "pistolammo" ]
+                },
+                {
+                    "charid": 2,
+                    "health": 90,
+                    "inventory": [ "rifle", "rifleammo" ]
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "characters" : [
+                {
+                    "charid": 3,
+                    "health": 50,
+                    "inventory": ["knife"]
+                }
+            ]
+        }
+    ],
+    "activePlayer": 2,
+    "turn": 4,
+    "mission": {
+        "type": "eliminate"
+    }
+}
