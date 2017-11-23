@@ -15,6 +15,7 @@ public:
 private:
 	void DrawGame(sf::RenderWindow &App);
 	void DrawUI(sf::RenderWindow &App);
+	sf::Vector2u GetClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
 
 	Game game;
 	std::shared_ptr<sf::Font> font;
@@ -23,6 +24,7 @@ private:
 	sf::View gameView;
 	sf::View interfaceView;
 	sf::RectangleShape interfaceBkg;
+	//sf::FloatRect buttonEndTurn { sf::Vector2f(100, 100), sf::Vector2f(100, 80)};
 	sf::RectangleShape buttonEndTurn{ sf::Vector2f(100, 80) };
 	sf::RectangleShape selectedCharacter;
 	sf::Text textCurTurn;

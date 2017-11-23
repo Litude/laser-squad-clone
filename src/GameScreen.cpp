@@ -4,6 +4,7 @@
 
 GameScreen::GameScreen(sf::RenderWindow &App)
 {
+	//Game logic initialization
 	game = Game();
 
 	game.initializeMap(30, 30);
@@ -16,6 +17,23 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 	game.setSelectedCharacter(game.getCharacters().end());
 
+	//Interface drawing initialization
+	font = std::make_shared<sf::Font>(sf::Font());
+	if (!font->loadFromFile("font/ARIALN.TTF")) {
+		std::cout << "Could not load 'font/ARIALN.TTF'\n";
+	}
+
+	//Interface element attributes that won't change during execution
+	interfaceBkg.setFillColor(sf::Color::Blue);
+	textFPS.setFont(*font);
+	textFPS.setCharacterSize(12);
+	textCurTurn.setFont(*font);
+	textCurTurn.setCharacterSize(12);
+	textEndTurn.setFont(*font);
+	textEndTurn.setString("End turn");
+	buttonEndTurn.setFillColor(sf::Color::Magenta);
+
+	//Game drawing initialization
 	selectedCharacter = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
 	selectedCharacter.setOutlineColor(sf::Color::Yellow);
 	selectedCharacter.setOutlineThickness(2.0f);
@@ -31,17 +49,11 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 		std::cout << "Could not load 'img/character2_sheet.png'\n";
 	}
 
-	//Initialize font
-	font = std::make_shared<sf::Font>(sf::Font());
-	if (!font->loadFromFile("font/ARIALN.TTF")) {
-		std::cout << "Could not load 'font/ARIALN.TTF'\n";
-	}
-
-	//The size of the character or map vector should not change after initialization
+	//Create array of shapes for drawing from map tiles
 	mapTiles.resize(game.getMap().getTileMap().size()*game.getMap().getTileMap().at(0).size());
 
 	for (unsigned int i = 0; i < game.getMap().getTileMap().size(); ++i) {
-		for (unsigned int j = 0; j < game.getMap().getTileMap()[i].size(); j++) {
+		for (unsigned int j = 0; j < game.getMap().getTileMap()[i].size(); ++j) {
 			mapTiles[i*game.getMap().getTileMap().size() + j].setPosition(j * TILESIZE, i * TILESIZE);
 			mapTiles[i*game.getMap().getTileMap().size() + j].setTexture(game.getMap().getTile(j, i).getTexture());
 		}
@@ -102,27 +114,15 @@ int GameScreen::Run(sf::RenderWindow & App)
 				if (Event.mouseButton.x >= App.getSize().x - MENUSIZE) {
 					//Clicked on the menubar
 					if (Event.mouseButton.button == 0) {
-						if (Event.mouseButton.x >= App.getSize().x - MENUSIZE + 50 && Event.mouseButton.y >= 260 && Event.mouseButton.x <= App.getSize().x - 50 && Event.mouseButton.y <= 340) {
+						if (buttonEndTurn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
 							game.endTurn();
 						}
 					}
 				}
 				else {
 					//Clicked on the gamescreen
-
-					//std::cout << App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).x << " " << App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).y << std::endl;
-
-					// Click x and y in map tile coordinates
-					unsigned int xCoord = App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).x / TILESIZE;
-					unsigned int yCoord = App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).y / TILESIZE;
-
-					//std::cout << xCoord - (xCoord % TILESIZE) << " " << yCoord - (yCoord % TILESIZE) << std::endl;
 					for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
-						if (it->getTeam() == game.getCurrentPlayer() &&
-							it->getPosition().x <= xCoord &&
-							it->getPosition().x + 1 >= xCoord &&
-							it->getPosition().y <= yCoord &&
-							it->getPosition().y + 1 >= yCoord) {
+						if (it->getTeam() == game.getCurrentPlayer() && it->getPosition() == GetClickedTilePosition(App, sf::Mouse::getPosition(App), gameView)) {
 							game.setSelectedCharacter(it); //Select clicked character
 							break;
 						}
@@ -217,23 +217,15 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		//Interface background
 		interfaceBkg.setSize(sf::Vector2f(MENUSIZE, App.getSize().y));
 		interfaceBkg.setPosition(App.getSize().x - MENUSIZE, 0);
-		interfaceBkg.setFillColor(sf::Color::Blue);
 
 		//End turn button and text
-		buttonEndTurn.setFillColor(sf::Color::Magenta);
 		buttonEndTurn.setPosition(App.getSize().x - MENUSIZE + 50, 260);
-		textEndTurn.setFont(*font);
-		textEndTurn.setString("End turn");
 		textEndTurn.setPosition(App.getSize().x - MENUSIZE + 52, 280);
 
 		//FPS counter text
-		textFPS.setFont(*font);
-		textFPS.setCharacterSize(12);
 		textFPS.setPosition(App.getSize().x - MENUSIZE + 52, 0);
 
 		//Current turn text
-		textCurTurn.setFont(*font);
-		textCurTurn.setCharacterSize(12);
 		textCurTurn.setPosition(App.getSize().x - MENUSIZE + 52, 50);
 
 	}
@@ -256,4 +248,11 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 	App.draw(textCurTurn);
 	App.draw(textEndTurn);
 
+}
+
+sf::Vector2u GameScreen::GetClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const {
+	sf::Vector2u clickedTile = sf::Vector2u(App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView));
+	clickedTile.x /= TILESIZE;
+	clickedTile.y /= TILESIZE;
+	return clickedTile;
 }
