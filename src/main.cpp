@@ -7,6 +7,7 @@
 #include "Map.hpp"
 #include "MainMenuScreen.hpp"
 #include "GameScreen.hpp"
+#include "NgMenuScreen.hpp"
 #include "constants.hpp"
 
 int main(int argc, char* argv[]) {
@@ -19,6 +20,8 @@ int main(int argc, char* argv[]) {
   Screens.push_back(&s0);
   GameScreen s1(App);
   Screens.push_back(&s1);
+  NgMenuScreen s2;
+  Screens.push_back(&s2);
 
   int screen = 0;
 
