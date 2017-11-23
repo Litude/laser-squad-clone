@@ -1,8 +1,8 @@
 #include "GameCharacter.hpp"
 #include <iostream>
 
-const int animationFrameTime = 100; // animation frame time in ms
-const int moveSpeed = 1000; // time it takes in ms to move from one tile to another
+const int animationFrameTime = 125; // animation frame time in ms
+const int moveSpeed = 500; // time it takes in ms to move from one tile to another
 
 void GameCharacter::moveLeft() {
 	previousPosition = currentPosition;
@@ -39,7 +39,6 @@ void GameCharacter::move(int delta_ms) {
 	{
 		// Reset animation time but keep the remainder
 		animationTime = animationTime % animationFrameTime;
-		animationTime = 0;
 		animation++;
 	}
 	if (moveFactor >= 1.f) {
@@ -50,7 +49,7 @@ void GameCharacter::move(int delta_ms) {
 	}
 }
 
-sf::Vector2u GameCharacter::getRenderPosition()
+sf::Vector2u GameCharacter::getRenderPosition() const
 {
 	sf::Vector2u renderPosition;
 	if (moving) {
