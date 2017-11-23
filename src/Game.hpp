@@ -8,25 +8,25 @@
 
 class Game {
 public:
-	Game()							{ playerTurnIdx = 1; }
-	unsigned int					getCurrentPlayer() { return playerTurnIdx; }
-	int								getSelectedCharacter() { return selectedCharacter; }
-	Map&							getMap() { return map; }
-	void							endTurn();
-	bool							addCharacter(sf::Vector2u position, unsigned int team);
-	void							setSelectedCharacter(unsigned int idx) { selectedCharacter = idx; }
-	void							initializeMap(unsigned int xSize, unsigned int ySize) {map = Map(xSize, ySize);}
-	std::vector<GameCharacter>&		getCharacters() { return characters; }
-	void							characterMoveLeft(unsigned int charIdx);
-	void							characterMoveRight(unsigned int charIdx);
-	void							characterMoveUp(unsigned int charIdx);
-	void							characterMoveDown(unsigned int charIdx);
+	Game()									{ playerTurnIdx = 1; }
+	unsigned int							getCurrentPlayer() { return playerTurnIdx; }
+	std::vector<GameCharacter>::iterator	getSelectedCharacter() { return selectedCharacter; }
+	Map&									getMap() { return map; }
+	void									endTurn();
+	bool									addCharacter(sf::Vector2u position, unsigned int team);
+	void									setSelectedCharacter(std::vector<GameCharacter>::iterator it) { selectedCharacter = it; }
+	void									initializeMap(unsigned int xSize, unsigned int ySize) {map = Map(xSize, ySize);}
+	std::vector<GameCharacter>&				getCharacters() { return characters; }
+	void									characterMoveLeft(std::vector<GameCharacter>::iterator it);
+	void									characterMoveRight(std::vector<GameCharacter>::iterator it);
+	void									characterMoveUp(std::vector<GameCharacter>::iterator it);
+	void									characterMoveDown(std::vector<GameCharacter>::iterator it);
 
 private:
-	unsigned int					playerTurnIdx;
-	unsigned int					selectedCharacter = 1;
-	Map								map;
-	std::vector<GameCharacter>			characters;
+	unsigned int							playerTurnIdx;
+	std::vector<GameCharacter>::iterator	selectedCharacter;
+	Map										map;
+	std::vector<GameCharacter>				characters;
 };
 
 #endif

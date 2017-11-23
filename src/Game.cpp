@@ -2,7 +2,7 @@
 
 void Game::endTurn() {
 	(playerTurnIdx == 1) ? playerTurnIdx = 2 : playerTurnIdx = 1;
-	selectedCharacter = -1;
+	selectedCharacter = characters.end();
 }
 
 bool Game::addCharacter(sf::Vector2u position, unsigned int team) {
@@ -15,54 +15,54 @@ bool Game::addCharacter(sf::Vector2u position, unsigned int team) {
 	}
 }
 
-void Game::characterMoveLeft(unsigned int charIdx) {
-	if (characters[charIdx].getPosition().x > 0) {
-		if (getMap().getTile((characters[charIdx].getPosition().x) - 1, characters[charIdx].getPosition().y).isSolid() == true) return; //check for solid block
+void Game::characterMoveLeft(std::vector<GameCharacter>::iterator it) {
+	if (it->getPosition().x > 0) {
+		if (getMap().getTile((it->getPosition().x) - 1, it->getPosition().y).isSolid() == true) return; //check for solid block
 
 		for (auto character : characters) {
-			if (character.getPosition() == sf::Vector2u(characters[charIdx].getPosition().x - 1, characters[charIdx].getPosition().y)) {
+			if (character.getPosition() == sf::Vector2u(it->getPosition().x - 1, it->getPosition().y)) {
 				return;
 			}
 		}
-		characters[charIdx].moveLeft();
+		it->moveLeft();
 	}
 }
 
-void Game::characterMoveRight(unsigned int charIdx) {
-	if (characters[charIdx].getPosition().x < (getMap().getTileMap().at(0).size() - 1)) {
-		if (getMap().getTile((characters[charIdx].getPosition().x) + 1, characters[charIdx].getPosition().y).isSolid() == true) return; //check for solid block
+void Game::characterMoveRight(std::vector<GameCharacter>::iterator it) {
+	if (it->getPosition().x < (getMap().getTileMap().at(0).size() - 1)) {
+		if (getMap().getTile((it->getPosition().x) + 1, it->getPosition().y).isSolid() == true) return; //check for solid block
 
 		for (auto character : characters) {
-			if (character.getPosition() == sf::Vector2u(characters[charIdx].getPosition().x + 1, characters[charIdx].getPosition().y)) {
+			if (character.getPosition() == sf::Vector2u(it->getPosition().x + 1, it->getPosition().y)) {
 				return;
 			}
 		}
-		characters[charIdx].moveRight();
+		it->moveRight();
 	}
 }
 
-void Game::characterMoveUp(unsigned int charIdx) {
-	if (characters[charIdx].getPosition().y > 0) {
-		if (getMap().getTile(characters[charIdx].getPosition().x, (characters[charIdx].getPosition().y) - 1).isSolid() == true) return; //check for solid block
+void Game::characterMoveUp(std::vector<GameCharacter>::iterator it) {
+	if (it->getPosition().y > 0) {
+		if (getMap().getTile(it->getPosition().x, (it->getPosition().y) - 1).isSolid() == true) return; //check for solid block
 
 		for (auto character : characters) {
-			if (character.getPosition() == sf::Vector2u(characters[charIdx].getPosition().x, characters[charIdx].getPosition().y - 1)) {
+			if (character.getPosition() == sf::Vector2u(it->getPosition().x, it->getPosition().y - 1)) {
 				return;
 			}
 		}
-		characters[charIdx].moveUp();
+		it->moveUp();
 	}
 }
 
-void Game::characterMoveDown(unsigned int charIdx) {
-	if (characters[charIdx].getPosition().y < (getMap().getTileMap().at(0).size() - 1) * TILESIZE) {
-		if (getMap().getTile(characters[charIdx].getPosition().x, (characters[charIdx].getPosition().y) + 1).isSolid() == true) return; //check for solid block
+void Game::characterMoveDown(std::vector<GameCharacter>::iterator it) {
+	if (it->getPosition().y < (getMap().getTileMap().at(0).size() - 1) * TILESIZE) {
+		if (getMap().getTile(it->getPosition().x, (it->getPosition().y) + 1).isSolid() == true) return; //check for solid block
 
 		for (auto character : characters) {
-			if (character.getPosition() == sf::Vector2u(characters[charIdx].getPosition().x, characters[charIdx].getPosition().y + 1)) {
+			if (character.getPosition() == sf::Vector2u(it->getPosition().x, it->getPosition().y + 1)) {
 				return;
 			}
 		}
-		characters[charIdx].moveDown();
+		it->moveDown();
 	}
 }

@@ -28,7 +28,6 @@ private:
 	sf::Text textCurTurn;
 	sf::Text textEndTurn;
 	sf::Text textFPS;
-	sf::Sprite characterShapes;
 	std::vector<sf::Sprite> mapTiles;
 	sf::Clock fpsclock;
 	sf::Clock clock;

@@ -13,14 +13,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.addCharacter(sf::Vector2u(8, 8), 2);
 	game.addCharacter(sf::Vector2u(10, 10), 2);
 
-	//Create stationary view
-	interfaceView = App.getView();
-
-	//Gameport view
-	gameView = sf::View(sf::FloatRect(0, 0, WINDOW_WIDTH - MENUSIZE, WINDOW_HEIGHT));
-	gameView.setSize(WINDOW_WIDTH - MENUSIZE, WINDOW_HEIGHT);
-	gameView.setCenter((WINDOW_WIDTH - MENUSIZE) / 2, WINDOW_HEIGHT / 2);
-	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(WINDOW_WIDTH - MENUSIZE) / WINDOW_WIDTH, 1));
+	game.setSelectedCharacter(game.getCharacters().end());
 
 	selectedCharacter = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
 	selectedCharacter.setOutlineColor(sf::Color::Yellow);
@@ -68,22 +61,22 @@ int GameScreen::Run(sf::RenderWindow & App)
 			if (Event.type == sf::Event::KeyPressed) {
 				switch (Event.key.code) {
 				case sf::Keyboard::Left:
-					if (game.getSelectedCharacter() != -1 && game.getCharacters()[game.getSelectedCharacter()].isMoving() == false) {
+					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
 						game.characterMoveLeft(game.getSelectedCharacter());
 					}
 					break;
 				case sf::Keyboard::Right:
-					if (game.getSelectedCharacter() != -1 && game.getCharacters()[game.getSelectedCharacter()].isMoving() == false) {
+					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
 						game.characterMoveRight(game.getSelectedCharacter());
 					}
 					break;
 				case sf::Keyboard::Down:
-					if (game.getSelectedCharacter() != -1 && game.getCharacters()[game.getSelectedCharacter()].isMoving() == false) {
+					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
 						game.characterMoveDown(game.getSelectedCharacter());
 					}
 					break;
 				case sf::Keyboard::Up:
-					if (game.getSelectedCharacter() != -1 && game.getCharacters()[game.getSelectedCharacter()].isMoving() == false) {
+					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
 						game.characterMoveUp(game.getSelectedCharacter());
 					}
 					break;
@@ -123,17 +116,17 @@ int GameScreen::Run(sf::RenderWindow & App)
 					unsigned int yCoord = App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView).y / TILESIZE;
 
 					//std::cout << xCoord - (xCoord % TILESIZE) << " " << yCoord - (yCoord % TILESIZE) << std::endl;
-					for (unsigned int i = 0; i < game.getCharacters().size(); ++i) {
-						if (game.getCharacters()[i].getTeam() == game.getCurrentPlayer() &&
-							game.getCharacters()[i].getPosition().x <= xCoord &&
-							game.getCharacters()[i].getPosition().x + 1 >= xCoord &&
-							game.getCharacters()[i].getPosition().y <= yCoord &&
-							game.getCharacters()[i].getPosition().y + 1 >= yCoord) {
-							game.setSelectedCharacter(i); //Select clicked character
+					for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
+						if (it->getTeam() == game.getCurrentPlayer() &&
+							it->getPosition().x <= xCoord &&
+							it->getPosition().x + 1 >= xCoord &&
+							it->getPosition().y <= yCoord &&
+							it->getPosition().y + 1 >= yCoord) {
+							game.setSelectedCharacter(it); //Select clicked character
 							break;
 						}
 						else {
-							game.setSelectedCharacter(-1);
+							game.setSelectedCharacter(game.getCharacters().end());
 						}
 					}
 				}
@@ -190,23 +183,23 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 	}
 
 	//Draw characters
-	for (unsigned int i = 0; i < game.getCharacters().size(); ++i) {
-		characterShapes = sf::Sprite();
-		characterShapes.setPosition(game.getCharacters()[i].getRenderPosition().x, game.getCharacters()[i].getRenderPosition().y);
-		if (i == game.getSelectedCharacter()) {
-			selectedCharacter.setPosition(game.getCharacters()[i].getRenderPosition().x, game.getCharacters()[i].getRenderPosition().y);
+	for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
+		sf::Sprite characterShape;
+		characterShape.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
+		if (it == game.getSelectedCharacter()) {
+			selectedCharacter.setPosition(it->getRenderPosition().x,it->getRenderPosition().y);
 			App.draw(selectedCharacter);
 		}
-		if (game.getCharacters()[i].getTeam() == 1) {
-			characterShapes.setTexture(*texPlayer1);
-			characterShapes.setTextureRect(sf::IntRect(game.getCharacters()[i].getDirection() * TILESIZE, game.getCharacters()[i].getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
+		if (it->getTeam() == 1) {
+			characterShape.setTexture(*texPlayer1);
+			characterShape.setTextureRect(sf::IntRect(it->getDirection() * TILESIZE, it->getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
 		}
 		else {
-			characterShapes.setTexture(*texPlayer2);
-			characterShapes.setTextureRect(sf::IntRect(game.getCharacters()[i].getDirection() * TILESIZE, game.getCharacters()[i].getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
+			characterShape.setTexture(*texPlayer2);
+			characterShape.setTextureRect(sf::IntRect(it->getDirection() * TILESIZE, it->getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
 		}
 
-		App.draw(characterShapes);
+		App.draw(characterShape);
 	}
 
 }
