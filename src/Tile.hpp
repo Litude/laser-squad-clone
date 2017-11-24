@@ -12,7 +12,7 @@ enum TileBlock { air, wall, tree, bush };
 
 class Tile {
 public:
-	Tile() : Tile(grass, air) { }
+	Tile() : Tile(dirt, air) { }
 
 	Tile(TileGround ground) : Tile(ground, air) { }
 

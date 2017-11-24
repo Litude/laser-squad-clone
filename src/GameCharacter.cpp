@@ -1,8 +1,8 @@
 #include "GameCharacter.hpp"
 #include <iostream>
 
-const int animationFrameTime = 125; // animation frame time in ms
-const int moveSpeed = 500; // time it takes in ms to move from one tile to another
+const int animationFrameTime = 125000; // animation frame time in ms
+const int moveSpeed = 500000; // time it takes in ms to move from one tile to another
 
 void GameCharacter::moveLeft() {
 	previousPosition = currentPosition;

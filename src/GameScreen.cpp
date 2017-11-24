@@ -8,7 +8,35 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game = Game();
 
 	game.initializeMap(30, 30);
-	game.getMap().getTile(12, 12).setTile(stone, wall); //Add one solid block for collision testing
+	game.getMap().getTile(12, 12).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+	game.getMap().getTile(12, 13).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+	game.getMap().getTile(12, 14).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+
+	game.getMap().getTile(5, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+	game.getMap().getTile(6, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+	game.getMap().getTile(7, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+
+	game.getMap().getTile(7, 4).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
+	game.getMap().getTile(7, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
+	game.getMap().getTile(6, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
+
+	game.getMap().getTile(6, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
+	game.getMap().getTile(5, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
+
+	game.getMap().getTile(7, 2).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
+
+	game.getMap().getTile(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
+	game.getMap().getTile(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
+
+	// Create graphical tilemap presentation from the Map
+	tileMap = std::make_shared<TileMap>(TileMap(game.getMap()));
+	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", sf::Vector2u(TILESIZE, TILESIZE))) {
+		std::cout << "Could not load tilemap\n";
+	}
+
+	// Test updating tile after tilemap has already been created
+	game.getMap().getTile(12, 16).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
+	tileMap->updateTile(sf::Vector2u(12, 16));
 
 	game.addCharacter(sf::Vector2u(0, 0), 1);
 	game.addCharacter(sf::Vector2u(4, 4), 1);
@@ -48,21 +76,11 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	if (!texPlayer2->loadFromFile("img/character2_sheet.png")) {
 		std::cout << "Could not load 'img/character2_sheet.png'\n";
 	}
-
-	//Create array of shapes for drawing from map tiles
-	mapTiles.resize(game.getMap().getTileMap().size()*game.getMap().getTileMap().at(0).size());
-
-	for (unsigned int i = 0; i < game.getMap().getTileMap().size(); ++i) {
-		for (unsigned int j = 0; j < game.getMap().getTileMap()[i].size(); ++j) {
-			mapTiles[i*game.getMap().getTileMap().size() + j].setPosition(j * TILESIZE, i * TILESIZE);
-			mapTiles[i*game.getMap().getTileMap().size() + j].setTexture(game.getMap().getTile(j, i).getTexture());
-		}
-	}
 }
 
 int GameScreen::Run(sf::RenderWindow & App)
 {
-
+	sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
 	while (App.isOpen()) {
 		sf::Event Event;
 		while (App.pollEvent(Event)) {
@@ -109,7 +127,7 @@ int GameScreen::Run(sf::RenderWindow & App)
 				}
 			}
 			//Handle mouse input
-			if (Event.type == sf::Event::MouseButtonPressed) {
+			if (Event.type == sf::Event::MouseButtonReleased) {
 
 				if (Event.mouseButton.x >= App.getSize().x - MENUSIZE) {
 					//Clicked on the menubar
@@ -137,13 +155,21 @@ int GameScreen::Run(sf::RenderWindow & App)
 			}
 		}
 
+		sf::Vector2i mousePos = sf::Mouse::getPosition(App);
+		float x = (float)mousePos_old.x - mousePos.x;
+		float y = (float)mousePos_old.y - mousePos.y;
+		mousePos_old = mousePos;
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+			gameView.move(x, y);
+		}
+
 		//Handle time delta dependent actions
 		double delta = clock.restart().asMicroseconds();
 		timeAccumulator += delta;
 
 		for (auto &character : game.getCharacters()) {
 			if (character.isMoving()) {
-				character.move(delta / 1000.0f);
+				character.move(delta);
 			}
 		}
 
@@ -172,16 +198,12 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 	//Calculate which tiles we can actually see before drawing the map
 	//TODO: The calculation might break when moving the view at arbitrary (non-TILESIZE) amounts
 	int y0 = std::max(static_cast<int>((gameView.getCenter().y - App.getSize().y / 2) / TILESIZE), 0);
-	int ymax = std::min(static_cast<int>(y0 + App.getSize().y / TILESIZE), static_cast<int>(game.getMap().getSizeY() - 1));
+	int ymax = std::min(static_cast<int>(y0 + App.getSize().y / TILESIZE) + 1, static_cast<int>(game.getMap().getSizeY() - 1));
 	int x0 = std::max(static_cast<int>((gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2) / TILESIZE), 0);
-	int xmax = std::min(static_cast<int>(x0 + (App.getSize().x - MENUSIZE) / TILESIZE), static_cast<int>(game.getMap().getSizeX() - 1));
+	int xmax = std::min(static_cast<int>(x0 + (App.getSize().x - MENUSIZE) / TILESIZE) + 1, static_cast<int>(game.getMap().getSizeX() - 1));
 
 	//Draw the map
-	for (unsigned int yi = y0; yi <= ymax; ++yi) {
-		for (unsigned int xi = x0; xi <= xmax; xi++) {
-			App.draw(mapTiles[yi*game.getMap().getTileMap().at(yi).size() + xi]);
-		}
-	}
+	App.draw(*tileMap);
 
 	//Draw characters
 	for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {

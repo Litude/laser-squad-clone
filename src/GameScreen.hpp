@@ -5,6 +5,7 @@
 #include <memory>
 #include "Screen.hpp"
 #include "Game.hpp"
+#include "TileMap.hpp"
 #include <SFML/Graphics.hpp>
 
 class GameScreen : public Screen
@@ -18,6 +19,7 @@ private:
 	sf::Vector2u GetClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
 
 	Game game;
+	std::shared_ptr<TileMap> tileMap;
 	std::shared_ptr<sf::Font> font;
 	std::shared_ptr<sf::Texture> texPlayer1;
 	std::shared_ptr<sf::Texture> texPlayer2;
