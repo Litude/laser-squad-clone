@@ -28,6 +28,17 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.getMap().getTile(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
 	game.getMap().getTile(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
 
+	// Test put walls on the edges of the map
+	for (unsigned int i = 0; i < game.getMap().getSizeX(); ++i)
+	{
+		for (unsigned int j = 0; j < game.getMap().getSizeY(); ++j)
+		{
+			if (i == 0 || j == 0 || i == game.getMap().getSizeX() - 1 || j == game.getMap().getSizeY() - 1) {
+				game.getMap().getTile(i, j).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
+			}
+		}
+	}
+
 	// Create graphical tilemap presentation from the Map
 	tileMap = std::make_shared<TileMap>(TileMap(game.getMap()));
 	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", sf::Vector2u(TILESIZE, TILESIZE))) {
@@ -38,7 +49,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.getMap().getTile(12, 16).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
 	tileMap->updateTile(sf::Vector2u(12, 16));
 
-	game.addCharacter(sf::Vector2u(0, 0), 1);
+	game.addCharacter(sf::Vector2u(1, 1), 1);
 	game.addCharacter(sf::Vector2u(4, 4), 1);
 	game.addCharacter(sf::Vector2u(8, 8), 2);
 	game.addCharacter(sf::Vector2u(10, 10), 2);
