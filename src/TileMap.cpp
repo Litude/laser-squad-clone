@@ -94,10 +94,10 @@ void TileMap::setBlockTile(Tile tile, sf::Vector2u tilePosition)
 
 	// Special case for wall blocks
 	if (tile.getBlock() == TileBlock::wall) {
-		bool up = m_map.getTile(i, j - 1).getBlock() == TileBlock::wall;
-		bool down = m_map.getTile(i, j + 1).getBlock() == TileBlock::wall;
-		bool left = m_map.getTile(i - 1, j).getBlock() == TileBlock::wall;
-		bool right = m_map.getTile(i + 1, j).getBlock() == TileBlock::wall;
+		bool up = j > 0 ? m_map.getTile(i, j - 1).getBlock() == TileBlock::wall : false;
+		bool down = j < m_map.getSizeY() - 1 ? m_map.getTile(i, j + 1).getBlock() == TileBlock::wall : false;
+		bool left = i > 0 ? m_map.getTile(i - 1, j).getBlock() == TileBlock::wall : false;
+		bool right = i < m_map.getSizeX() - 1 ? m_map.getTile(i + 1, j).getBlock() == TileBlock::wall: false;
 
 		if (up && down && left && right) {
 			tileNumber_y = WallParts::all_sides;
