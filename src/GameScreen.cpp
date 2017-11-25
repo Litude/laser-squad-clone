@@ -6,7 +6,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game = Game();
 
 	game.initializeMap(30, 30);
-	game.getMap().getTile(12, 12).setTile("img/tile_pavement.png", true); //Add one solid block for collision testing
+	game.getMap().getTile(12, 12).setTile(stone, wall); //Add one solid block for collision testing
 
 	game.addCharacter(sf::Vector2u(0, 0), 1);
 	game.addCharacter(sf::Vector2u(4, 4), 1);
