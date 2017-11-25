@@ -93,10 +93,6 @@ int GameScreen::Run(sf::RenderWindow & App)
 				case sf::Keyboard::W:
 					if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
 					break;
-				case sf::Keyboard::Escape:
-					App.clear();
-					return(0);
-					break;
 				}
 			}
 			//Handle mouse input
