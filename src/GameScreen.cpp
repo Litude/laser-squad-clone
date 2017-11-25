@@ -1,6 +1,5 @@
 #include "GameScreen.hpp"
 #include "constants.hpp"
-#include "Tile.hpp"
 
 GameScreen::GameScreen(sf::RenderWindow &App)
 {

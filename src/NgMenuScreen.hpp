@@ -1,14 +1,14 @@
-#ifndef LASER_MAINMENUSCREEN_HPP
-#define LASER_MAINMENUSCREEN_HPP
+#ifndef LASER_NGMENUSCREEN_HPP
+#define LASER_NGMENUSCREEN_HPP
 
 #include <iostream>
 #include "Screen.hpp"
 #include <SFML/Graphics.hpp>
 
-class MainMenuScreen : public Screen
+class NgMenuScreen : public Screen
 {
 public:
-	MainMenuScreen(void);
+	NgMenuScreen(void);
 	virtual int Run(sf::RenderWindow &App);
 private:
 };
