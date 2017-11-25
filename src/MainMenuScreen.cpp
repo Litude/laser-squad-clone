@@ -6,7 +6,6 @@ MainMenuScreen::MainMenuScreen(void)
 
 int MainMenuScreen::Run(sf::RenderWindow & App)
 {
-	std::cout << "mainmenuscreen test";
 	sf::Event Event;
 	sf::Texture Texture;
 	sf::Sprite Sprite;
