@@ -2,7 +2,7 @@
 #define GRID_H
 
 #include <vector>
-#include "alt_Tile.hpp"
+#include "Tile.hpp"
 
 class Grid {
 public:
@@ -21,6 +21,7 @@ public:
 
 	const Tile& operator()(unsigned x, unsigned y) const;
 	Tile& operator()(unsigned x, unsigned y);
+	Tile& getTile(unsigned x, unsigned y);
 	Tile& operator[](unsigned n);
 
 	const_iterator begin() const;

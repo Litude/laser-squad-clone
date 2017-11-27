@@ -8,6 +8,10 @@ Tile& Grid::operator()(unsigned x, unsigned y) {
 	return grid[y*width + x];
 }
 
+Tile& Grid::getTile(unsigned x, unsigned y) {
+	return (*this)(x, y);
+}
+
 Tile& Grid::operator[](unsigned n) {
 	return grid[n];
 }
