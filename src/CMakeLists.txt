@@ -22,7 +22,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # Define sources and executable
 set(EXECUTABLE_NAME "LaserSquad")
-add_executable(${EXECUTABLE_NAME} main.cpp Game.cpp Game.hpp GameCharacter.cpp GameCharacter.hpp Inventory.hpp Map.cpp Map.hpp Tile.cpp Tile.hpp TileMap.cpp TileMap.hpp Weapon.hpp Screen.cpp Screen.hpp GameScreen.cpp GameScreen.hpp MainMenuScreen.cpp MainMenuScreen.hpp NgMenuScreen.cpp NgMenuScreen.hpp)
+add_executable(${EXECUTABLE_NAME} main.cpp Game.cpp Game.hpp GameCharacter.cpp GameCharacter.hpp Inventory.hpp Grid.cpp Grid.hpp Tile.cpp Tile.hpp TileMap.cpp TileMap.hpp Weapon.hpp Screen.cpp Screen.hpp GameScreen.cpp GameScreen.hpp MainMenuScreen.cpp MainMenuScreen.hpp NgMenuScreen.cpp NgMenuScreen.hpp)
 
 
 # Detect and add SFML
