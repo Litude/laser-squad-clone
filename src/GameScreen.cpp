@@ -6,46 +6,46 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	//Game logic initialization
 	game = Game();
 
-	game.initializeMap(30, 30);
-	game.getMap().getTile(12, 12).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-	game.getMap().getTile(12, 13).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-	game.getMap().getTile(12, 14).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+	game.initializeGrid(30, 30);
+	game.getGrid().getTile(12, 12).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+	game.getGrid().getTile(12, 13).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+	game.getGrid().getTile(12, 14).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
 
-	game.getMap().getTile(5, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-	game.getMap().getTile(6, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-	game.getMap().getTile(7, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+	game.getGrid().getTile(5, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+	game.getGrid().getTile(6, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+	game.getGrid().getTile(7, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
 
-	game.getMap().getTile(7, 4).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-	game.getMap().getTile(7, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-	game.getMap().getTile(6, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
+	game.getGrid().getTile(7, 4).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
+	game.getGrid().getTile(7, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
+	game.getGrid().getTile(6, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
 
-	game.getMap().getTile(6, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
-	game.getMap().getTile(5, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
+	game.getGrid().getTile(6, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
+	game.getGrid().getTile(5, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
 
-	game.getMap().getTile(7, 2).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
+	game.getGrid().getTile(7, 2).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
 
-	game.getMap().getTile(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
-	game.getMap().getTile(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
+	game.getGrid().getTile(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
+	game.getGrid().getTile(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
 
 	// Test put walls on the edges of the map
-	for (unsigned int i = 0; i < game.getMap().getSizeX(); ++i)
+	for (unsigned int i = 0; i < game.getGrid().getWidth(); ++i)
 	{
-		for (unsigned int j = 0; j < game.getMap().getSizeY(); ++j)
+		for (unsigned int j = 0; j < game.getGrid().getHeight(); ++j)
 		{
-			if (i == 0 || j == 0 || i == game.getMap().getSizeX() - 1 || j == game.getMap().getSizeY() - 1) {
-				game.getMap().getTile(i, j).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
+			if (i == 0 || j == 0 || i == game.getGrid().getWidth() - 1 || j == game.getGrid().getHeight() - 1) {
+				game.getGrid().getTile(i, j).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
 			}
 		}
 	}
 
 	// Create graphical tilemap presentation from the Map
-	tileMap = std::make_shared<TileMap>(TileMap(game.getMap()));
+	tileMap = std::make_shared<TileMap>(TileMap(game.getGrid()));
 	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", sf::Vector2u(TILESIZE, TILESIZE))) {
 		std::cout << "Could not load tilemap\n";
 	}
 
 	// Test updating tile after tilemap has already been created
-	game.getMap().getTile(12, 16).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
+	game.getGrid().getTile(12, 16).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
 	tileMap->updateTile(sf::Vector2u(12, 16));
 
 	game.addCharacter(sf::Vector2u(1, 1), 1);
@@ -126,10 +126,10 @@ int GameScreen::Run(sf::RenderWindow & App)
 					if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);
 					break;
 				case sf::Keyboard::D:
-					if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game.getMap().getSizeX() * TILESIZE) gameView.move(TILESIZE, 0);
+					if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game.getGrid().getWidth() * TILESIZE) gameView.move(TILESIZE, 0);
 					break;
 				case sf::Keyboard::S:
-					if (gameView.getCenter().y + App.getSize().y / 2 < game.getMap().getSizeY() * TILESIZE) gameView.move(0, TILESIZE);
+					if (gameView.getCenter().y + App.getSize().y / 2 < game.getGrid().getHeight() * TILESIZE) gameView.move(0, TILESIZE);
 					break;
 				case sf::Keyboard::W:
 					if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
@@ -208,9 +208,9 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 	//Calculate which tiles we can actually see before drawing the map
 	//TODO: The calculation might break when moving the view at arbitrary (non-TILESIZE) amounts
 	int y0 = std::max(static_cast<int>((gameView.getCenter().y - App.getSize().y / 2) / TILESIZE), 0);
-	int ymax = std::min(static_cast<int>(y0 + App.getSize().y / TILESIZE) + 1, static_cast<int>(game.getMap().getSizeY() - 1));
+	int ymax = std::min(static_cast<int>(y0 + App.getSize().y / TILESIZE) + 1, static_cast<int>(game.getGrid().getHeight() - 1));
 	int x0 = std::max(static_cast<int>((gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2) / TILESIZE), 0);
-	int xmax = std::min(static_cast<int>(x0 + (App.getSize().x - MENUSIZE) / TILESIZE) + 1, static_cast<int>(game.getMap().getSizeX() - 1));
+	int xmax = std::min(static_cast<int>(x0 + (App.getSize().x - MENUSIZE) / TILESIZE) + 1, static_cast<int>(game.getGrid().getWidth() - 1));
 
 	//Draw the map
 	App.draw(*tileMap);
