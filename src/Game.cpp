@@ -3,6 +3,9 @@
 void Game::endTurn() {
 	(playerTurnIdx == 1) ? playerTurnIdx = 2 : playerTurnIdx = 1;
 	selectedCharacter = characters.end();
+	for (auto &character: characters) {
+		character.resetActionPoints();
+	}
 }
 
 bool Game::addCharacter(sf::Vector2u position, unsigned int team) {
