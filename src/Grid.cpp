@@ -13,7 +13,7 @@ const Tile Grid::operator()(sf::Vector2i loc) const {
 }
 
 const Tile Grid::operator()(unsigned x, unsigned y) const {
-	if (x >= width || y >= height) {
+	if (x >= width || y >= getHeight()) {
 		return Tile(black, wall);
 	} else {
 		return grid[y*width + x];
@@ -51,6 +51,10 @@ Grid::iterator Grid::begin() {
 
 Grid::iterator Grid::end() {
 	return grid.end();
+}
+
+void Grid::setWidth(unsigned n) {
+	width = n;
 }
 
 std::ostream& operator<<(std::ostream& out, const Grid g) {

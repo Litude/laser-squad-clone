@@ -10,15 +10,18 @@ public:
 	typedef std::vector<Tile>::const_iterator const_iterator;
 	typedef std::vector<Tile>::iterator iterator;
 
+	//Width must be manually set when using this constructor
 	Grid() { }
 
-	Grid(unsigned size, unsigned width) : width(width), height(size/width), grid(size, Tile()) { }
+	Grid(unsigned width) : width(width) { }
+
+	Grid(unsigned size, unsigned width) : width(width), grid(size, Tile()) { }
 
 	Grid(std::vector<Tile> grid, unsigned width) : width(width), grid(grid) { }
 
 	unsigned getSize() const { return grid.size(); }
 	unsigned getWidth() const { return width; }
-	unsigned getHeight() const { return height; }
+	unsigned getHeight() const { return grid.size()/width; }
 
 	const Tile operator()(int x, int y) const;
 	const Tile operator()(sf::Vector2i loc) const;
@@ -33,10 +36,10 @@ public:
 	iterator end();
 
 	bool addTile( Tile t );
+	void setWidth(unsigned n);
 
 private:
 	unsigned width;
-	unsigned height;
 	std::vector<Tile> grid;
 };
 
