@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 #include "Game.hpp"
-#include "Map.hpp"
+#include "Grid.hpp"
 #include "MainMenuScreen.hpp"
 #include "GameScreen.hpp"
 #include "NgMenuScreen.hpp"
