@@ -32,6 +32,29 @@ void GameCharacter::moveDown() {
 	moving = true;
 }
 
+void GameCharacter::moveTo(sf::Vector2i target_dir) {
+	switch(target_dir.x) {
+		case 1:
+			moveRight();
+			break;
+		case -1:
+			moveLeft();
+			break;
+		default:
+			switch(target_dir.y) {
+				case 1:
+					moveDown();
+					break;
+				case -1:
+					moveUp();
+					break;
+				default:
+					break;
+			}
+			break;
+	}
+}
+
 void GameCharacter::move(int delta_ms) {
 	moveFactor += static_cast<float>(delta_ms) / static_cast<float>(moveSpeed);
 	animationTime += delta_ms;

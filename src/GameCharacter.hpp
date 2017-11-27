@@ -28,6 +28,7 @@ public:
 	void			moveRight();
 	void			moveUp();
 	void			moveDown();
+	void			moveTo(sf::Vector2i target_dir);
 	void			move(int delta_ms);
 
 private:
