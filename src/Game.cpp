@@ -26,22 +26,22 @@ bool Game::characterMove(std::vector<GameCharacter>::iterator it, sf::Vector2i d
 	}
 }
 
-void Game::characterMoveLeft(std::vector<GameCharacter>::iterator it) {
+bool Game::characterMoveLeft(std::vector<GameCharacter>::iterator it) {
 	sf::Vector2i dir(-1, 0);
-	characterMove(it, dir);
+	return characterMove(it, dir);
 }
 
-void Game::characterMoveRight(std::vector<GameCharacter>::iterator it) {
+bool Game::characterMoveRight(std::vector<GameCharacter>::iterator it) {
 	sf::Vector2i dir(1, 0);
-	characterMove(it, dir);
+	return characterMove(it, dir);
 }
 
-void Game::characterMoveUp(std::vector<GameCharacter>::iterator it) {
+bool Game::characterMoveUp(std::vector<GameCharacter>::iterator it) {
 	sf::Vector2i dir(0, -1);
-	characterMove(it, dir);
+	return characterMove(it, dir);
 }
 
-void Game::characterMoveDown(std::vector<GameCharacter>::iterator it) {
+bool Game::characterMoveDown(std::vector<GameCharacter>::iterator it) {
 	sf::Vector2i dir(0, 1);
-	characterMove(it, dir);
+	return characterMove(it, dir);
 }

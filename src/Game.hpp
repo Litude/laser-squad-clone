@@ -18,10 +18,10 @@ public:
 	void									setSelectedCharacter(std::vector<GameCharacter>::iterator it) { selectedCharacter = it; }
 	void									initializeGrid(unsigned int xSize, unsigned int ySize) {grid = Grid(xSize*ySize, xSize);}
 	std::vector<GameCharacter>&				getCharacters() { return characters; }
-	void									characterMoveLeft(std::vector<GameCharacter>::iterator it);
-	void									characterMoveRight(std::vector<GameCharacter>::iterator it);
-	void									characterMoveUp(std::vector<GameCharacter>::iterator it);
-	void									characterMoveDown(std::vector<GameCharacter>::iterator it);
+	bool									characterMoveLeft(std::vector<GameCharacter>::iterator it);
+	bool									characterMoveRight(std::vector<GameCharacter>::iterator it);
+	bool									characterMoveUp(std::vector<GameCharacter>::iterator it);
+	bool									characterMoveDown(std::vector<GameCharacter>::iterator it);
 	bool                                    characterMove(std::vector<GameCharacter>::iterator it, sf::Vector2i direction);
 
 private:
