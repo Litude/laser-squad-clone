@@ -17,7 +17,7 @@ bool Game::addCharacter(sf::Vector2u position, unsigned int team) {
 
 void Game::characterMoveLeft(std::vector<GameCharacter>::iterator it) {
 	if (it->getPosition().x > 0) {
-		if (getMap().getTile((it->getPosition().x) - 1, it->getPosition().y).isSolid() == true) return; //check for solid block
+		if (getGrid().getTile((it->getPosition().x) - 1, it->getPosition().y).isSolid() == true) return; //check for solid block
 
 		for (auto character : characters) {
 			if (character.getPosition() == sf::Vector2u(it->getPosition().x - 1, it->getPosition().y)) {
@@ -29,8 +29,8 @@ void Game::characterMoveLeft(std::vector<GameCharacter>::iterator it) {
 }
 
 void Game::characterMoveRight(std::vector<GameCharacter>::iterator it) {
-	if (it->getPosition().x < (getMap().getTileMap().at(0).size() - 1)) {
-		if (getMap().getTile((it->getPosition().x) + 1, it->getPosition().y).isSolid() == true) return; //check for solid block
+	if (it->getPosition().x < (getGrid().getWidth() - 1)) {
+		if (getGrid().getTile((it->getPosition().x) + 1, it->getPosition().y).isSolid() == true) return; //check for solid block
 
 		for (auto character : characters) {
 			if (character.getPosition() == sf::Vector2u(it->getPosition().x + 1, it->getPosition().y)) {
@@ -43,7 +43,7 @@ void Game::characterMoveRight(std::vector<GameCharacter>::iterator it) {
 
 void Game::characterMoveUp(std::vector<GameCharacter>::iterator it) {
 	if (it->getPosition().y > 0) {
-		if (getMap().getTile(it->getPosition().x, (it->getPosition().y) - 1).isSolid() == true) return; //check for solid block
+		if (getGrid().getTile(it->getPosition().x, (it->getPosition().y) - 1).isSolid() == true) return; //check for solid block
 
 		for (auto character : characters) {
 			if (character.getPosition() == sf::Vector2u(it->getPosition().x, it->getPosition().y - 1)) {
@@ -55,8 +55,8 @@ void Game::characterMoveUp(std::vector<GameCharacter>::iterator it) {
 }
 
 void Game::characterMoveDown(std::vector<GameCharacter>::iterator it) {
-	if (it->getPosition().y < (getMap().getTileMap().at(0).size() - 1) * TILESIZE) {
-		if (getMap().getTile(it->getPosition().x, (it->getPosition().y) + 1).isSolid() == true) return; //check for solid block
+	if (it->getPosition().y < (getGrid().getWidth() - 1) * TILESIZE) {
+		if (getGrid().getTile(it->getPosition().x, (it->getPosition().y) + 1).isSolid() == true) return; //check for solid block
 
 		for (auto character : characters) {
 			if (character.getPosition() == sf::Vector2u(it->getPosition().x, it->getPosition().y + 1)) {
