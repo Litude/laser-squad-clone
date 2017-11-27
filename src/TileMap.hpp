@@ -6,7 +6,7 @@ class TileMap : public sf::Drawable, public sf::Transformable
 public:
 	TileMap(Map &map);
 	bool load(const std::string& tileset_ground, const std::string& tileset_block, sf::Vector2u tileSize);
-	void TileMap::updateTile(sf::Vector2u tilePosition);
+	void updateTile(sf::Vector2u tilePosition);
 private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	void setGroundTile(Tile tile, sf::Vector2u tilePosition);
