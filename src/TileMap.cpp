@@ -1,7 +1,7 @@
 #include "TileMap.hpp"
 
-TileMap::TileMap(Map &map) :
-	m_map(map)
+TileMap::TileMap(Grid &grid) :
+	m_grid(grid)
 {
 }
 
@@ -17,30 +17,30 @@ bool TileMap::load(const std::string& tileset_ground, const std::string& tileset
 	if (!m_tileset_block.loadFromFile(tileset_block))
 		return false;
 
-	// Resize the ground vertex array to fit the map size
+	// Resize the ground vertex array to fit the grid size
 	m_vertices_ground.setPrimitiveType(sf::Quads);
-	m_vertices_ground.resize(m_map.getSizeX() * m_map.getSizeY() * 4);
+	m_vertices_ground.resize(m_grid.getSize() * 4);
 
 	// Populate the ground vertex array, with one quad per tile
-	for (unsigned int i = 0; i < m_map.getSizeX(); ++i)
+	for (unsigned int i = 0; i < m_grid.getWidth(); ++i)
 	{
-		for (unsigned int j = 0; j < m_map.getSizeY(); ++j)
+		for (unsigned int j = 0; j < m_grid.getHeight(); ++j)
 		{
-			Tile tile = m_map.getTile(i, j);
+			Tile tile = m_grid.getTile(i, j);
 			setGroundTile(tile, sf::Vector2u(i, j));
 		}
 	}
 
-	// Resize the block vertex array to fit the map size
+	// Resize the block vertex array to fit the grid size
 	m_vertices_block.setPrimitiveType(sf::Quads);
-	m_vertices_block.resize(m_map.getSizeX() * m_map.getSizeY() * 4);
+	m_vertices_block.resize(m_grid.getSize() * 4);
 
 	// Populate the block vertex array, with one quad per tile
-	for (unsigned int i = 0; i < m_map.getSizeX(); ++i)
+	for (unsigned int i = 0; i < m_grid.getWidth(); ++i)
 	{
-		for (unsigned int j = 0; j < m_map.getSizeY(); ++j)
+		for (unsigned int j = 0; j < m_grid.getHeight(); ++j)
 		{
-			Tile tile = m_map.getTile(i, j);
+			Tile tile = m_grid.getTile(i, j);
 			setBlockTile(tile, sf::Vector2u(i, j));
 		}
 	}
@@ -49,7 +49,7 @@ bool TileMap::load(const std::string& tileset_ground, const std::string& tileset
 
 void TileMap::updateTile(sf::Vector2u tilePosition)
 {
-	Tile tile = m_map.getTile(tilePosition.x, tilePosition.y);
+	Tile tile = m_grid.getTile(tilePosition.x, tilePosition.y);
 	// Update both vertex arrays
 	setGroundTile(tile, tilePosition);
 	setBlockTile(tile, tilePosition);
@@ -68,7 +68,7 @@ void TileMap::setGroundTile(Tile tile, sf::Vector2u tilePosition)
 	int tv = tileNumber / (m_tileset_ground.getSize().x / m_tileSize.x);
 
 	// Get a pointer to the current tile's quad
-	sf::Vertex* quad = &m_vertices_ground[(i + j * m_map.getSizeX()) * 4];
+	sf::Vertex* quad = &m_vertices_ground[(i + j * m_grid.getWidth()) * 4];
 
 	// Define tile's 4 corners
 	quad[0].position = sf::Vector2f(i * m_tileSize.x, j * m_tileSize.y);
@@ -94,10 +94,10 @@ void TileMap::setBlockTile(Tile tile, sf::Vector2u tilePosition)
 
 	// Special case for wall blocks
 	if (tile.getBlock() == TileBlock::wall) {
-		bool up = j > 0 ? m_map.getTile(i, j - 1).getBlock() == TileBlock::wall : false;
-		bool down = j < m_map.getSizeY() - 1 ? m_map.getTile(i, j + 1).getBlock() == TileBlock::wall : false;
-		bool left = i > 0 ? m_map.getTile(i - 1, j).getBlock() == TileBlock::wall : false;
-		bool right = i < m_map.getSizeX() - 1 ? m_map.getTile(i + 1, j).getBlock() == TileBlock::wall: false;
+		bool up = j > 0 ? m_grid.getTile(i, j - 1).getBlock() == TileBlock::wall : false;
+		bool down = j < m_grid.getHeight() - 1 ? m_grid.getTile(i, j + 1).getBlock() == TileBlock::wall : false;
+		bool left = i > 0 ? m_grid.getTile(i - 1, j).getBlock() == TileBlock::wall : false;
+		bool right = i < m_grid.getWidth() - 1 ? m_grid.getTile(i + 1, j).getBlock() == TileBlock::wall: false;
 
 		if (up && down && left && right) {
 			tileNumber_y = WallParts::all_sides;
@@ -136,7 +136,7 @@ void TileMap::setBlockTile(Tile tile, sf::Vector2u tilePosition)
 	int tv = tileNumber_y % (m_tileset_block.getSize().y / m_tileSize.y);
 
 	// Get a pointer to the current tile's quad
-	sf::Vertex* quad = &m_vertices_block[(i + j * m_map.getSizeX()) * 4];
+	sf::Vertex* quad = &m_vertices_block[(i + j * m_grid.getWidth()) * 4];
 
 	// Define tile's 4 corners
 	quad[0].position = sf::Vector2f(i * m_tileSize.x, j * m_tileSize.y);
