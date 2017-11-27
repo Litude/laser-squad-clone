@@ -17,30 +17,19 @@ bool TileMap::load(const std::string& tileset_ground, const std::string& tileset
 	if (!m_tileset_block.loadFromFile(tileset_block))
 		return false;
 
-	// Resize the ground vertex array to fit the grid size
+	// Resize the ground and block vertex arrays to fit the grid size
 	m_vertices_ground.setPrimitiveType(sf::Quads);
 	m_vertices_ground.resize(m_grid.getSize() * 4);
+	m_vertices_block.setPrimitiveType(sf::Quads);
+	m_vertices_block.resize(m_grid.getSize() * 4);
 
-	// Populate the ground vertex array, with one quad per tile
+	// Populate the ground and block vertex arrays, with one quad per tile
 	for (unsigned int i = 0; i < m_grid.getWidth(); ++i)
 	{
 		for (unsigned int j = 0; j < m_grid.getHeight(); ++j)
 		{
 			Tile tile = m_grid.getTile(i, j);
 			setGroundTile(tile, sf::Vector2u(i, j));
-		}
-	}
-
-	// Resize the block vertex array to fit the grid size
-	m_vertices_block.setPrimitiveType(sf::Quads);
-	m_vertices_block.resize(m_grid.getSize() * 4);
-
-	// Populate the block vertex array, with one quad per tile
-	for (unsigned int i = 0; i < m_grid.getWidth(); ++i)
-	{
-		for (unsigned int j = 0; j < m_grid.getHeight(); ++j)
-		{
-			Tile tile = m_grid.getTile(i, j);
 			setBlockTile(tile, sf::Vector2u(i, j));
 		}
 	}
