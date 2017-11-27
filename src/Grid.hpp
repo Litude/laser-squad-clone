@@ -2,6 +2,7 @@
 #define GRID_H
 
 #include <vector>
+#include <SFML/System/Vector2.hpp>
 #include "Tile.hpp"
 
 class Grid {
@@ -11,15 +12,17 @@ public:
 
 	Grid() { }
 
-	Grid(unsigned size, unsigned width) : width(width), grid(size, Tile()) { }
+	Grid(unsigned size, unsigned width) : width(width), height(size/width), grid(size, Tile()) { }
 
 	Grid(std::vector<Tile> grid, unsigned width) : width(width), grid(grid) { }
 
 	unsigned getSize() const { return grid.size(); }
 	unsigned getWidth() const { return width; }
-	unsigned getHeight() const { return grid.size() / width; }
+	unsigned getHeight() const { return height; }
 
-	const Tile& operator()(unsigned x, unsigned y) const;
+	const Tile operator()(int x, int y) const;
+	const Tile operator()(sf::Vector2i loc) const;
+	const Tile operator()(unsigned x, unsigned y) const;
 	Tile& operator()(unsigned x, unsigned y);
 	Tile& getTile(unsigned x, unsigned y);
 	Tile& operator[](unsigned n);
@@ -33,6 +36,7 @@ public:
 
 private:
 	unsigned width;
+	unsigned height;
 	std::vector<Tile> grid;
 };
 
