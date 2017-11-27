@@ -4,7 +4,7 @@ NgMenuScreen::NgMenuScreen(void)
 {
 }
 
-int NgMenuScreen::Run(sf::RenderWindow & App) {
+ScreenResult NgMenuScreen::Run(sf::RenderWindow & App) {
 	sf::Event Event;
 	sf::Texture Texture;
 	sf::Sprite Sprite;
@@ -25,14 +25,14 @@ int NgMenuScreen::Run(sf::RenderWindow & App) {
 	if (!Texture.loadFromFile("img/newgamemenu.png"))
 	{
 		std::cerr << "Error loading newgamemenu.png" << std::endl;
-		return (-1);
+		return ScreenResult::Exit;
 	}
 	Sprite.setTexture(Texture);
 
 	if (!Font.loadFromFile("font/ARIALN.TTF"))
 	{
 		std::cerr << "Error loading ARIALN.TTF" << std::endl;
-		return (-1);
+		return ScreenResult::Exit;
 	}
 	Menu1.setFont(Font);
 	Menu1.setCharacterSize(20);
@@ -50,7 +50,7 @@ int NgMenuScreen::Run(sf::RenderWindow & App) {
 		{
 			if (Event.type == sf::Event::Closed)
 			{
-				return (-1);
+				return ScreenResult::Exit;
 			}
 			if (Event.type == sf::Event::KeyPressed)
 			{
@@ -65,9 +65,9 @@ int NgMenuScreen::Run(sf::RenderWindow & App) {
 				case sf::Keyboard::Return:
 					if (menu == 0)
 					{
-						return (1); //New game
+						return ScreenResult::GameScene; //New game
 					} else {
-						return (0); // Back to main menu
+						return ScreenResult::MainMenuScene; // Back to main menu
 					}
 					break;
 				default:
@@ -99,5 +99,5 @@ int NgMenuScreen::Run(sf::RenderWindow & App) {
 		App.display();
 	}
 
-	return (-1);
+	return ScreenResult::Exit;
 }

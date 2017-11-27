@@ -12,7 +12,7 @@ class GameScreen : public Screen
 {
 public:
 	GameScreen(sf::RenderWindow &App);
-	virtual int Run(sf::RenderWindow &App);
+	virtual ScreenResult Run(sf::RenderWindow &App);
 private:
 	void DrawGame(sf::RenderWindow &App);
 	void DrawUI(sf::RenderWindow &App);

@@ -4,11 +4,15 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
+enum ScreenResult {
+	MainMenuScene, NewGameScene, GameScene, Exit
+};
+
 class Screen
 {
 public:
 	Screen(void);
-	virtual int Run(sf::RenderWindow &App);
+	virtual ScreenResult Run(sf::RenderWindow &App);
 private:
 };
 

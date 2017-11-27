@@ -90,7 +90,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	}
 }
 
-int GameScreen::Run(sf::RenderWindow & App)
+ScreenResult GameScreen::Run(sf::RenderWindow & App)
 {
 	sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
 	while (App.isOpen()) {
@@ -98,7 +98,7 @@ int GameScreen::Run(sf::RenderWindow & App)
 		while (App.pollEvent(Event)) {
 			if (Event.type == sf::Event::Closed) {
 				App.close();
-				return -1;
+				return ScreenResult::Exit;
 			}
 			//Handle keyboard input
 			if (Event.type == sf::Event::KeyPressed) {
@@ -194,7 +194,7 @@ int GameScreen::Run(sf::RenderWindow & App)
 
 		App.display();
 	}
-	return 0;
+	return ScreenResult::MainMenuScene;
 }
 
 void GameScreen::DrawGame(sf::RenderWindow &App) {
