@@ -2,6 +2,7 @@
 #define LASER_GAME_HPP
 
 #include <vector>
+#include <algorithm>
 #include "GameCharacter.hpp"
 #include <SFML/System/Vector2.hpp>
 #include "Grid.hpp"
@@ -21,6 +22,7 @@ public:
 	void									characterMoveRight(std::vector<GameCharacter>::iterator it);
 	void									characterMoveUp(std::vector<GameCharacter>::iterator it);
 	void									characterMoveDown(std::vector<GameCharacter>::iterator it);
+	bool                                    characterMove(std::vector<GameCharacter>::iterator it, sf::Vector2i direction);
 
 private:
 	unsigned int							playerTurnIdx;

@@ -15,54 +15,33 @@ bool Game::addCharacter(sf::Vector2u position, unsigned int team) {
 	}
 }
 
-void Game::characterMoveLeft(std::vector<GameCharacter>::iterator it) {
-	if (it->getPosition().x > 0) {
-		if (getGrid().getTile((it->getPosition().x) - 1, it->getPosition().y).isSolid() == true) return; //check for solid block
-
-		for (auto character : characters) {
-			if (character.getPosition() == sf::Vector2u(it->getPosition().x - 1, it->getPosition().y)) {
-				return;
-			}
-		}
-		it->moveLeft();
+bool Game::characterMove(std::vector<GameCharacter>::iterator it, sf::Vector2i direction) {
+	sf::Vector2i target_pos = (sf::Vector2i) it->getPosition() + direction;
+	if (!getGrid()(target_pos).isSolid() && std::all_of(characters.begin(), characters.end(), 
+			[target_pos](GameCharacter gc){ return (sf::Vector2i) gc.getPosition() != target_pos; })) {
+		it->moveTo(direction);
+		return true;
+	} else {
+		return false;
 	}
+}
+
+void Game::characterMoveLeft(std::vector<GameCharacter>::iterator it) {
+	sf::Vector2i dir(-1, 0);
+	characterMove(it, dir);
 }
 
 void Game::characterMoveRight(std::vector<GameCharacter>::iterator it) {
-	if (it->getPosition().x < (getGrid().getWidth() - 1)) {
-		if (getGrid().getTile((it->getPosition().x) + 1, it->getPosition().y).isSolid() == true) return; //check for solid block
-
-		for (auto character : characters) {
-			if (character.getPosition() == sf::Vector2u(it->getPosition().x + 1, it->getPosition().y)) {
-				return;
-			}
-		}
-		it->moveRight();
-	}
+	sf::Vector2i dir(1, 0);
+	characterMove(it, dir);
 }
 
 void Game::characterMoveUp(std::vector<GameCharacter>::iterator it) {
-	if (it->getPosition().y > 0) {
-		if (getGrid().getTile(it->getPosition().x, (it->getPosition().y) - 1).isSolid() == true) return; //check for solid block
-
-		for (auto character : characters) {
-			if (character.getPosition() == sf::Vector2u(it->getPosition().x, it->getPosition().y - 1)) {
-				return;
-			}
-		}
-		it->moveUp();
-	}
+	sf::Vector2i dir(0, -1);
+	characterMove(it, dir);
 }
 
 void Game::characterMoveDown(std::vector<GameCharacter>::iterator it) {
-	if (it->getPosition().y < (getGrid().getWidth() - 1) * TILESIZE) {
-		if (getGrid().getTile(it->getPosition().x, (it->getPosition().y) + 1).isSolid() == true) return; //check for solid block
-
-		for (auto character : characters) {
-			if (character.getPosition() == sf::Vector2u(it->getPosition().x, it->getPosition().y + 1)) {
-				return;
-			}
-		}
-		it->moveDown();
-	}
+	sf::Vector2i dir(0, 1);
+	characterMove(it, dir);
 }
