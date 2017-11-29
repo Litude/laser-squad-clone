@@ -1,6 +1,6 @@
 Source code, makefiles, etc. here.
 
-To compile:
+##To compile:
 
 In Visual Studio:
 
@@ -8,4 +8,7 @@ In Visual Studio:
 2. Choose either x64-Release of x64-Debug as configuration
 3. Compile from the CMake menu
 
-If Visual Studio complains about not finding SFML, open CMakeLists.txt and change set(CMAKE_PREFIX_PATH xxx) to SFML folder.
+##Tests
+This project uses Google Tests framework for unit testing.
+Add variable 'test' and set it ON when building cmake `cmake -Dtest=ON` to build unit tests.
+This creates unit test executable called "LaserSquad_UnitTests" that can be run.
