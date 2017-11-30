@@ -28,5 +28,5 @@ void main()
 				2.0 * col3 + 4.0 * col4 + 2.0 * col5 +
 				1.0 * col6 + 2.0 * col7 + 1.0 * col8) / 16.0;
 	vec4 final = gl_Color * sum;
-	gl_FragColor = vec4(final.x, final.y, final.z, min(1-final.w, 0.5));
+	gl_FragColor = vec4(final.x, final.y, final.z, min(1.0-final.w, 0.5));
 }
