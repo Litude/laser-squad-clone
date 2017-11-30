@@ -52,7 +52,8 @@ bool Game::characterMoveDown(std::vector<GameCharacter>::iterator it) {
 std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter>::iterator it){
     std::vector<std::pair<int, int>> block; //stores unseen coordinates
     int length=8; //size of seen area. Just a random number at the moment. Maybe could be placed to private of game class
-    int x,y; //for help
+    int x=1;
+    int y=1; //for help
     
     int positionX=it->getPosition().x;
     int positionY=it->getPosition().y;
@@ -66,8 +67,11 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
         for(int j=0;j<i+1;j++) {
             
             //basic seen area
+            if(x>0 && y>0) {
             x=positionX+j;
             y=positionY-i;
+            
+            
             
             pari=std::make_pair(x,y);
             area.push_back(pari);
@@ -85,8 +89,8 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
                 
                 for(i2=0;i2<length2;i2++) {
                     
-                    if(i2%2==0){
-                        k=k-1;
+                    if(i2%3==0){
+                       // k=k-1;
                     }
                     
                     for(j2=0;j2<i2+k;j2++) {
@@ -103,17 +107,17 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
             }
         }
     }
-    
-    
-    
+    }
     
     //Second area(x,y)(-,-)
     for(int i=0;i<length;i++) {
         for(int j=0;j<i+1;j++) {
             
             //basic seen area
-            x=positionX-j;
-            y=positionY-i;
+            if(x>0 && y>0){
+                x=positionX-j;
+                y=positionY-i;
+            
             
             pari=std::make_pair(x,y);
             area.push_back(pari);
@@ -130,8 +134,8 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
                 int k=2;
                 for(i2=0;i2<length2;i2++) {
                     
-                    if(i2%2==0){
-                        k=k-1;
+                    if(i2%3==0){
+                       // k=k-1;
                     }
                     
                     for(j2=0;j2<i2+k;j2++) {
@@ -147,6 +151,7 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
             }
             
         }
+    }
     }
     
     //Third area(x,y)(+,+)
@@ -154,6 +159,7 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
         for(int j=0;j<i+1;j++) {
             
             //basic seen area
+            if(x>0 && y>0){
             x=positionX+j;
             y=positionY+i;
             
@@ -172,8 +178,8 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
                 int k=2;
                 for(i2=0;i2<length2;i2++) {
                     
-                    if(i2%2==0){
-                        k=k-1;
+                    if(i2%3==0){
+                        //k=k-1;
                     }
                     
                     for(j2=0;j2<i2+k;j2++) {
@@ -190,12 +196,14 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
             
         }
     }
+    }
     
     //Fourth area (x,y)(-,+)
     for(int i=0;i<length;i++) {
         for(int j=0;j<i+1;j++) {
             
             //basic seen area
+            if(x>0 && y>0){
             x=positionX-j;
             y=positionY+i;
             
@@ -210,12 +218,12 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
                 int i2,j2;
                 
                 int length2=length-(y-positionY);
-                
+        
                 int k=2;
                 for(i2=0;i2<length2;i2++) {
                     
-                    if(i2%2==0){
-                        k=k-1;
+                    if(i2%3==0){
+                        //k=k-1;
                     }
                     
                     for(j2=0;j2<i2+k;j2++) {
@@ -232,12 +240,14 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
             
         }
     }
+    }
     
     //Fifth area (y,x)(-,-)
     for(int i=0;i<length;i++) {
         for(int j=0;j<i+1;j++) {
             
             //basic seen area
+            if(x>0 && y>0){
             y=positionX-j;
             x=positionY-i;
             
@@ -251,14 +261,14 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
                 
                 int i2,j2;
                 
-                int length2=length-(positionX-x)-1;
+                int length2=length-(positionX-x);
                 
                 int k=2;
                 
                 for(i2=0;i2<length2;i2++) {
                     
-                    if(i2%2==0){
-                        k=k-1;
+                    if(i2%3==0){
+                        //k=k-1;
                     }
                     
                     for(j2=0;j2<i2+k;j2++) {
@@ -276,6 +286,7 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
             }
             
         }
+    }
     }
     
     //Sixth area (y,x)(+,-)
@@ -283,8 +294,10 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
         for(int j=0;j<i+1;j++) {
             
             //basic seen area
+            if(x>0 && y>0){
             y=positionX+j;
             x=positionY-i;
+            
             
             pari=std::make_pair(x,y);
             area.push_back(pari);
@@ -296,13 +309,13 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
                 
                 int i2,j2;
                 
-                int length2=length-(positionX-x)-1;
+                int length2=length-(positionX-x);
                 
                 int k=2;
                 for(i2=0;i2<length2;i2++) {
                     
-                    if(i2%2==0){
-                        k=k-1;
+                    if(i2%3==0){
+                        //k=k-1;
                     }
                     
                     for(j2=0;j2<i2+k;j2++) {
@@ -319,12 +332,14 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
             
         }
     }
+    }
     
     //Seventh area (y,x)(-,+)
     for(int i=0;i<length;i++) {
         for(int j=0;j<i+1;j++) {
             
             //basic seen area
+            if(x>0 && y>0){
             y=positionX-j;
             x=positionY+i;
             
@@ -337,16 +352,16 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
                 int y2;
                 
                 int i2,j2;
-                std::cout << "seventh" << std::endl;
+                
                 int length2=length-(x-positionX);
                 
                 
                 int k=2;
-                std::cout << "fifth" << std::endl;
+                
                 for(i2=0;i2<length2;i2++) {
                     
-                    if(i2%2==0){
-                        k=k-1;
+                    if(i2%3==0){
+                        //k=k-1;
                     }
                     
                     for(j2=0;j2<i2+k;j2++) {
@@ -365,12 +380,14 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
             
         }
     }
+    }
     
     //Eight area (y,x)(+,+)
     for(int i=0;i<length;i++) {
         for(int j=0;j<i+1;j++) {
             
             //basic seen area
+            if(x>0 && y>0){
             y=positionX+j;
             x=positionY+i;
             
@@ -388,18 +405,16 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
                 
                 int k=2;
                 
-                
                 for(i2=0;i2<length2;i2++) {
                     
                     if(i2%2==0){
-                        k=k-1;
+                        //k=k-1;
                     }
                     
                     for(j2=0;j2<i2+k;j2++) {
                         
                         y2=y+j2;
                         x2=x+1+i2;
-                        
                         
                         std::pair<int, int> pari2;
                         pari2=std::make_pair(x2,y2);
@@ -409,6 +424,7 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
             }
             
         }
+    }
     }
     
     
