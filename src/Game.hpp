@@ -9,9 +9,11 @@
 
 class Game {
 public:
+	typedef std::vector<GameCharacter>::iterator gc_iterator;
 	Game()									{ playerTurnIdx = 1; }
 	unsigned int							getCurrentPlayer() { return playerTurnIdx; }
 	std::vector<GameCharacter>::iterator	getSelectedCharacter() { return selectedCharacter; }
+	const Grid&								getGrid() const { return grid; }
 	Grid&									getGrid() { return grid; }
 	void									endTurn();
 	bool									addCharacter(sf::Vector2u position, unsigned int team);

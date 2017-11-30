@@ -15,7 +15,7 @@ bool Game::addCharacter(sf::Vector2u position, unsigned int team) {
 	}
 }
 
-bool Game::characterMove(std::vector<GameCharacter>::iterator it, sf::Vector2i direction) {
+bool Game::characterMove(gc_iterator it, sf::Vector2i direction) {
 	sf::Vector2i target_pos = (sf::Vector2i) it->getPosition() + direction;
 	if (!getGrid()(target_pos).isSolid() && std::all_of(characters.begin(), characters.end(), 
 			[target_pos](GameCharacter gc){ return (sf::Vector2i) gc.getPosition() != target_pos; })) {
@@ -26,22 +26,22 @@ bool Game::characterMove(std::vector<GameCharacter>::iterator it, sf::Vector2i d
 	}
 }
 
-bool Game::characterMoveLeft(std::vector<GameCharacter>::iterator it) {
+bool Game::characterMoveLeft(gc_iterator it) {
 	sf::Vector2i dir(-1, 0);
 	return characterMove(it, dir);
 }
 
-bool Game::characterMoveRight(std::vector<GameCharacter>::iterator it) {
+bool Game::characterMoveRight(gc_iterator it) {
 	sf::Vector2i dir(1, 0);
 	return characterMove(it, dir);
 }
 
-bool Game::characterMoveUp(std::vector<GameCharacter>::iterator it) {
+bool Game::characterMoveUp(gc_iterator it) {
 	sf::Vector2i dir(0, -1);
 	return characterMove(it, dir);
 }
 
-bool Game::characterMoveDown(std::vector<GameCharacter>::iterator it) {
+bool Game::characterMoveDown(gc_iterator it) {
 	sf::Vector2i dir(0, 1);
 	return characterMove(it, dir);
 }
