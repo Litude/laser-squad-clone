@@ -6,9 +6,9 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
-enum TileGround { dirt, grass, wood, stone, metal, black };
+enum TileGround { black = 0, dirt = 1, grass = 2, wood = 3, stone = 4, metal = 5 };
 
-enum TileBlock { air, wall, tree, bush };
+enum TileBlock { air = 0, wall = 1, tree = 2, bush = 3 };
 
 class Tile {
 public:
