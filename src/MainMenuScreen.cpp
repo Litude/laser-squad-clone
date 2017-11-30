@@ -4,7 +4,7 @@ MainMenuScreen::MainMenuScreen(void)
 {
 }
 
-int MainMenuScreen::Run(sf::RenderWindow & App)
+ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 {
 	sf::Event Event;
 	sf::Texture Texture;
@@ -26,14 +26,14 @@ int MainMenuScreen::Run(sf::RenderWindow & App)
 	if (!Texture.loadFromFile("img/mainmenu.png"))
 	{
 		std::cerr << "Error loading mainmenu.png" << std::endl;
-		return (-1);
+		return ScreenResult::Exit;
 	}
 	Sprite.setTexture(Texture);
 
 	if (!Font.loadFromFile("font/ARIALN.TTF"))
 	{
 		std::cerr << "Error loading ARIALN.TTF" << std::endl;
-		return (-1);
+		return ScreenResult::Exit;
 	}
 	Menu1.setFont(Font);
 	Menu1.setCharacterSize(20);
@@ -56,7 +56,7 @@ int MainMenuScreen::Run(sf::RenderWindow & App)
 		{
 			if (Event.type == sf::Event::Closed)
 			{
-				return (-1);
+				return ScreenResult::Exit;
 			}
 			if (Event.type == sf::Event::KeyPressed)
 			{
@@ -71,13 +71,13 @@ int MainMenuScreen::Run(sf::RenderWindow & App)
 				case sf::Keyboard::Return:
 					if (menu == 0)
 					{
-						return (2); //New game
+						return ScreenResult::NewGameScene; //New game
 					} else if(menu == 1) {
-						return (-1); // TO DO: Map editor screen
+						return ScreenResult::Exit; // TO DO: Map editor screen
 					}
 					else if(menu == 2)
 					{
-						return (-1); //Exit game
+						return ScreenResult::Exit; //Exit game
 					}
 					break;
 				default:
@@ -121,5 +121,5 @@ int MainMenuScreen::Run(sf::RenderWindow & App)
 		App.display();
 	}
 
-	return (-1);
+	return ScreenResult::Exit;
 }

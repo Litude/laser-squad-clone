@@ -12,7 +12,7 @@ class GameScreen : public Screen
 {
 public:
 	GameScreen(sf::RenderWindow &App);
-	virtual int Run(sf::RenderWindow &App);
+	virtual ScreenResult Run(sf::RenderWindow &App);
 private:
 	void DrawGame(sf::RenderWindow &App);
 	void DrawUI(sf::RenderWindow &App);
@@ -26,12 +26,12 @@ private:
 	sf::View gameView;
 	sf::View interfaceView;
 	sf::RectangleShape interfaceBkg;
-	//sf::FloatRect buttonEndTurn { sf::Vector2f(100, 100), sf::Vector2f(100, 80)};
 	sf::RectangleShape buttonEndTurn{ sf::Vector2f(100, 80) };
 	sf::RectangleShape selectedCharacter;
 	sf::Text textCurTurn;
 	sf::Text textEndTurn;
 	sf::Text textFPS;
+	sf::Text textAP;
 	std::vector<sf::Sprite> mapTiles;
 	sf::Clock fpsclock;
 	sf::Clock clock;

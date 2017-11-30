@@ -4,49 +4,69 @@
 const int animationFrameTime = 125000; // animation frame time in ms
 const int moveSpeed = 500000; // time it takes in ms to move from one tile to another
 
-void GameCharacter::moveLeft() {
-	previousPosition = currentPosition;
-	currentPosition.x -= 1;
-	direction = left;
-	moving = true;
+bool GameCharacter::moveLeft() {
+	if (actionPoints > 0) {
+		--actionPoints;
+		previousPosition = currentPosition;
+		currentPosition.x -= 1;
+		direction = left;
+		moving = true;
+		return true;
+	}
+	return false;
 }
 
-void GameCharacter::moveRight() {
-	previousPosition = currentPosition;
-	currentPosition.x += 1;
-	direction = right;
-	moving = true;
+bool GameCharacter::moveRight() {
+	if (actionPoints > 0) {
+		--actionPoints;
+		previousPosition = currentPosition;
+		currentPosition.x += 1;
+		direction = right;
+		moving = true;
+		return true;
+	}
+	return false;
 }
 
-void GameCharacter::moveUp() {
-	previousPosition = currentPosition;
-	currentPosition.y -= 1;
-	direction = up;
-	moving = true;
+bool GameCharacter::moveUp() {
+	if (actionPoints > 0) {
+		--actionPoints;
+		previousPosition = currentPosition;
+		currentPosition.y -= 1;
+		direction = up;
+		moving = true;
+		return true;
+	}
+	return false;
 }
 
-void GameCharacter::moveDown() {
-	previousPosition = currentPosition;
-	currentPosition.y += 1;
-	direction = down;
-	moving = true;
+bool GameCharacter::moveDown() {
+	if (actionPoints > 0) {
+		--actionPoints;
+		previousPosition = currentPosition;
+		currentPosition.y += 1;
+		direction = down;
+		moving = true;
+		return true;
+	}
+	return false;
 }
 
-void GameCharacter::moveTo(sf::Vector2i target_dir) {
+bool GameCharacter::moveTo(sf::Vector2i target_dir) {
 	switch(target_dir.x) {
 		case 1:
-			moveRight();
+			return moveRight();
 			break;
 		case -1:
-			moveLeft();
+			return moveLeft();
 			break;
 		default:
 			switch(target_dir.y) {
 				case 1:
-					moveDown();
+					return moveDown();
 					break;
 				case -1:
-					moveUp();
+					return moveUp();
 					break;
 				default:
 					break;

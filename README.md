@@ -1,21 +1,24 @@
-# Sample README file for C++ programming project
+# Laser Squad
 
-This is an initial git repository for your programming project.
-It contains an initial directory structure that we wish you could
-use as follows:
+C++ programming project that uses SFML library for rendering and user inputs.
 
-  * `plan/' -- Here is your project plan. You may use different sources,
-    but we hope to get the pan **also as pdf file**.
+| Directory| Description |
+| ------ | ------ |
+| `plan/`| Here is the project plan as a pdf file. |
+| `doc/` | Here are the documentation sources related to the project as a pdf file. |
+| `src/` | Here are the C++ source files and CMake project files. |
 
-  * `doc/` -- here are the documentation sources related to your project.
-    You may use different tools for documentation (e.g. latex),
-    but we hope to get the final version of the document
-    **also as pdf file**.
+## To compile:
+This project uses CMake to generate the build files. Make sure you have set SFML_ROOT variable in CMake to point to your local installation path of the SFML library.
+```
+cd laser-squad-2
+mkdir build
+cd build
+cmake ../src
+```
+After this you can compile and run the application depending whether you have Linux (MakeFile), Windows (Visual Studio) or Mac (Xcode).
+Compile the project 'LaserSquad' after running CMake and run.
 
-  * `src/` -- here are the C++ source files. You can have subfolders as needed.
-
-  * `README.md` -- This file that you should modify to represent
-    your project.
-
-You may also add other new directories as needed, for example
-for testing tools.
+## Unit tests
+This project uses Google Tests framework for unit testing. Add variable 'test' and set it ON when building with cmake `cmake -Dtest=ON` to build unit tests.
+This creates unit test project called "LaserSquad_UnitTests" that can be run after compiling.

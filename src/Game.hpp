@@ -25,7 +25,7 @@ public:
 	bool									characterMoveUp(std::vector<GameCharacter>::iterator it);
 	bool									characterMoveDown(std::vector<GameCharacter>::iterator it);
 	bool                                    characterMove(std::vector<GameCharacter>::iterator it, sf::Vector2i direction);
-
+    std::vector<std::pair<int, int>>        seenCoordinates(std::vector<GameCharacter>::iterator it);
 private:
 	unsigned int							playerTurnIdx;
 	std::vector<GameCharacter>::iterator	selectedCharacter;
