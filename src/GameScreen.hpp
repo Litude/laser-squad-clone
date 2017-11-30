@@ -39,6 +39,8 @@ private:
 	float currentTime = 0;
 	double timeStep = 16000;
 	double timeAccumulator = 0;
+	sf::RenderTexture* renderTexture;
+	sf::Shader* shader;
 
 	bool resized = true;
 };

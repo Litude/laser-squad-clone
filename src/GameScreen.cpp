@@ -69,15 +69,13 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	textCurTurn.setCharacterSize(12);
 	textEndTurn.setFont(*font);
 	textEndTurn.setString("End turn");
-	textAP.setFont(*font);
-	textAP.setCharacterSize(12);
 	buttonEndTurn.setFillColor(sf::Color::Magenta);
 
 	//Game drawing initialization
 	selectedCharacter = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
-	selectedCharacter.setOutlineColor(sf::Color::Yellow);
+	selectedCharacter.setOutlineColor(sf::Color::Black);
 	selectedCharacter.setOutlineThickness(2.0f);
-	selectedCharacter.setFillColor(sf::Color::Transparent);
+	selectedCharacter.setFillColor(sf::Color::Black);
 
 	texPlayer1 = std::make_shared<sf::Texture>(sf::Texture());
 	if (!texPlayer1->loadFromFile("img/character1_sheet.png")) {
@@ -87,6 +85,20 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	texPlayer2 = std::make_shared<sf::Texture>(sf::Texture());
 	if (!texPlayer2->loadFromFile("img/character2_sheet.png")) {
 		std::cout << "Could not load 'img/character2_sheet.png'\n";
+	}
+
+	// create a 500x500 render-texture
+	renderTexture = new sf::RenderTexture();
+	if (!renderTexture->create(gameView.getSize().x, gameView.getSize().y))
+	{
+		return;
+	}
+
+	shader = new sf::Shader();
+	// load only the fragment shader
+	if (!shader->loadFromFile("img/lineofsight_shader.frag", sf::Shader::Fragment))
+	{
+		// error...
 	}
 }
 
@@ -214,6 +226,25 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 	int x0 = std::max(static_cast<int>((gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2) / TILESIZE), 0);
 	int xmax = std::min(static_cast<int>(x0 + (App.getSize().x - MENUSIZE) / TILESIZE) + 1, static_cast<int>(game.getGrid().getWidth() - 1));
 
+	std::vector<sf::Vector2u> visibleTiles;
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		auto seen = game.seenCoordinates(game.getSelectedCharacter());
+		for (auto coord : seen) {
+			visibleTiles.push_back(sf::Vector2u(coord.first, coord.second));
+		}
+	}
+
+	renderTexture->clear(sf::Color(0, 0, 0, 0));
+	for (auto it = visibleTiles.begin(); it != visibleTiles.end(); ++it) {
+		selectedCharacter.setPosition(it->x * TILESIZE, it->y * TILESIZE);
+		//App.draw(selectedCharacter);
+		renderTexture->draw(selectedCharacter); // or any other drawable
+	}
+	renderTexture->display();
+
+	// get the target texture (where the stuff has been drawn)
+	const sf::Texture& texture = renderTexture->getTexture();
+
 	//Draw the map
 	App.draw(*tileMap);
 
@@ -236,6 +267,10 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 
 		App.draw(characterShape);
 	}
+
+	// Draw visible tiles
+	sf::Sprite sprite(texture);
+	App.draw(sprite, shader);
 
 }
 
@@ -262,18 +297,12 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		//Current turn text
 		textCurTurn.setPosition(App.getSize().x - MENUSIZE + 52, 50);
 
-		//AP text
-		textAP.setPosition(App.getSize().x - MENUSIZE + 52, 100);
-
 	}
 
 	//Interface elements that always need to be updated
 	textCurTurn.setString("Current turn: Player " + std::to_string(game.getCurrentPlayer()));
 
 	//TODO: Process selected character attributes here and draw them on the interface...
-	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		textAP.setString("Action points: " + std::to_string(game.getSelectedCharacter()->getActionPoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxActionPoints()));
-	}
 
 	currentTime = fpsclock.getElapsedTime().asMicroseconds() / 1000000.0f;
 	float fps = 1.f / (currentTime - lastTime);
@@ -283,12 +312,6 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 	//Draw elements
 	App.setView(interfaceView);
 	App.draw(interfaceBkg); //Must always be first since it covers the whole area and will hide anything "under" it
-
-	//Draw game character elements
-	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		App.draw(textAP);
-	}
-
 	App.draw(textFPS);
 	App.draw(buttonEndTurn);
 	App.draw(textCurTurn);

@@ -440,13 +440,16 @@ std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter
     area.resize( std::distance(area.begin(),iter2) );
     
     
-    //delete unseen coordinates
-    for(auto it=area.begin();it!=area.end();it++)   {
-        for(auto it2=block.begin();it2!=block.end();it2++) {
-            if(*it==*it2)   {
-                area.erase(it);
-            }
-        }
-    }
-    return area;
+	std::vector<std::pair<int, int>> finalarea;
+
+	//delete unseen coordinates
+	for (auto it = area.begin(); it != area.end(); it++) {
+		for (auto it2 = block.begin(); it2 != block.end(); it2++) {
+			if (*it != *it2) {
+				finalarea.push_back(*it);
+				//area.erase(it);
+			}
+		}
+	}
+	return finalarea;
 }
