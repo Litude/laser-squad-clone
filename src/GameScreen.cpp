@@ -102,7 +102,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	visibleTileShape = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
 	visibleTileShape.setOutlineColor(sf::Color::Black);
 	visibleTileShape.setOutlineThickness(2.0f);
-	visibleTileShape.setFillColor(sf::Color::Black);
+	visibleTileShape.setFillColor(sf::Color(150,150,150,255));
 
 	// Create shader for line of sight rendering
 	shader = new sf::Shader();
