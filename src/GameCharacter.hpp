@@ -28,6 +28,7 @@ public:
 	bool			moveTo(sf::Vector2i target_dir);
 	void			move(int delta_ms);
 	void			resetActionPoints() { actionPoints = maxActionPoints; }
+    unsigned int    getLengthofSight() const {return lengthofSight;}
 
 private:
 	bool			moveLeft();
@@ -50,6 +51,7 @@ private:
 	unsigned int health;
 	unsigned int currentItem;
 	unsigned int team;
+    unsigned int lengthofSight=10;
 };
 
 #endif

@@ -104,3 +104,4 @@ sf::Vector2u GameCharacter::getRenderPosition() const
 	}
 	return renderPosition;
 }
+

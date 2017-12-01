@@ -7,6 +7,7 @@
 #include <SFML/System/Vector2.hpp>
 #include "Grid.hpp"
 
+
 class Game {
 public:
 	Game()									{ playerTurnIdx = 1; }
@@ -23,7 +24,8 @@ public:
 	bool									characterMoveUp(std::vector<GameCharacter>::iterator it);
 	bool									characterMoveDown(std::vector<GameCharacter>::iterator it);
 	bool                                    characterMove(std::vector<GameCharacter>::iterator it, sf::Vector2i direction);
-    std::vector<std::pair<int, int>>        seenCoordinates(std::vector<GameCharacter>::iterator it);
+    std::vector<sf::Vector2u>               seenCoordinates(std::vector<GameCharacter>::iterator it);
+    bool                                    lineofSight(int x1,int y1,int x2,int y2);
 private:
 	unsigned int							playerTurnIdx;
 	std::vector<GameCharacter>::iterator	selectedCharacter;
