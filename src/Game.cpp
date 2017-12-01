@@ -49,6 +49,50 @@ bool Game::characterMoveDown(gc_iterator it) {
 	return characterMove(it, dir);
 }
 
+// Trace line from gamecharacter location to target, returning
+// first tile that blocks tracing
+const sf::Vector2u Game::traceFromCharacter(gc_iterator it, sf::Vector2u target) {
+	std::vector<sf::Vector2u> pierced = Util::traceLine(static_cast<sf::Vector2i>(it->getPosition()) , static_cast<sf::Vector2i>(target));
+	sf::Vector2u endTile;
+	if (pierced.size() > 1) {
+		endTile = getEndTile(++pierced.begin(), pierced.end());
+	} else {
+		endTile = it->getPosition();
+	}
+	return endTile;
+}
+
+// Try to shoot at Tile on coordinates sf::Vector2u target
+// Actual Tile hit may deviate based on weapon statistics
+// TODO: return vector of coordinates hit instead of single tile
+const sf::Vector2u Game::characterShoot(gc_iterator it, sf::Vector2u target) {
+	std::cout << "===================" << std::endl;
+	std::cout << "shoot called with coords: (" << target.x << ", " << target.y << ")" << std::endl;
+	std::cout << "character origin: (" << it->getPosition().x << ", " << it->getPosition().y << ")" << std::endl;
+	// TODO:
+	// get weapon behavior from equipped weapon, ie. simple, explosive, several shots
+	// get error on target tile from weapon behavior, ie how much actual target tile deviates from selected tile
+	auto endTile = traceFromCharacter(it, target);
+
+	// TODO: if character on any end tile => character suffers damage
+	std::cout << "landed at tile at coords: (" << endTile.x << ", " << endTile.y << ")" << std::endl;  
+	return endTile;
+}
+
+// Returns reference to first coordinate located on a coordinate from coords_begin to coords_end
+// that contains an object blocking line tracing to target.
+// If no elements block tracing, last coordinate is returned.
+//
+// Blocking elements: game characters and tile blocks
+// NOTE: iterator must point to at least one valid element
+const sf::Vector2u Game::getEndTile(coord_iterator coords_begin, coord_iterator coords_end) {
+	for (auto it = coords_begin; it != coords_end; ++it) {
+		if (grid(*it).isSolid() or std::any_of(characters.begin(), characters.end(),
+			[it](GameCharacter gc) { return gc.getPosition() == *it; })) return *it;
+	}
+	return *(--coords_end);
+}
+
 std::vector<std::pair<int, int>> Game::seenCoordinates(std::vector<GameCharacter>::iterator it){
     std::vector<std::pair<int, int>> block; //stores unseen coordinates
     int length=8; //size of seen area. Just a random number at the moment. Maybe could be placed to private of game class

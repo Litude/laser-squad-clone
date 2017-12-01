@@ -6,10 +6,12 @@
 #include "GameCharacter.hpp"
 #include <SFML/System/Vector2.hpp>
 #include "Grid.hpp"
+#include "Util.hpp"
 
 class Game {
 public:
 	typedef std::vector<GameCharacter>::iterator gc_iterator;
+	typedef std::vector<sf::Vector2u>::const_iterator coord_iterator; 
 	Game()									{ playerTurnIdx = 1; }
 	unsigned int							getCurrentPlayer() { return playerTurnIdx; }
 	std::vector<GameCharacter>::iterator	getSelectedCharacter() { return selectedCharacter; }
@@ -25,6 +27,9 @@ public:
 	bool									characterMoveUp(std::vector<GameCharacter>::iterator it);
 	bool									characterMoveDown(std::vector<GameCharacter>::iterator it);
 	bool                                    characterMove(std::vector<GameCharacter>::iterator it, sf::Vector2i direction);
+	const sf::Vector2u 						characterShoot(gc_iterator it, sf::Vector2u target);
+	const sf::Vector2u 						traceFromCharacter(gc_iterator it, sf::Vector2u target);
+	const sf::Vector2u 						getEndTile(coord_iterator coord_begin, coord_iterator coord_end);
     std::vector<std::pair<int, int>>        seenCoordinates(std::vector<GameCharacter>::iterator it);
 private:
 	unsigned int							playerTurnIdx;

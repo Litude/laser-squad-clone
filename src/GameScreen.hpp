@@ -7,6 +7,11 @@
 #include "Game.hpp"
 #include "TileMap.hpp"
 #include <SFML/Graphics.hpp>
+#include "Util.hpp"
+
+namespace MouseMode {
+	enum Mode { shoot, select };
+}
 
 class GameScreen : public Screen
 {
@@ -16,7 +21,7 @@ public:
 private:
 	void DrawGame(sf::RenderWindow &App);
 	void DrawUI(sf::RenderWindow &App);
-	sf::Vector2u GetClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
+	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
 
 	Game game;
 	std::shared_ptr<TileMap> tileMap;
@@ -32,6 +37,8 @@ private:
 	sf::Text textEndTurn;
 	sf::Text textFPS;
 	sf::Text textAP;
+	sf::Text textMouseMode;
+	sf::VertexArray rayLine{ sf::Lines, 2 };
 	std::vector<sf::Sprite> mapTiles;
 	sf::Clock fpsclock;
 	sf::Clock clock;
@@ -40,6 +47,7 @@ private:
 	double timeStep = 16000;
 	double timeAccumulator = 0;
 
+	MouseMode::Mode mouseMode = MouseMode::select;
 	bool resized = true;
 };
 
