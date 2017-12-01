@@ -89,7 +89,7 @@ bool Game::lineofSight(int x1,int y1,int x2,int y2)  {
         }
         
         sf::Vector2i pos(x,y);
-        if (getGrid()(pos).isSolid()) {
+        if (getGrid()(pos).isSolid() && !(x2 == x && y2 == y)) {
             return false;
         }
         
@@ -107,7 +107,7 @@ bool Game::lineofSight(int x1,int y1,int x2,int y2)  {
                 px=px+2*(dy1-dx1);
             }
             sf::Vector2i pos(x,y);
-            if (getGrid()(pos).isSolid()) {
+            if (getGrid()(pos).isSolid() && !(x2 == x && y2 == y)) {
                 return false;
             }
         }
@@ -122,7 +122,7 @@ bool Game::lineofSight(int x1,int y1,int x2,int y2)  {
             ye=y1;
         }
         sf::Vector2i pos(x,y);
-        if (getGrid()(pos).isSolid()) {
+        if (getGrid()(pos).isSolid() && !(x2 == x && y2 == y)) {
             return false;
         }
         
@@ -139,7 +139,7 @@ bool Game::lineofSight(int x1,int y1,int x2,int y2)  {
                 py=py+2*(dx1-dy1);
             }
             sf::Vector2i pos(x,y);
-            if (getGrid()(pos).isSolid()) {
+            if (getGrid()(pos).isSolid() && !(x2 == x && y2 == y)) {
                 return false;
             }
         }
