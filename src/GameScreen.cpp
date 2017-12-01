@@ -267,6 +267,14 @@ void GameScreen::DrawVisibleArea(sf::RenderWindow &App) {
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
 		visibleTiles = game.seenCoordinates(game.getSelectedCharacter());
 	}
+	else // Highlight own team characters
+	{
+		for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
+			if (it->getTeam() == game.getCurrentPlayer()) {
+				visibleTiles.push_back(it->getPosition());
+			}
+		}
+	}
 	renderTexture_visibleTiles->clear(sf::Color(0, 0, 0, 0));
 	for (auto it = visibleTiles.begin(); it != visibleTiles.end(); ++it) {
 		visibleTileShape.setPosition(it->x * TILESIZE, it->y * TILESIZE);
