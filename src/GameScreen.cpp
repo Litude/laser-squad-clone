@@ -237,8 +237,20 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 	//Draw the map
 	App.draw(*tileMap);
 
+	std::vector<sf::Vector2u> visibleTiles;
+	// Calculate visible area for the selected game character
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		visibleTiles = game.seenCoordinates(game.getSelectedCharacter());
+	}
+
 	//Draw characters
 	for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
+		if (it->getTeam() != game.getCurrentPlayer()) {
+			if (std::find(visibleTiles.begin(), visibleTiles.end(), it->getPosition()) == visibleTiles.end()) {
+				// This enemy character is not visible - skip rendering
+				continue;
+			}
+		}
 		sf::Sprite characterShape;
 		characterShape.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
 		if (it == game.getSelectedCharacter()) {
