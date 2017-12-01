@@ -75,9 +75,9 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 	//Game drawing initialization
 	selectedCharacter = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
-	selectedCharacter.setOutlineColor(sf::Color::Black);
+	selectedCharacter.setOutlineColor(sf::Color::Yellow);
 	selectedCharacter.setOutlineThickness(2.0f);
-	selectedCharacter.setFillColor(sf::Color::Black);
+	selectedCharacter.setFillColor(sf::Color::Transparent);
 
 	texPlayer1 = std::make_shared<sf::Texture>(sf::Texture());
 	if (!texPlayer1->loadFromFile("img/character1_sheet.png")) {
@@ -89,18 +89,24 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 		std::cout << "Could not load 'img/character2_sheet.png'\n";
 	}
 
-	// create a 500x500 render-texture
-	renderTexture = new sf::RenderTexture();
-	if (!renderTexture->create(gameView.getSize().x, gameView.getSize().y))
+	// Create a render-texture to draw visible tiles based on line of sight
+	renderTexture_visibleTiles = std::make_shared<sf::RenderTexture>();
+	if (!renderTexture_visibleTiles->create(gameView.getSize().x, gameView.getSize().y))
 	{
-		return;
+		std::cout << "Could not initialize render texture\n";
 	}
 
+	// Create helper shape to draw line of sight on the render texture
+	visibleTileShape = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
+	visibleTileShape.setOutlineColor(sf::Color::Black);
+	visibleTileShape.setOutlineThickness(2.0f);
+	visibleTileShape.setFillColor(sf::Color::Black);
+
+	// Create shader for line of sight rendering
 	shader = new sf::Shader();
-	// load only the fragment shader
 	if (!shader->loadFromFile("img/lineofsight_shader.frag", sf::Shader::Fragment))
 	{
-		// error...
+		std::cout << "Could not load 'img/lineofsight_shader.frag'\n";
 	}
 }
 
@@ -228,22 +234,6 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 	int x0 = std::max(static_cast<int>((gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2) / TILESIZE), 0);
 	int xmax = std::min(static_cast<int>(x0 + (App.getSize().x - MENUSIZE) / TILESIZE) + 1, static_cast<int>(game.getGrid().getWidth() - 1));
 
-    std::vector<sf::Vector2u> visibleTiles;
-	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-        visibleTiles = game.seenCoordinates(game.getSelectedCharacter());
-	}
-
-	renderTexture->clear(sf::Color(0, 0, 0, 0));
-	for (auto it = visibleTiles.begin(); it != visibleTiles.end(); ++it) {
-		selectedCharacter.setPosition(it->x * TILESIZE, it->y * TILESIZE);
-		//App.draw(selectedCharacter);
-		renderTexture->draw(selectedCharacter); // or any other drawable
-	}
-	renderTexture->display();
-
-	// get the target texture (where the stuff has been drawn)
-	const sf::Texture& texture = renderTexture->getTexture();
-
 	//Draw the map
 	App.draw(*tileMap);
 
@@ -267,10 +257,29 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 		App.draw(characterShape);
 	}
 
+	// Draw visible area for the selected game character
+	DrawVisibleArea(App);
+}
+
+void GameScreen::DrawVisibleArea(sf::RenderWindow &App) {
+	// Draw visible area for the selected game character
+	std::vector<sf::Vector2u> visibleTiles;
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		visibleTiles = game.seenCoordinates(game.getSelectedCharacter());
+	}
+	renderTexture_visibleTiles->clear(sf::Color(0, 0, 0, 0));
+	for (auto it = visibleTiles.begin(); it != visibleTiles.end(); ++it) {
+		visibleTileShape.setPosition(it->x * TILESIZE, it->y * TILESIZE);
+		renderTexture_visibleTiles->draw(visibleTileShape); // or any other drawable
+	}
+	renderTexture_visibleTiles->display();
+
+	// get the target texture (where the stuff has been drawn)
+	const sf::Texture& texture = renderTexture_visibleTiles->getTexture();
+
 	// Draw visible tiles
 	sf::Sprite sprite(texture);
 	App.draw(sprite, shader);
-
 }
 
 void GameScreen::DrawUI(sf::RenderWindow &App) {

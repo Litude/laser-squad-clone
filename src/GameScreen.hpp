@@ -16,6 +16,7 @@ public:
 private:
 	void DrawGame(sf::RenderWindow &App);
 	void DrawUI(sf::RenderWindow &App);
+	void DrawVisibleArea(sf::RenderWindow &App);
 	sf::Vector2u GetClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
 
 	Game game;
@@ -39,7 +40,8 @@ private:
 	float currentTime = 0;
 	double timeStep = 16000;
 	double timeAccumulator = 0;
-	sf::RenderTexture* renderTexture;
+	std::shared_ptr<sf::RenderTexture> renderTexture_visibleTiles;
+	sf::RectangleShape visibleTileShape;
 	sf::Shader* shader;
 
 	bool resized = true;
