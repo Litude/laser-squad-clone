@@ -71,6 +71,8 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	textCurTurn.setCharacterSize(12);
 	textEndTurn.setFont(*font);
 	textEndTurn.setString("End turn");
+	textAP.setFont(*font);
+	textAP.setCharacterSize(12);
 	buttonEndTurn.setFillColor(sf::Color::Magenta);
 
 	//Game drawing initialization
@@ -321,12 +323,18 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		//Current turn text
 		textCurTurn.setPosition(App.getSize().x - MENUSIZE + 52, 50);
 
+		//AP text
+		textAP.setPosition(App.getSize().x - MENUSIZE + 52, 100);
+
 	}
 
 	//Interface elements that always need to be updated
 	textCurTurn.setString("Current turn: Player " + std::to_string(game.getCurrentPlayer()));
 
 	//TODO: Process selected character attributes here and draw them on the interface...
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		textAP.setString("Action points: " + std::to_string(game.getSelectedCharacter()->getActionPoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxActionPoints()));
+	}
 
 	currentTime = fpsclock.getElapsedTime().asMicroseconds() / 1000000.0f;
 	float fps = 1.f / (currentTime - lastTime);
@@ -336,6 +344,12 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 	//Draw elements
 	App.setView(interfaceView);
 	App.draw(interfaceBkg); //Must always be first since it covers the whole area and will hide anything "under" it
+
+	// Draw action points
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		App.draw(textAP);
+	}
+
 	App.draw(textFPS);
 	App.draw(buttonEndTurn);
 	App.draw(textCurTurn);
