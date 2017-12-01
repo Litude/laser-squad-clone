@@ -270,17 +270,13 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 	}
 
 	// Draw visible area for the selected game character
-	DrawVisibleArea(App);
+	DrawVisibleArea(App, visibleTiles);
 }
 
-void GameScreen::DrawVisibleArea(sf::RenderWindow &App) {
-	// Draw visible area for the selected game character
-	std::vector<sf::Vector2u> visibleTiles;
-	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		visibleTiles = game.seenCoordinates(game.getSelectedCharacter());
-	}
-	else // Highlight own team characters
-	{
+// Draw visible area for the selected game character
+void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles) {
+	// Highlight own team characters
+	if (game.getSelectedCharacter() == game.getCharacters().end()) {
 		for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
 			if (it->getTeam() == game.getCurrentPlayer()) {
 				visibleTiles.push_back(it->getPosition());

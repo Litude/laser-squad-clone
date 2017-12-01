@@ -16,7 +16,7 @@ public:
 private:
 	void DrawGame(sf::RenderWindow &App);
 	void DrawUI(sf::RenderWindow &App);
-	void DrawVisibleArea(sf::RenderWindow &App);
+	void DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles);
 	sf::Vector2u GetClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
 
 	Game game;
