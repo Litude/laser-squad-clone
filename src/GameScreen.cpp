@@ -278,11 +278,9 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 // Draw visible area for the selected game character
 void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles) {
 	// Highlight own team characters
-	if (game.getSelectedCharacter() == game.getCharacters().end()) {
-		for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
-			if (it->getTeam() == game.getCurrentPlayer()) {
-				visibleTiles.push_back(it->getPosition());
-			}
+	for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
+		if (it->getTeam() == game.getCurrentPlayer()) {
+			visibleTiles.push_back(it->getPosition());
 		}
 	}
 	renderTexture_visibleTiles->clear(sf::Color(0, 0, 0, 0));
