@@ -2,6 +2,7 @@
 #define GRID_H
 
 #include <vector>
+#include <stdexcept>
 #include <SFML/System/Vector2.hpp>
 #include "Tile.hpp"
 
@@ -23,9 +24,12 @@ public:
 	unsigned getWidth() const { return width; }
 	unsigned getHeight() const { return grid.size()/width; }
 
-	const Tile operator()(int x, int y) const;
+	//const Tile operator()(int x, int y) const;
 	const Tile operator()(sf::Vector2i loc) const;
-	const Tile operator()(unsigned x, unsigned y) const;
+	const Tile& operator()(sf::Vector2u loc) const;
+	//const Tile operator()(unsigned x, unsigned y) const;
+	const Tile& operator()(int x, int y) const;
+	const Tile& operator()(unsigned x, unsigned y) const;
 	Tile& operator()(unsigned x, unsigned y);
 	Tile& getTile(unsigned x, unsigned y);
 	Tile& operator[](unsigned n);

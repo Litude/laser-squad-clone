@@ -1,27 +1,49 @@
 #include "Grid.hpp"
 
-const Tile Grid::operator()(int x, int y) const {
+/*const Tile Grid::operator()(int x, int y) const {
 	if (x < 0 || y < 0) {
 		return Tile(black, wall);
 	} else {
 		return (*this)((unsigned) x, (unsigned) y);
 	}
-}
+}*/
 
 const Tile Grid::operator()(sf::Vector2i loc) const {
 	return (*this)(loc.x, loc.y);
 }
 
-const Tile Grid::operator()(unsigned x, unsigned y) const {
+/*const Tile Grid::operator()(unsigned x, unsigned y) const {
 	if (x >= width || y >= getHeight()) {
 		return Tile(black, wall);
 	} else {
 		return grid[y*width + x];
 	}
+}*/
+
+const Tile& Grid::operator()(sf::Vector2u loc) const {
+	return (*this)(loc.x, loc.y);
+}
+
+const Tile& Grid::operator()(int x, int y) const {
+	if (x >= (int) width || y >= (int) getHeight()) {
+		throw std::out_of_range("Tried to access Tile out of bounds");
+	} else if (x < 0 || y < 0) {
+		throw std::out_of_range("Tried to access Tile at negative coordinates");
+	} else {
+		return grid[y*width + x];
+	}
+}
+
+const Tile& Grid::operator()(unsigned x, unsigned y) const {
+	if (x >= width || y >= getHeight()) {
+		throw std::out_of_range("Tried to access Tile out of bounds");
+	}
+	return grid[y*width + x];
+
 }
 
 Tile& Grid::operator()(unsigned x, unsigned y) {
-	return grid[y*width + x];
+	return const_cast<Tile&>((*static_cast<const Grid*>(this))(x, y));
 }
 
 Tile& Grid::getTile(unsigned x, unsigned y) {
