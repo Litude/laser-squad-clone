@@ -160,8 +160,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 					//Clicked on the menubar
 					if (event.mouseButton.button == 0) {
 						if (buttonEndTurn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
-							mouseMode = MouseMode::select;
-							game.endTurn();
+							endTurn();
 						}
 					}
 				}
@@ -335,6 +334,13 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 	App.draw(textCurTurn);
 	App.draw(textEndTurn);
 
+}
+
+void GameScreen::endTurn() {
+	mouseMode = MouseMode::select;
+	rayLine[0].position = sf::Vector2f(0, 0);
+	rayLine[1].position = sf::Vector2f(0, 0);
+	game.endTurn();
 }
 
 sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const {

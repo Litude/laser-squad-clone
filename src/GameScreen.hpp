@@ -19,6 +19,7 @@ public:
 	GameScreen(sf::RenderWindow &App);
 	virtual ScreenResult Run(sf::RenderWindow &App);
 private:
+	void endTurn();
 	void DrawGame(sf::RenderWindow &App);
 	void DrawUI(sf::RenderWindow &App);
 	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
