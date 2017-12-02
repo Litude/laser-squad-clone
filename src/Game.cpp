@@ -52,7 +52,11 @@ bool Game::characterMoveDown(gc_iterator it) {
 // Trace line from gamecharacter location to target, returning
 // first tile that blocks tracing
 const sf::Vector2u Game::traceFromCharacter(gc_iterator it, sf::Vector2u target) {
-	std::vector<sf::Vector2u> pierced = Util::traceLine(static_cast<sf::Vector2i>(it->getPosition()) , static_cast<sf::Vector2i>(target));
+	//clamp to bounds
+	sf::Vector2u within_bounds;
+	within_bounds.x = (target.x < grid.getWidth() ? target.x : grid.getWidth());
+	within_bounds.y = (target.y < grid.getHeight() ? target.y : grid.getHeight());
+	std::vector<sf::Vector2u> pierced = Util::traceLine(static_cast<sf::Vector2i>(it->getPosition()) , static_cast<sf::Vector2i>(within_bounds));
 	sf::Vector2u endTile;
 	if (pierced.size() > 1) {
 		endTile = getEndTile(++pierced.begin(), pierced.end());
@@ -64,19 +68,32 @@ const sf::Vector2u Game::traceFromCharacter(gc_iterator it, sf::Vector2u target)
 
 // Try to shoot at Tile on coordinates sf::Vector2u target
 // Actual Tile hit may deviate based on weapon statistics
-// TODO: return vector of coordinates hit instead of single tile
-const sf::Vector2u Game::characterShoot(gc_iterator it, sf::Vector2u target) {
+const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator gc, sf::Vector2u target) {
 	std::cout << "===================" << std::endl;
+	std::cout << "character origin: (" << gc->getPosition().x << ", " << gc->getPosition().y << ")" << std::endl;
 	std::cout << "shoot called with coords: (" << target.x << ", " << target.y << ")" << std::endl;
-	std::cout << "character origin: (" << it->getPosition().x << ", " << it->getPosition().y << ")" << std::endl;
 	// TODO:
 	// get weapon behavior from equipped weapon, ie. simple, explosive, several shots
 	// get error on target tile from weapon behavior, ie how much actual target tile deviates from selected tile
-	auto endTile = traceFromCharacter(it, target);
-
-	// TODO: if character on any end tile => character suffers damage
-	std::cout << "landed at tile at coords: (" << endTile.x << ", " << endTile.y << ")" << std::endl;  
-	return endTile;
+	std::vector<sf::Vector2u> endTiles;
+	int numberOfShots = gc->shoot();
+	for (int i = 0; i < numberOfShots; ++i) {
+		auto deviated = gc->getEquipped().deviate(target);
+		auto endTile = traceFromCharacter(gc, deviated);
+		std::cout << "landed at tile at coords: (" << endTile.x << ", " << endTile.y << ")" << std::endl;
+		for (auto gc : characters) {
+			if (gc.getPosition() == endTile) {
+				int dmg = 5;//placeholder damage
+				gc.sufferDamage(dmg);
+				std::cout << "character suffered " << dmg << " damage" << std::endl;
+				break;
+			}
+		endTiles.push_back(endTile);
+		}
+		
+	}
+	std::cout << "Number of shots fired: " << numberOfShots << std::endl;
+	return endTiles;
 }
 
 // Returns reference to first coordinate located on a coordinate from coords_begin to coords_end
@@ -85,9 +102,10 @@ const sf::Vector2u Game::characterShoot(gc_iterator it, sf::Vector2u target) {
 //
 // Blocking elements: game characters and tile blocks
 // NOTE: iterator must point to at least one valid element
-const sf::Vector2u Game::getEndTile(coord_iterator coords_begin, coord_iterator coords_end) {
+const sf::Vector2u Game::getEndTile(coord_iterator coords_begin, coord_iterator coords_end, int maxRange) {
 	for (auto it = coords_begin; it != coords_end; ++it) {
-		if (grid(*it).isSolid() or std::any_of(characters.begin(), characters.end(),
+		if (grid(*it).isSolid() or std::distance(coords_begin, it) >= maxRange or 
+			std::any_of(characters.begin(), characters.end(), 
 			[it](GameCharacter gc) { return gc.getPosition() == *it; })) return *it;
 	}
 	return *(--coords_end);

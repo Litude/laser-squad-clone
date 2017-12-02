@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <algorithm>
+#include <iterator>
+#include <utility>
 #include "GameCharacter.hpp"
 #include <SFML/System/Vector2.hpp>
 #include "Grid.hpp"
@@ -22,14 +24,14 @@ public:
 	void									setSelectedCharacter(std::vector<GameCharacter>::iterator it) { selectedCharacter = it; }
 	void									initializeGrid(unsigned int xSize, unsigned int ySize) {grid = Grid(xSize*ySize, xSize);}
 	std::vector<GameCharacter>&				getCharacters() { return characters; }
-	bool									characterMoveLeft(std::vector<GameCharacter>::iterator it);
-	bool									characterMoveRight(std::vector<GameCharacter>::iterator it);
-	bool									characterMoveUp(std::vector<GameCharacter>::iterator it);
-	bool									characterMoveDown(std::vector<GameCharacter>::iterator it);
+	bool                                    characterMoveLeft(std::vector<GameCharacter>::iterator it);
+	bool                                    characterMoveRight(std::vector<GameCharacter>::iterator it);
+	bool                                    characterMoveUp(std::vector<GameCharacter>::iterator it);
+	bool                                    characterMoveDown(std::vector<GameCharacter>::iterator it);
 	bool                                    characterMove(std::vector<GameCharacter>::iterator it, sf::Vector2i direction);
-	const sf::Vector2u 						characterShoot(gc_iterator it, sf::Vector2u target);
-	const sf::Vector2u 						traceFromCharacter(gc_iterator it, sf::Vector2u target);
-	const sf::Vector2u 						getEndTile(coord_iterator coord_begin, coord_iterator coord_end);
+	const std::vector<sf::Vector2u>         characterShoot(gc_iterator gc, sf::Vector2u target);
+	const sf::Vector2u                      traceFromCharacter(gc_iterator it, sf::Vector2u target);
+	const sf::Vector2u                      getEndTile(coord_iterator coord_begin, coord_iterator coord_end, int maxRange=12);
     std::vector<std::pair<int, int>>        seenCoordinates(std::vector<GameCharacter>::iterator it);
 private:
 	unsigned int							playerTurnIdx;
