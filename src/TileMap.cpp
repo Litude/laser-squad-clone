@@ -5,7 +5,7 @@ TileMap::TileMap(Grid &grid) :
 {
 }
 
-bool TileMap::load(const std::string& tileset_ground, const std::string& tileset_block, sf::Vector2u tileSize)
+bool TileMap::load(const std::string& tileset_ground, const std::string& tileset_block, const std::string& tileset_items, sf::Vector2u tileSize)
 {
 	m_tileSize = tileSize;
 
@@ -17,11 +17,17 @@ bool TileMap::load(const std::string& tileset_ground, const std::string& tileset
 	if (!m_tileset_block.loadFromFile(tileset_block))
 		return false;
 
+	// Load the tileset texture for blocks
+	if (!m_tileset_items.loadFromFile(tileset_items))
+		return false;
+
 	// Resize the ground and block vertex arrays to fit the grid size
 	m_vertices_ground.setPrimitiveType(sf::Quads);
 	m_vertices_ground.resize(m_grid.getSize() * 4);
 	m_vertices_block.setPrimitiveType(sf::Quads);
 	m_vertices_block.resize(m_grid.getSize() * 4);
+	m_vertices_items.setPrimitiveType(sf::Quads);
+	m_vertices_items.resize(m_grid.getSize() * 4);
 
 	// Populate the ground and block vertex arrays, with one quad per tile
 	for (unsigned int i = 0; i < m_grid.getWidth(); ++i)
@@ -31,6 +37,7 @@ bool TileMap::load(const std::string& tileset_ground, const std::string& tileset
 			Tile tile = m_grid.getTile(i, j);
 			setGroundTile(tile, sf::Vector2u(i, j));
 			setBlockTile(tile, sf::Vector2u(i, j));
+			setItemTile(tile, sf::Vector2u(i, j));
 		}
 	}
 	return true;
@@ -42,6 +49,7 @@ void TileMap::updateTile(sf::Vector2u tilePosition)
 	// Update both vertex arrays
 	setGroundTile(tile, tilePosition);
 	setBlockTile(tile, tilePosition);
+	setItemTile(tile, tilePosition);
 }
 
 void TileMap::setGroundTile(Tile tile, sf::Vector2u tilePosition)
@@ -140,6 +148,34 @@ void TileMap::setBlockTile(Tile tile, sf::Vector2u tilePosition)
 	quad[3].texCoords = sf::Vector2f(tu * m_tileSize.x, (tv + 1) * m_tileSize.y);
 }
 
+void TileMap::setItemTile(Tile tile, sf::Vector2u tilePosition)
+{
+	int i = tilePosition.x;
+	int j = tilePosition.y;
+
+	// Determine the tile to draw on the tileset
+	int itemNumber = tile.getTopItemType();
+
+	// Find tile's position in the ground tileset texture
+	int tu = itemNumber % (m_tileset_items.getSize().x / m_tileSize.x);
+	int tv = itemNumber / (m_tileset_items.getSize().x / m_tileSize.x);
+
+	// Get a pointer to the current tile's quad
+	sf::Vertex* quad = &m_vertices_items[(i + j * m_grid.getWidth()) * 4];
+
+	// Define tile's 4 corners
+	quad[0].position = sf::Vector2f(i * m_tileSize.x, j * m_tileSize.y);
+	quad[1].position = sf::Vector2f((i + 1) * m_tileSize.x, j * m_tileSize.y);
+	quad[2].position = sf::Vector2f((i + 1) * m_tileSize.x, (j + 1) * m_tileSize.y);
+	quad[3].position = sf::Vector2f(i * m_tileSize.x, (j + 1) * m_tileSize.y);
+
+	// Define tile's 4 texture coordinates
+	quad[0].texCoords = sf::Vector2f(tu * m_tileSize.x, tv * m_tileSize.y);
+	quad[1].texCoords = sf::Vector2f((tu + 1) * m_tileSize.x, tv * m_tileSize.y);
+	quad[2].texCoords = sf::Vector2f((tu + 1) * m_tileSize.x, (tv + 1) * m_tileSize.y);
+	quad[3].texCoords = sf::Vector2f(tu * m_tileSize.x, (tv + 1) * m_tileSize.y);
+}
+
 void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	// Apply the transform
@@ -156,4 +192,10 @@ void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 	// Draw the vertex array for block tiles
 	target.draw(m_vertices_block, states);
+
+	// Apply the tileset texture for items
+	states.texture = &m_tileset_items;
+
+	// Draw the vertex array for items
+	target.draw(m_vertices_items, states);
 }

@@ -1,12 +1,18 @@
+#ifndef LASER_INVENTORY_HPP
+#define LASER_INVENTORY_HPP
+
 #include <list>
-#include "Weapon.hpp"
+#include "Item.hpp"
 
 #define MAX_ITEMS 8
 
 class Inventory {
 public:
-	bool							add(Weapon& newWeapon);
-	std::list<Weapon>::iterator		remove(std::list<Weapon>::iterator it);
+	Inventory();
+	bool							add(Item& newItem);
+	std::list<Item>::iterator		remove(std::list<Item>::iterator it);
 private:
-	std::list<Weapon>					items;
+	std::list<Item>					items;
 };
+
+#endif

@@ -1,5 +1,6 @@
 #include "GameScreen.hpp"
 #include "constants.hpp"
+#include "Health.hpp"
 
 GameScreen::GameScreen(sf::RenderWindow &App)
 {
@@ -29,6 +30,8 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.getGrid().getTile(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
 	game.getGrid().getTile(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
 
+	game.getGrid().getTile(7, 4).addItem(Health_Small());
+
 	// Test put walls on the edges of the map
 	for (unsigned int i = 0; i < game.getGrid().getWidth(); ++i)
 	{
@@ -42,13 +45,15 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 	// Create graphical tilemap presentation from the Map
 	tileMap = std::make_shared<TileMap>(TileMap(game.getGrid()));
-	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", sf::Vector2u(TILESIZE, TILESIZE))) {
+	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", "img/tileset_items.png", sf::Vector2u(TILESIZE, TILESIZE))) {
 		std::cout << "Could not load tilemap\n";
 	}
 
 	// Test updating tile after tilemap has already been created
 	game.getGrid().getTile(12, 16).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
+	game.getGrid().getTile(15, 6).addItem(Health_Large());
 	tileMap->updateTile(sf::Vector2u(12, 16));
+	tileMap->updateTile(sf::Vector2u(15, 6));
 
 	game.addCharacter(sf::Vector2u(1, 1), 1);
 	game.addCharacter(sf::Vector2u(4, 4), 1);
