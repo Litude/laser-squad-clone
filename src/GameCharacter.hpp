@@ -3,6 +3,7 @@
 
 #include <SFML/System/Vector2.hpp>
 #include "Inventory.hpp"
+#include "Weapon.hpp"
 #include "constants.hpp"
 
 enum direction {
@@ -23,11 +24,14 @@ public:
 	sf::Vector2u	getRenderPosition() const;
 	unsigned int	getDirection() const { return direction; }
 	unsigned int	getAnimationFrame() const { return animation; }
-	bool			isDead() const { return dead; }
+	bool			isDead() const { return (health == 0); }
 	bool			isMoving() const { return moving; }
+	Weapon&			getEquipped() { return currentItem; }
 	bool			moveTo(sf::Vector2i target_dir);
 	void			move(int delta_ms);
+	int 			shoot();
 	void			resetActionPoints() { actionPoints = maxActionPoints; }
+	void 			sufferDamage(int dmg);
 
 private:
 	bool			moveLeft();
@@ -46,9 +50,8 @@ private:
 
 	unsigned int actionPoints = maxActionPoints;
 	Inventory inventory;
-	bool dead;
 	unsigned int health;
-	unsigned int currentItem;
+	Weapon currentItem = Weapon();//placeholder
 	unsigned int team;
 };
 

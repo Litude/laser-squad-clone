@@ -71,6 +71,7 @@ bool GameCharacter::moveTo(sf::Vector2i target_dir) {
 				default:
 					break;
 			}
+			return false;
 			break;
 	}
 }
@@ -90,6 +91,21 @@ void GameCharacter::move(int delta_ms) {
 		animationTime = 0;
 		moveFactor = 0.f;
 	}
+}
+
+int GameCharacter::shoot() {
+	if (actionPoints >= currentItem.apCost() and currentItem.canFire()) {
+		actionPoints -= currentItem.apCost();
+		return currentItem.fire();
+	} else {
+		return 0;
+	}
+}
+
+void GameCharacter::sufferDamage(int damage) {
+	int armor = 0;//placeholder
+	int dmg = (damage - armor > 0 ? damage - armor : 0);
+	health = ((int) health - dmg > 0 ? health - dmg : 0);
 }
 
 sf::Vector2u GameCharacter::getRenderPosition() const
