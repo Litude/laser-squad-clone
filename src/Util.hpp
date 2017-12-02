@@ -21,8 +21,10 @@ namespace Util {
 		dy *= 2;
 
 	    for (; n > 0; --n) {
-			//std::cout << "adding coord: (" << x << ", " << y << ")" << std::endl; 
-			pierced.push_back(sf::Vector2u(x, y));
+			//std::cout << "adding coord: (" << x << ", " << y << ")" << std::endl;
+			unsigned add_x = (x < 0 ? 0 : x);
+			unsigned add_y = (y < 0 ? 0 : y);
+			pierced.push_back(sf::Vector2u(add_x, add_y));
 
 			if (error > 0) {
 				x += x_inc;
