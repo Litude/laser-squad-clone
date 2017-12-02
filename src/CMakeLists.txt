@@ -25,7 +25,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # Define sources and executable
 set(EXECUTABLE_NAME "LaserSquad")
-set(GAME_SOURCES Game.cpp Game.hpp GameCharacter.cpp GameCharacter.hpp Inventory.hpp Grid.cpp Grid.hpp Tile.cpp Tile.hpp TileMap.cpp TileMap.hpp Weapon.hpp Screen.cpp Screen.hpp GameScreen.cpp GameScreen.hpp MainMenuScreen.cpp MainMenuScreen.hpp NgMenuScreen.cpp NgMenuScreen.hpp)
+set(GAME_SOURCES Game.cpp Game.hpp GameCharacter.cpp GameCharacter.hpp Inventory.hpp Grid.cpp Grid.hpp Tile.cpp Tile.hpp TileMap.cpp TileMap.hpp Weapon.cpp Weapon.hpp Screen.cpp Screen.hpp GameScreen.cpp GameScreen.hpp MainMenuScreen.cpp MainMenuScreen.hpp NgMenuScreen.cpp NgMenuScreen.hpp)
 add_executable(${EXECUTABLE_NAME} main.cpp ${GAME_SOURCES})
 
 
