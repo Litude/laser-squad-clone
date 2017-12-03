@@ -104,7 +104,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator gc, sf::Vector2
 // NOTE: iterator must point to at least one valid element
 const sf::Vector2u Game::getEndTile(coord_iterator coords_begin, coord_iterator coords_end, int maxRange) {
 	for (auto it = coords_begin; it != coords_end; ++it) {
-		if (grid(*it).isSolid() or std::distance(coords_begin, it) >= maxRange or 
+		if (grid(*it).isSolid() || std::distance(coords_begin, it) >= maxRange || 
 			std::any_of(characters.begin(), characters.end(), 
 			[it](GameCharacter gc) { return gc.getPosition() == *it; })) return *it;
 	}
