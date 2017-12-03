@@ -4,77 +4,64 @@
 const int animationFrameTime = 125000; // animation frame time in ms
 const int moveSpeed = 500000; // time it takes in ms to move from one tile to another
 
-bool GameCharacter::moveLeft() {
-	if (actionPoints > 0) {
-		--actionPoints;
-		previousPosition = currentPosition;
-		currentPosition.x -= 1;
-		direction = left;
-		moving = true;
-		return true;
-	}
-	return false;
+void GameCharacter::moveLeft() {
+	actionPoints -= AP_COST_MOVEMENT;
+	previousPosition = currentPosition;
+	currentPosition.x -= 1;
+	direction = left;
+	moving = true;
 }
 
-bool GameCharacter::moveRight() {
-	if (actionPoints > 0) {
-		--actionPoints;
-		previousPosition = currentPosition;
-		currentPosition.x += 1;
-		direction = right;
-		moving = true;
-		return true;
-	}
-	return false;
+void GameCharacter::moveRight() {
+	actionPoints -= AP_COST_MOVEMENT;
+	previousPosition = currentPosition;
+	currentPosition.x += 1;
+	direction = right;
+	moving = true;
 }
 
-bool GameCharacter::moveUp() {
-	if (actionPoints > 0) {
-		--actionPoints;
-		previousPosition = currentPosition;
-		currentPosition.y -= 1;
-		direction = up;
-		moving = true;
-		return true;
-	}
-	return false;
+void GameCharacter::moveUp() {
+	actionPoints -= AP_COST_MOVEMENT;
+	previousPosition = currentPosition;
+	currentPosition.y -= 1;
+	direction = up;
+	moving = true;
 }
 
-bool GameCharacter::moveDown() {
-	if (actionPoints > 0) {
-		--actionPoints;
-		previousPosition = currentPosition;
-		currentPosition.y += 1;
-		direction = down;
-		moving = true;
-		return true;
-	}
-	return false;
+void GameCharacter::moveDown() {
+	actionPoints -= AP_COST_MOVEMENT;
+	previousPosition = currentPosition;
+	currentPosition.y += 1;
+	direction = down;
+	moving = true;
 }
 
 bool GameCharacter::moveTo(sf::Vector2i target_dir) {
 	if (isDead()) return false;
-	switch(target_dir.x) {
+
+	if (actionPoints >= AP_COST_MOVEMENT) {
+		switch (target_dir.x) {
 		case 1:
-			return moveRight();
-			break;
+			moveRight();
+			return true;
 		case -1:
-			return moveLeft();
-			break;
+			moveLeft();
+			return true;
 		default:
-			switch(target_dir.y) {
-				case 1:
-					return moveDown();
-					break;
-				case -1:
-					return moveUp();
-					break;
-				default:
-					break;
+			switch (target_dir.y) {
+			case 1:
+				moveDown();
+				return true;
+			case -1:
+				moveUp();
+				return true;
+			default:
+				return false;
 			}
 			return false;
-			break;
+		}
 	}
+	return false;
 }
 
 void GameCharacter::move(int delta_ms) {

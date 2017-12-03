@@ -44,10 +44,10 @@ public:
 	void			setSelectedItem(int idx) { selectedItem = idx; }
 
 private:
-	bool			moveLeft();
-	bool			moveRight();
-	bool			moveUp();
-	bool			moveDown();
+	void			moveLeft();
+	void			moveRight();
+	void			moveUp();
+	void			moveDown();
 
 	sf::Vector2u currentPosition; // Position on the map in tile coordinates
 	sf::Vector2u previousPosition;
