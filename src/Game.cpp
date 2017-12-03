@@ -20,7 +20,7 @@ bool Game::addCharacter(sf::Vector2u position, unsigned int team) {
 
 bool Game::characterMove(gc_iterator it, sf::Vector2i direction) {
 	sf::Vector2i target_pos = (sf::Vector2i) it->getPosition() + direction;
-	if (!getGrid()(target_pos).isSolid() && std::all_of(characters.begin(), characters.end(), 
+	if (!getGrid()(target_pos).isSolid() && std::all_of(characters.begin(), characters.end(),
 			[target_pos](GameCharacter gc){ return (sf::Vector2i) gc.getPosition() != target_pos; })) {
 		it->moveTo(direction);
 		return true;
@@ -90,7 +90,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator gc, sf::Vector2
 			}
 		endTiles.push_back(endTile);
 		}
-		
+
 	}
 	std::cout << "Number of shots fired: " << numberOfShots << std::endl;
 	return endTiles;
@@ -104,8 +104,8 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator gc, sf::Vector2
 // NOTE: iterator must point to at least one valid element
 const sf::Vector2u Game::getEndTile(coord_iterator coords_begin, coord_iterator coords_end, int maxRange) {
 	for (auto it = coords_begin; it != coords_end; ++it) {
-		if (grid(*it).isSolid() or std::distance(coords_begin, it) >= maxRange or 
-			std::any_of(characters.begin(), characters.end(), 
+		if (grid(*it).isSolid() || std::distance(coords_begin, it) >= maxRange || 
+			std::any_of(characters.begin(), characters.end(),
 			[it](GameCharacter gc) { return gc.getPosition() == *it; })) return *it;
 	}
 	return *(--coords_end);
@@ -149,12 +149,12 @@ bool Game::lineofSight(int x1,int y1,int x2,int y2)  {
             y=y2;
             xe=x1;
         }
-        
+
         sf::Vector2i pos(x,y);
         if (getGrid()(pos).isSolid() && !(x2 == x && y2 == y)) {
             return false;
         }
-        
+
         for(i=0;x<xe;i++)   {
             x=x+1;
             if(px<0){
@@ -187,7 +187,7 @@ bool Game::lineofSight(int x1,int y1,int x2,int y2)  {
         if (getGrid()(pos).isSolid() && !(x2 == x && y2 == y)) {
             return false;
         }
-        
+
         for(i=0;y<ye;i++)   {
             y=y+1;
             if(py<=0)   {
@@ -208,5 +208,3 @@ bool Game::lineofSight(int x1,int y1,int x2,int y2)  {
     }
     return true;
 }
-
-

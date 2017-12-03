@@ -124,7 +124,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 }
 
 ScreenResult GameScreen::Run(sf::RenderWindow & App)
-{	
+{
 	sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
 
 	while (App.isOpen()) {
@@ -178,7 +178,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				default:
 					break;
 				}
-					
+
 			}
 			//Handle mouse input
 			if (event.type == sf::Event::MouseButtonReleased) {
@@ -194,7 +194,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				else {
 					//Clicked on gamescreen
 					//In shoot mode
-					if (mouseMode == MouseMode::shoot and game.getSelectedCharacter() != game.getCharacters().end()) {
+					if (mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end()) {
 						game.characterShoot(game.getSelectedCharacter(), getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView));
 					}
 					//In select mode
@@ -214,7 +214,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 			if (event.type == sf::Event::Resized) {
 				resized = true;
 			}
-			if (event.type == sf::Event::MouseMoved and mouseMode == MouseMode::shoot and game.getSelectedCharacter() != game.getCharacters().end()) {
+			if (event.type == sf::Event::MouseMoved && mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end()) {
 				auto gc = game.getSelectedCharacter();
 				auto target = getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView);
 				auto origin = gc->getPosition();
