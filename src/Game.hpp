@@ -10,6 +10,7 @@
 #include "Grid.hpp"
 #include "Util.hpp"
 
+
 class Game {
 public:
 	typedef std::vector<GameCharacter>::iterator gc_iterator;
@@ -32,7 +33,8 @@ public:
 	const std::vector<sf::Vector2u>         characterShoot(gc_iterator gc, sf::Vector2u target);
 	const sf::Vector2u                      traceFromCharacter(gc_iterator it, sf::Vector2u target);
 	const sf::Vector2u                      getEndTile(coord_iterator coord_begin, coord_iterator coord_end, int maxRange=12);
-    std::vector<std::pair<int, int>>        seenCoordinates(std::vector<GameCharacter>::iterator it);
+    std::vector<sf::Vector2u>               seenCoordinates(std::vector<GameCharacter>::iterator it);
+    bool                                    lineofSight(int x1,int y1,int x2,int y2);
 private:
 	unsigned int							playerTurnIdx;
 	std::vector<GameCharacter>::iterator	selectedCharacter;

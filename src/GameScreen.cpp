@@ -1,5 +1,6 @@
 #include "GameScreen.hpp"
 #include "constants.hpp"
+#include "Health.hpp"
 
 GameScreen::GameScreen(sf::RenderWindow &App)
 {
@@ -14,18 +15,22 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.getGrid().getTile(5, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
 	game.getGrid().getTile(6, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
 	game.getGrid().getTile(7, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+    game.getGrid().getTile(8, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
+    game.getGrid().getTile(9, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
 
-	game.getGrid().getTile(7, 4).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-	game.getGrid().getTile(7, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-	game.getGrid().getTile(6, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
+	//game.getGrid().getTile(7, 4).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
+	//game.getGrid().getTile(7, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
+	//game.getGrid().getTile(6, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
 
-	game.getGrid().getTile(6, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
-	game.getGrid().getTile(5, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
+	//game.getGrid().getTile(6, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
+	//game.getGrid().getTile(5, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
 
 	game.getGrid().getTile(7, 2).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
 
 	game.getGrid().getTile(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
 	game.getGrid().getTile(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
+
+	game.getGrid().getTile(7, 4).addItem(Health_Small());
 
 	// Test put walls on the edges of the map
 	for (unsigned int i = 0; i < game.getGrid().getWidth(); ++i)
@@ -40,13 +45,15 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 	// Create graphical tilemap presentation from the Map
 	tileMap = std::make_shared<TileMap>(TileMap(game.getGrid()));
-	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", sf::Vector2u(TILESIZE, TILESIZE))) {
+	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", "img/tileset_items.png", sf::Vector2u(TILESIZE, TILESIZE))) {
 		std::cout << "Could not load tilemap\n";
 	}
 
 	// Test updating tile after tilemap has already been created
 	game.getGrid().getTile(12, 16).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
+	game.getGrid().getTile(15, 6).addItem(Health_Large());
 	tileMap->updateTile(sf::Vector2u(12, 16));
+	tileMap->updateTile(sf::Vector2u(15, 6));
 
 	game.addCharacter(sf::Vector2u(1, 1), 1);
 	game.addCharacter(sf::Vector2u(4, 4), 1);
@@ -94,6 +101,26 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	//Ray tracing line for shooting
 	rayLine[0].color = sf::Color::Red;
 	rayLine[1].color = sf::Color::Green;
+
+	// Create a render-texture to draw visible tiles based on line of sight
+	renderTexture_visibleTiles = std::make_shared<sf::RenderTexture>();
+	if (!renderTexture_visibleTiles->create(gameView.getSize().x, gameView.getSize().y))
+	{
+		std::cout << "Could not initialize render texture\n";
+	}
+
+	// Create helper shape to draw line of sight on the render texture
+	visibleTileShape = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
+	visibleTileShape.setOutlineColor(sf::Color::Black);
+	visibleTileShape.setOutlineThickness(2.0f);
+	visibleTileShape.setFillColor(sf::Color(150,150,150,255));
+
+	// Create shader for line of sight rendering
+	shader = new sf::Shader();
+	if (!shader->loadFromFile("img/lineofsight_shader.frag", sf::Shader::Fragment))
+	{
+		std::cout << "Could not load 'img/lineofsight_shader.frag'\n";
+	}
 }
 
 ScreenResult GameScreen::Run(sf::RenderWindow & App)
@@ -246,8 +273,20 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 	//Draw the map
 	App.draw(*tileMap);
 
+	std::vector<sf::Vector2u> visibleTiles;
+	// Calculate visible area for the selected game character
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		visibleTiles = game.seenCoordinates(game.getSelectedCharacter());
+	}
+
 	//Draw characters
 	for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
+		if (it->getTeam() != game.getCurrentPlayer()) {
+			if (std::find(visibleTiles.begin(), visibleTiles.end(), it->getPosition()) == visibleTiles.end()) {
+				// This enemy character is not visible - skip rendering
+				continue;
+			}
+		}
 		sf::Sprite characterShape;
 		characterShape.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
 		if (it == game.getSelectedCharacter()) {
@@ -269,7 +308,31 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 	if (mouseMode == MouseMode::shoot) {
 		App.draw(rayLine);
 	}
+	// Draw visible area for the selected game character
+	DrawVisibleArea(App, visibleTiles);
+}
 
+// Draw visible area for the selected game character
+void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles) {
+	// Highlight own team characters
+	for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
+		if (it->getTeam() == game.getCurrentPlayer()) {
+			visibleTiles.push_back(it->getPosition());
+		}
+	}
+	renderTexture_visibleTiles->clear(sf::Color(0, 0, 0, 0));
+	for (auto it = visibleTiles.begin(); it != visibleTiles.end(); ++it) {
+		visibleTileShape.setPosition(it->x * TILESIZE, it->y * TILESIZE);
+		renderTexture_visibleTiles->draw(visibleTileShape); // or any other drawable
+	}
+	renderTexture_visibleTiles->display();
+
+	// get the target texture (where the stuff has been drawn)
+	const sf::Texture& texture = renderTexture_visibleTiles->getTexture();
+
+	// Draw visible tiles
+	sf::Sprite sprite(texture);
+	App.draw(sprite, shader);
 }
 
 void GameScreen::DrawUI(sf::RenderWindow &App) {
@@ -323,7 +386,7 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 	App.setView(interfaceView);
 	App.draw(interfaceBkg); //Must always be first since it covers the whole area and will hide anything "under" it
 
-	//Draw game character elements
+	// Draw action points
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
 		App.draw(textAP);
 	}

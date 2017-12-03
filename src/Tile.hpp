@@ -5,6 +5,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <string>
+#include "Item.hpp"
 
 enum TileGround { black = 0, dirt = 1, grass = 2, wood = 3, stone = 4, metal = 5 };
 
@@ -23,17 +24,17 @@ public:
 	sf::Texture& getTexture();
 	TileGround getGround() const;
 	TileBlock getBlock() const;
-	const std::vector<int>& getItems() const;
+	const ItemSubType getTopItemType() const;
+	const std::vector<Item>& getItems() const;
 	bool removeItem(int item);
-	bool addItem(int obj);
+	bool addItem(Item obj);
 	bool isSolid() const;
 	void setTile(TileGround tg, TileBlock tb);
 
 private:
 	TileGround ground;
 	TileBlock block;
-	//temporarily vector of ints since there's no item class yet
-	std::vector<int> items;
+	std::vector<Item> items;
 	sf::Texture texture;
 };
 

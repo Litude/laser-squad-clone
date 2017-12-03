@@ -4,11 +4,21 @@ TileBlock Tile::getBlock() const { return block; }
 
 TileGround Tile::getGround() const { return ground; }
 
+const ItemSubType Tile::getTopItemType() const {
+	if (items.size() == 0) return SubType_None;
+	return items.at(items.size() - 1).getSubType();
+}
+
 sf::Texture& Tile::getTexture() { return texture; }
 
-const std::vector<int>& Tile::getItems() const { return items; }
+const std::vector<Item>& Tile::getItems() const { return items; }
 
 bool Tile::isSolid() const { return !(block == air); }
+
+bool Tile::addItem(Item obj) {
+	items.push_back(obj);
+	return true;
+}
 
 std::ostream& operator<<(std::ostream& os, const Tile& t) {
 

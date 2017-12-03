@@ -23,6 +23,7 @@ private:
 	void DrawGame(sf::RenderWindow &App);
 	void DrawUI(sf::RenderWindow &App);
 	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
+	void DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles);
 
 	Game game;
 	std::shared_ptr<TileMap> tileMap;
@@ -47,6 +48,9 @@ private:
 	float currentTime = 0;
 	double timeStep = 16000;
 	double timeAccumulator = 0;
+	std::shared_ptr<sf::RenderTexture> renderTexture_visibleTiles;
+	sf::RectangleShape visibleTileShape;
+	sf::Shader* shader;
 
 	MouseMode::Mode mouseMode = MouseMode::select;
 	bool resized = true;

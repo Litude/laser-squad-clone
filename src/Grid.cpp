@@ -9,7 +9,11 @@
 }*/
 
 const Tile Grid::operator()(sf::Vector2i loc) const {
-	return (*this)(loc.x, loc.y);
+	if (loc.x < 0 || loc.y < 0) {
+		return Tile(black, wall);
+	} else {
+		return (*this)(loc.x, loc.y);
+	}
 }
 
 /*const Tile Grid::operator()(unsigned x, unsigned y) const {

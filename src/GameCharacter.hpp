@@ -32,6 +32,7 @@ public:
 	int 			shoot();
 	void			resetActionPoints() { actionPoints = maxActionPoints; }
 	void 			sufferDamage(int dmg);
+    unsigned int    getLengthofSight() const {return lengthofSight;}
 
 private:
 	bool			moveLeft();
@@ -53,6 +54,7 @@ private:
 	unsigned int health;
 	Weapon currentItem = Weapon();//placeholder
 	unsigned int team;
+    unsigned int lengthofSight=10;
 };
 
 #endif
