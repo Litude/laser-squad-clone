@@ -53,6 +53,7 @@ bool GameCharacter::moveDown() {
 }
 
 bool GameCharacter::moveTo(sf::Vector2i target_dir) {
+	if (isDead()) return false;
 	switch(target_dir.x) {
 		case 1:
 			return moveRight();
@@ -94,6 +95,7 @@ void GameCharacter::move(int delta_ms) {
 }
 
 int GameCharacter::shoot() {
+	if (isDead()) return 0;
 	if (actionPoints >= currentItem.apCost() and currentItem.canFire()) {
 		actionPoints -= currentItem.apCost();
 		return currentItem.fire();
