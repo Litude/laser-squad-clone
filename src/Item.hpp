@@ -32,8 +32,8 @@ class Item {
 public:
 	Item() : m_ItemMainType(Type_None), m_ItemSubType(SubType_None) {};
 	Item(ItemMainType mainType, ItemSubType subType) : m_ItemMainType(mainType), m_ItemSubType(subType) {};
-	const ItemMainType getMainType() const { return m_ItemMainType;} ;
-	const ItemSubType getSubType() const { return m_ItemSubType; };
+	ItemMainType getMainType() const { return m_ItemMainType;} ;
+	ItemSubType getSubType() const { return m_ItemSubType; };
 private:
 	ItemMainType m_ItemMainType;
 	ItemSubType m_ItemSubType;
