@@ -1,4 +1,5 @@
 #include "MainMenuScreen.hpp"
+#include "Button.hpp"
 
 MainMenuScreen::MainMenuScreen(void)
 {
@@ -10,17 +11,7 @@ ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 	sf::Texture Texture;
 	sf::Sprite Sprite;
 	sf::Font Font;
-	sf::Text Menu1;
-	sf::Text Menu2;
-	sf::Text Menu3;
 	int menu = 0;
-
-	/*
-		Variables to modify items on the main menu
-	*/
-
-	int highlighted_alpha = 255; // Opacity of the currently chosen option
-	int non_highlighted_alpha = 100; // Opacity of the other options on the menu
 	int nofMenus = 3; // Number of items currently in the main menu
 
 	if (!Texture.loadFromFile("img/mainmenu.png"))
@@ -35,29 +26,20 @@ ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 		std::cerr << "Error loading ARIALN.TTF" << std::endl;
 		return ScreenResult::Exit;
 	}
-	Menu1.setFont(Font);
-	Menu1.setCharacterSize(20);
-	Menu1.setString("New game");
-	Menu1.setPosition({ 350.f, 250.f });
-
-	Menu2.setFont(Font);
-	Menu2.setCharacterSize(20);
-	Menu2.setString("Map editor");
-	Menu2.setPosition({ 350.f, 300.f });
-
-	Menu3.setFont(Font);
-	Menu3.setCharacterSize(20);
-	Menu3.setString("Exit");
-	Menu3.setPosition({ 350.f, 350.f });
+	 Button newgame("New game", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f));
+	 Button mapeditor("Map editor", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f));
+	 Button quit("Quit", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 350.f));
 
 	while (1)
 	{
 		while (App.pollEvent(Event))
 		{
+
 			if (Event.type == sf::Event::Closed)
 			{
 				return ScreenResult::Exit;
 			}
+
 			if (Event.type == sf::Event::KeyPressed)
 			{
 				switch (Event.key.code)
@@ -85,39 +67,38 @@ ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 				}
 			}
 		}
-		Sprite.setColor(sf::Color(255, 255, 255, 255));
+		/*
 		//Drawing the highlighted option
 		if (menu == 0)
 		{
-			Menu1.setColor(sf::Color(0, 0, 0, highlighted_alpha));
-			Menu1.setStyle(sf::Text::Bold);
-			Menu2.setColor(sf::Color(0, 0, 0, non_highlighted_alpha));
-			Menu2.setStyle(sf::Text::Regular);
-			Menu3.setColor(sf::Color(0, 0, 0, non_highlighted_alpha));
-			Menu3.setStyle(sf::Text::Regular);
+			newgame.setState(hovered);
+			mapeditor.setState(normal);
+			quit.setState(normal);
 		}
 		else if (menu == 1)
 		{
-			Menu1.setColor(sf::Color(0, 0, 0, non_highlighted_alpha));
-			Menu1.setStyle(sf::Text::Regular);
-			Menu2.setColor(sf::Color(0, 0, 0, highlighted_alpha));
-			Menu2.setStyle(sf::Text::Bold);
-			Menu3.setColor(sf::Color(0, 0, 0, non_highlighted_alpha));
-			Menu3.setStyle(sf::Text::Regular);
+			newgame.setState(normal);
+			mapeditor.setState(hovered);
+			quit.setState(normal);
 		} else {
-			Menu1.setColor(sf::Color(0, 0, 0, non_highlighted_alpha));
-			Menu1.setStyle(sf::Text::Regular);
-			Menu2.setColor(sf::Color(0, 0, 0, non_highlighted_alpha));
-			Menu2.setStyle(sf::Text::Regular);
-			Menu3.setColor(sf::Color(0, 0, 0, highlighted_alpha));
-			Menu3.setStyle(sf::Text::Bold);
-		}
-		App.clear();
+			newgame.setState(normal);
+			mapeditor.setState(normal);
+			quit.setState(hovered);
+		}*/
 
+		// Sprite.setColor(sf::Color(255, 255, 255, 255));
+		if(newgame.getState() == clicked) {return ScreenResult::NewGameScene;}
+		if(mapeditor.getState() == clicked) {return ScreenResult::Exit;}
+		if(quit.getState() == clicked) {return ScreenResult::Exit;}
+		newgame.update(Event, App);
+		mapeditor.update(Event, App);
+		quit.update(Event, App);
+
+		App.clear();
 		App.draw(Sprite);
-		App.draw(Menu1);
-		App.draw(Menu2);
-		App.draw(Menu3);
+		App.draw(newgame.getText());
+		App.draw(mapeditor.getText());
+		App.draw(quit.getText());
 		App.display();
 	}
 

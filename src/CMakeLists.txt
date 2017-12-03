@@ -25,7 +25,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # Define sources and executable
 set(EXECUTABLE_NAME "LaserSquad")
-set(GAME_SOURCES Game.cpp Game.hpp GameCharacter.cpp GameCharacter.hpp Inventory.hpp Grid.cpp Grid.hpp Tile.cpp Tile.hpp TileMap.cpp TileMap.hpp Weapon.hpp Screen.cpp Screen.hpp GameScreen.cpp GameScreen.hpp MainMenuScreen.cpp MainMenuScreen.hpp NgMenuScreen.cpp NgMenuScreen.hpp)
+set(GAME_SOURCES Game.cpp Game.hpp GameCharacter.cpp GameCharacter.hpp Inventory.hpp Grid.cpp Grid.hpp Tile.cpp Tile.hpp TileMap.cpp TileMap.hpp Weapon.hpp Screen.cpp Screen.hpp GameScreen.cpp GameScreen.hpp MainMenuScreen.cpp MainMenuScreen.hpp NgMenuScreen.cpp NgMenuScreen.hpp Button.cpp Button.hpp)
 add_executable(${EXECUTABLE_NAME} main.cpp ${GAME_SOURCES})
 
 
@@ -58,7 +58,7 @@ add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
                        ${CMAKE_SOURCE_DIR}/font $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>/font)
 
-					  
+
 ################################
 # Testing
 ################################
@@ -67,7 +67,7 @@ if (test)
 
   # force static runtime libraries for msvc builds
   if(MSVC)
-    set(variables 
+    set(variables
       CMAKE_CXX_FLAGS_DEBUG
       CMAKE_CXX_FLAGS_RELEASE
 	  CMAKE_CXX_FLAGS_RELWITHDEBINFO
