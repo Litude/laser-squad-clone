@@ -53,6 +53,7 @@ bool GameCharacter::moveDown() {
 }
 
 bool GameCharacter::moveTo(sf::Vector2i target_dir) {
+	if (isDead()) return false;
 	switch(target_dir.x) {
 		case 1:
 			return moveRight();
@@ -71,6 +72,7 @@ bool GameCharacter::moveTo(sf::Vector2i target_dir) {
 				default:
 					break;
 			}
+			return false;
 			break;
 	}
 }
@@ -92,6 +94,22 @@ void GameCharacter::move(int delta_ms) {
 	}
 }
 
+int GameCharacter::shoot() {
+	if (isDead()) return 0;
+	if (actionPoints >= currentItem.apCost() and currentItem.canFire()) {
+		actionPoints -= currentItem.apCost();
+		return currentItem.fire();
+	} else {
+		return 0;
+	}
+}
+
+void GameCharacter::sufferDamage(int damage) {
+	int armor = 0;//placeholder
+	int dmg = (damage - armor > 0 ? damage - armor : 0);
+	health = ((int) health - dmg > 0 ? health - dmg : 0);
+}
+
 sf::Vector2u GameCharacter::getRenderPosition() const
 {
 	sf::Vector2u renderPosition;
@@ -104,3 +122,4 @@ sf::Vector2u GameCharacter::getRenderPosition() const
 	}
 	return renderPosition;
 }
+
