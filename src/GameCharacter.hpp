@@ -51,7 +51,7 @@ private:
 
 	unsigned int actionPoints = maxActionPoints;
 	Inventory inventory;
-	unsigned int health;
+	unsigned int health = 10;
 	Weapon currentItem = Weapon();//placeholder
 	unsigned int team;
     unsigned int lengthofSight=10;
