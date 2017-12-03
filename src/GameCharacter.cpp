@@ -5,6 +5,7 @@ const int animationFrameTime = 125000; // animation frame time in ms
 const int moveSpeed = 500000; // time it takes in ms to move from one tile to another
 
 void GameCharacter::moveLeft() {
+	animationManager.changeAnim(animations::walk_left);
 	actionPoints -= AP_COST_MOVEMENT;
 	previousPosition = currentPosition;
 	currentPosition.x -= 1;
@@ -13,6 +14,7 @@ void GameCharacter::moveLeft() {
 }
 
 void GameCharacter::moveRight() {
+	animationManager.changeAnim(animations::walk_right);
 	actionPoints -= AP_COST_MOVEMENT;
 	previousPosition = currentPosition;
 	currentPosition.x += 1;
@@ -21,6 +23,7 @@ void GameCharacter::moveRight() {
 }
 
 void GameCharacter::moveUp() {
+	animationManager.changeAnim(animations::walk_up);
 	actionPoints -= AP_COST_MOVEMENT;
 	previousPosition = currentPosition;
 	currentPosition.y -= 1;
@@ -29,6 +32,7 @@ void GameCharacter::moveUp() {
 }
 
 void GameCharacter::moveDown() {
+	animationManager.changeAnim(animations::walk_down);
 	actionPoints -= AP_COST_MOVEMENT;
 	previousPosition = currentPosition;
 	currentPosition.y += 1;
@@ -64,20 +68,16 @@ bool GameCharacter::moveTo(sf::Vector2i target_dir) {
 	return false;
 }
 
-void GameCharacter::move(int delta_ms) {
-	moveFactor += static_cast<float>(delta_ms) / static_cast<float>(moveSpeed);
-	animationTime += delta_ms;
-	if (animationTime > animationFrameTime)
-	{
-		// Reset animation time but keep the remainder
-		animationTime = animationTime % animationFrameTime;
-		animation++;
+void GameCharacter::update(int delta_ms) {
+	if (moving || isDead()) {
+		animationManager.update(delta_ms);
 	}
-	if (moveFactor >= 1.f) {
-		moving = false;
-		animation = 0;
-		animationTime = 0;
-		moveFactor = 0.f;
+	if (moving) {
+		moveFactor += static_cast<float>(delta_ms) / static_cast<float>(moveSpeed);
+		if (moveFactor >= 1.f) {
+			moving = false;
+			moveFactor = 0.f;
+		}
 	}
 }
 
@@ -95,6 +95,9 @@ void GameCharacter::sufferDamage(int damage) {
 	int armor = 0;//placeholder
 	int dmg = (damage - armor > 0 ? damage - armor : 0);
 	health = ((int) health - dmg > 0 ? health - dmg : 0);
+	if (health == 0) {
+		animationManager.changeAnim(animations::die);
+	}
 }
 
 sf::Vector2u GameCharacter::getRenderPosition() const
