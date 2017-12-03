@@ -9,7 +9,7 @@
 }*/
 
 const Tile Grid::operator()(sf::Vector2i loc) const {
-	if (loc.x < 0 || loc.y < 0) {
+	if (loc.x < 0 or loc.y < 0 or loc.x >= (int) width or loc.y >= (int) getHeight()) {
 		return Tile(black, wall);
 	} else {
 		return (*this)(loc.x, loc.y);
