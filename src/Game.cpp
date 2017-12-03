@@ -49,6 +49,26 @@ bool Game::characterMoveDown(gc_iterator it) {
 	return characterMove(it, dir);
 }
 
+bool Game::characterPickUpItem(std::vector<GameCharacter>::iterator it) {
+	if (getSelectedCharacter()->addItem(getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).getTopItem())) {
+		getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).popItem();
+		return true;
+	}
+	return false;
+}
+
+bool Game::characterDropItem(std::vector<GameCharacter>::iterator it) {
+	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItem()]);
+	if (getSelectedCharacter()->removeSelectedItem()) {
+		return true;
+	}
+	else {
+		// Could not drop the item, probably not enough AP so we need to pop the item we just added to the map
+		getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).popItem();
+		return false;
+	}
+}
+
 // Trace line from gamecharacter location to target, returning
 // first tile that blocks tracing
 const sf::Vector2u Game::traceFromCharacter(gc_iterator it, sf::Vector2u target) {

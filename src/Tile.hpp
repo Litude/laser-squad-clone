@@ -25,6 +25,8 @@ public:
 	TileGround getGround() const;
 	TileBlock getBlock() const;
 	ItemSubType getTopItemType() const;
+	Item getTopItem();
+	void popItem();
 	const std::vector<Item>& getItems() const;
 	bool removeItem(int item);
 	bool addItem(Item obj);

@@ -1,6 +1,8 @@
 #ifndef LASER_ITEM_HPP
 #define LASER_ITEM_HPP
 
+#include <string>
+
 enum ItemMainType {
 	Type_None, //used for empty slots in the inventory
 	Type_Health,
@@ -31,12 +33,14 @@ enum ItemSubType {
 class Item {
 public:
 	Item() : m_ItemMainType(Type_None), m_ItemSubType(SubType_None) {};
-	Item(ItemMainType mainType, ItemSubType subType) : m_ItemMainType(mainType), m_ItemSubType(subType) {};
-	ItemMainType getMainType() const { return m_ItemMainType;} ;
-	ItemSubType getSubType() const { return m_ItemSubType; };
+	Item(ItemMainType mainType, ItemSubType subType, std::string itemName) : m_ItemMainType(mainType), m_ItemSubType(subType), m_ItemName(itemName) {};
+	const ItemMainType getMainType() const { return m_ItemMainType;} ;
+	const ItemSubType getSubType() const { return m_ItemSubType; };
+	const std::string getItemName() const {return m_ItemName; };
 private:
 	ItemMainType m_ItemMainType;
 	ItemSubType m_ItemSubType;
+	std::string m_ItemName;
 };
 
 #endif

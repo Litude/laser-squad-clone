@@ -30,7 +30,21 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.getGrid().getTile(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
 	game.getGrid().getTile(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
 
-	game.getGrid().getTile(7, 4).addItem(Health_Small());
+	game.getGrid().getTile(7, 4).addItem(HealthPackSmall());
+	//game.getGrid().getTile(7, 6).addItem(Pistol()); //removed due to conflict
+	game.getGrid().getTile(15, 6).addItem(HealthPackLarge());
+	game.getGrid().getTile(15, 6).addItem(HealthPackLarge());
+
+	//Add 9 pcs to test full inventory
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
 
 	// Test put walls on the edges of the map
 	for (unsigned int i = 0; i < game.getGrid().getWidth(); ++i)
@@ -45,9 +59,6 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 	// Test updating tile after tilemap has already been created
 	game.getGrid().getTile(12, 16).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
-	game.getGrid().getTile(15, 6).addItem(Health_Large());
-	//tileMap->updateTile(sf::Vector2u(12, 16));
-	//tileMap->updateTile(sf::Vector2u(15, 6));
 
 	game.addCharacter(sf::Vector2u(1, 1), 1);
 	game.addCharacter(sf::Vector2u(4, 4), 1);
@@ -74,13 +85,26 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	textAP.setCharacterSize(12);
 	textMouseMode.setFont(*font);
 	textMouseMode.setCharacterSize(12);
+	textPickupItem.setFont(*font);
+	textPickupItem.setCharacterSize(12);
+	textPickupItem.setString("Pick up");
+	textDropItem.setFont(*font);
+	textDropItem.setCharacterSize(12);
+	textDropItem.setString("Drop");
 	buttonEndTurn.setFillColor(sf::Color::Magenta);
+	buttonPickupItem.setFillColor(sf::Color::Magenta);
+	buttonDropItem.setFillColor(sf::Color::Magenta);
 
 	//Game drawing initialization
 	selectedCharacter = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
 	selectedCharacter.setOutlineColor(sf::Color::Yellow);
 	selectedCharacter.setOutlineThickness(2.0f);
 	selectedCharacter.setFillColor(sf::Color::Transparent);
+
+	selectedItem = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
+	selectedItem.setOutlineColor(sf::Color::Yellow);
+	selectedItem.setOutlineThickness(2.0f);
+	selectedItem.setFillColor(sf::Color::Transparent);
 
 	texPlayer1 = std::make_shared<sf::Texture>(sf::Texture());
 	if (!texPlayer1->loadFromFile("img/character1_sheet.png")) {
@@ -114,6 +138,16 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	if (!shader->loadFromFile("img/lineofsight_shader.frag", sf::Shader::Fragment))
 	{
 		std::cout << "Could not load 'img/lineofsight_shader.frag'\n";
+	}
+
+	texItems = std::make_shared<sf::Texture>(sf::Texture());
+	if (!texItems->loadFromFile("img/tileset_items.png")) {
+		std::cout << "Could not load 'img/tileset_items.png'\n";
+	}
+	inventoryItems.resize(MAX_ITEMS);
+
+	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
+		inventoryItems[i].setTexture(*texItems);
 	}
 }
 
@@ -188,6 +222,31 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 						if (buttonEndTurn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
 							endTurn();
 						}
+						else if (game.getSelectedCharacter() != game.getCharacters().end()) {
+							//Check for stuff that requires a game character to be selected
+							if (buttonPickupItem.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
+								if (game.characterPickUpItem(game.getSelectedCharacter())) {
+									tileMap->updateTile(game.getSelectedCharacter()->getPosition());
+								}
+							}
+							else if (buttonDropItem.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
+								if (game.getSelectedCharacter()->getSelectedItem() != -1) {
+									game.characterDropItem(game.getSelectedCharacter());
+									tileMap->updateTile(game.getSelectedCharacter()->getPosition());
+								}
+							}
+							else {
+								for (unsigned int i = 0; i < MAX_ITEMS; i++) {
+									if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i].getMainType() != Type_None) {
+										game.getSelectedCharacter()->setSelectedItem(i);
+										break;
+									}
+									else {
+										game.getSelectedCharacter()->setSelectedItem(-1);
+									}
+								}
+							}
+						}
 					}
 				}
 				else {
@@ -226,7 +285,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 		float x = (float)mousePos_old.x - mousePos.x;
 		float y = (float)mousePos_old.y - mousePos.y;
 		mousePos_old = mousePos;
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
 			gameView.move(x, y);
 		}
 
@@ -363,6 +422,19 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		//AP text
 		textAP.setPosition(App.getSize().x - MENUSIZE + 52, 100);
 
+		//Pick up item button and text
+		buttonPickupItem.setPosition(App.getSize().x - MENUSIZE + 10, 400);
+		textPickupItem.setPosition(App.getSize().x - MENUSIZE + 12, 400);
+
+		//Drop item button and text
+		buttonDropItem.setPosition(App.getSize().x - MENUSIZE + 110, 400);
+		textDropItem.setPosition(App.getSize().x - MENUSIZE + 112, 400);
+
+		//Inventory item positions
+		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
+			inventoryItems[i].setPosition((App.getSize().x - MENUSIZE + 18) + ((i % ITEMS_PER_ROW) * (TILESIZE + 12)), 430 + (i / ITEMS_PER_ROW) * (TILESIZE + 12));
+		}
+
 	}
 
 	//Interface elements that always need to be updated
@@ -388,6 +460,19 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 	// Draw action points
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
 		App.draw(textAP);
+		App.draw(buttonPickupItem);
+		App.draw(textPickupItem);
+		App.draw(buttonDropItem);
+		App.draw(textDropItem);
+		// Draw items
+		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
+			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i].getSubType() * TILESIZE, 0, TILESIZE, TILESIZE));
+			App.draw(inventoryItems[i]);
+			if (game.getSelectedCharacter()->getSelectedItem() == i) {
+				selectedItem.setPosition(inventoryItems[i].getPosition());
+				App.draw(selectedItem);
+			}
+		}
 	}
 
 	App.draw(textFPS);

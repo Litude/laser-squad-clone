@@ -5,3 +5,6 @@
 #define WINDOW_HEIGHT 600
 
 #define NUM_ANIMATIONS 4
+
+#define MAX_ITEMS 8
+#define ITEMS_PER_ROW 4

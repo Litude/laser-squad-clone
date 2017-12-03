@@ -123,3 +123,24 @@ sf::Vector2u GameCharacter::getRenderPosition() const
 	return renderPosition;
 }
 
+bool GameCharacter::addItem(Item obj)
+{
+	if (actionPoints >= AP_COST_PICK_ITEM) {
+		if (inventory.add(obj)) {
+			actionPoints -= AP_COST_PICK_ITEM;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool GameCharacter::removeSelectedItem()
+{
+	if (actionPoints >= AP_COST_DROP_ITEM) {
+		inventory[selectedItem] = Item();
+		selectedItem = -1;
+		actionPoints -= AP_COST_DROP_ITEM;
+		return true;
+	}
+	return false;
+}
