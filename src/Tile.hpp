@@ -21,7 +21,6 @@ public:
 		setTile(ground, block);
 	}
 
-	sf::Texture& getTexture();
 	TileGround getGround() const;
 	TileBlock getBlock() const;
 	ItemSubType getTopItemType() const;
@@ -37,7 +36,6 @@ private:
 	TileGround ground;
 	TileBlock block;
 	std::vector<Item> items;
-	sf::Texture texture;
 };
 
 std::ostream& operator<<(std::ostream& out, const Tile& t);

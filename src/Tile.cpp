@@ -19,8 +19,6 @@ void Tile::popItem() {
 	items.pop_back();
 }
 
-sf::Texture& Tile::getTexture() { return texture; }
-
 const std::vector<Item>& Tile::getItems() const { return items; }
 
 bool Tile::isSolid() const { return !(block == air); }
