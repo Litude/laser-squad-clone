@@ -24,7 +24,7 @@ public:
 	sf::Texture& getTexture();
 	TileGround getGround() const;
 	TileBlock getBlock() const;
-	const ItemSubType getTopItemType() const;
+	ItemSubType getTopItemType() const;
 	const std::vector<Item>& getItems() const;
 	bool removeItem(int item);
 	bool addItem(Item obj);

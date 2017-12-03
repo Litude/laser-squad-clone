@@ -4,7 +4,7 @@ TileBlock Tile::getBlock() const { return block; }
 
 TileGround Tile::getGround() const { return ground; }
 
-const ItemSubType Tile::getTopItemType() const {
+ItemSubType Tile::getTopItemType() const {
 	if (items.size() == 0) return SubType_None;
 	return items.at(items.size() - 1).getSubType();
 }
