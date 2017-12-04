@@ -33,6 +33,7 @@ enum ItemSubType {
 class Item {
 public:
 	Item() : m_ItemMainType(Type_None), m_ItemSubType(SubType_None) {};
+	virtual ~Item() {};
 	Item(ItemMainType mainType, ItemSubType subType, std::string itemName) : m_ItemMainType(mainType), m_ItemSubType(subType), m_ItemName(itemName) {};
 	const ItemMainType getMainType() const { return m_ItemMainType;} ;
 	const ItemSubType getSubType() const { return m_ItemSubType; };

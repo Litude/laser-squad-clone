@@ -58,7 +58,7 @@ bool Game::characterPickUpItem(std::vector<GameCharacter>::iterator it) {
 }
 
 bool Game::characterDropItem(std::vector<GameCharacter>::iterator it) {
-	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItem()]);
+	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItemIndex()]);
 	if (getSelectedCharacter()->removeSelectedItem()) {
 		return true;
 	}
@@ -88,22 +88,22 @@ const sf::Vector2u Game::traceFromCharacter(gc_iterator it, sf::Vector2u target)
 
 // Try to shoot at Tile on coordinates sf::Vector2u target
 // Actual Tile hit may deviate based on weapon statistics
-const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator gc, sf::Vector2u target) {
+const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2u target) {
 	std::cout << "===================" << std::endl;
-	std::cout << "character origin: (" << gc->getPosition().x << ", " << gc->getPosition().y << ")" << std::endl;
+	std::cout << "character origin: (" << it->getPosition().x << ", " << it->getPosition().y << ")" << std::endl;
 	std::cout << "shoot called with coords: (" << target.x << ", " << target.y << ")" << std::endl;
 	// TODO:
 	// get weapon behavior from equipped weapon, ie. simple, explosive, several shots
 	// get error on target tile from weapon behavior, ie how much actual target tile deviates from selected tile
 	std::vector<sf::Vector2u> endTiles;
-	int numberOfShots = gc->shoot();
+	int numberOfShots = it->shoot();
 	for (int i = 0; i < numberOfShots; ++i) {
-		auto deviated = gc->getEquipped().deviate(target);
-		auto endTile = traceFromCharacter(gc, deviated);
+		auto deviated = it->getEquipped()->deviate(target);
+		auto endTile = traceFromCharacter(it, deviated);
 		std::cout << "landed at tile at coords: (" << endTile.x << ", " << endTile.y << ")" << std::endl;
-		for (auto gc : characters) {
+		for (auto &gc : characters) {
 			if (gc.getPosition() == endTile) {
-				int dmg = 5;//placeholder damage
+				int dmg = it->getEquipped()->getDamage();
 				gc.sufferDamage(dmg);
 				std::cout << "character suffered " << dmg << " damage" << std::endl;
 				break;

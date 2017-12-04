@@ -30,21 +30,22 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.getGrid().getTile(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
 	game.getGrid().getTile(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
 
-	game.getGrid().getTile(7, 4).addItem(HealthPackSmall());
-	//game.getGrid().getTile(7, 6).addItem(Pistol()); //removed due to conflict
-	game.getGrid().getTile(15, 6).addItem(HealthPackLarge());
-	game.getGrid().getTile(15, 6).addItem(HealthPackLarge());
+	game.getGrid().getTile(7, 4).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
+	game.getGrid().getTile(7, 6).addItem(std::make_shared<Pistol>(Pistol()));
+	game.getGrid().getTile(9, 6).addItem(std::make_shared<Shotgun>(Shotgun()));
+	game.getGrid().getTile(15, 6).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+	game.getGrid().getTile(15, 6).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
 
 	//Add 9 pcs to test full inventory
-	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
-	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
-	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
-	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
-	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
-	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
-	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
-	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
-	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
 
 	// Test put walls on the edges of the map
 	for (unsigned int i = 0; i < game.getGrid().getWidth(); ++i)
@@ -91,9 +92,13 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	textDropItem.setFont(*font);
 	textDropItem.setCharacterSize(12);
 	textDropItem.setString("Drop");
+	textEquipItem.setFont(*font);
+	textEquipItem.setCharacterSize(12);
+	textEquipItem.setString("Equip");
 	buttonEndTurn.setFillColor(sf::Color::Magenta);
 	buttonPickupItem.setFillColor(sf::Color::Magenta);
 	buttonDropItem.setFillColor(sf::Color::Magenta);
+	buttonEquipItem.setFillColor(sf::Color::Magenta);
 
 	//Game drawing initialization
 	selectedCharacter = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
@@ -106,6 +111,9 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	selectedItem.setOutlineThickness(2.0f);
 	selectedItem.setFillColor(sf::Color::Transparent);
 
+	equippedItem = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
+	equippedItem.setFillColor(sf::Color::Red);
+
 	texPlayer1 = std::make_shared<sf::Texture>(sf::Texture());
 	if (!texPlayer1->loadFromFile("img/character1_sheet.png")) {
 		std::cout << "Could not load 'img/character1_sheet.png'\n";
@@ -116,13 +124,30 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 		std::cout << "Could not load 'img/character2_sheet.png'\n";
 	}
 
+	// Set up animations
+	Animation animation_walk_left(9, 0, 8, 62000);
+	Animation animation_walk_right(11, 0, 8, 62000);
+	Animation animation_walk_down(10, 0, 8, 62000);
+	Animation animation_walk_up(8, 0, 8, 62000);
+	Animation animation_die(20, 0, 5, 125000, false);
+	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
+	animManager.addAnim(animation_walk_left);
+	animManager.addAnim(animation_walk_right);
+	animManager.addAnim(animation_walk_down);
+	animManager.addAnim(animation_walk_up);
+	animManager.addAnim(animation_die);
+	animManager.changeAnim(animations::walk_down); // Initial animation
+	for (auto &character : game.getCharacters()) {
+		character.setAnimationManager(animManager);
+	}
+
 	//Ray tracing line for shooting
 	rayLine[0].color = sf::Color::Red;
 	rayLine[1].color = sf::Color::Green;
 
 	// Create a render-texture to draw visible tiles based on line of sight
 	renderTexture_visibleTiles = std::make_shared<sf::RenderTexture>();
-	if (!renderTexture_visibleTiles->create(gameView.getSize().x, gameView.getSize().y))
+	if (!renderTexture_visibleTiles->create(game.getGrid().getWidth() * TILESIZE, game.getGrid().getHeight() * TILESIZE))
 	{
 		std::cout << "Could not initialize render texture\n";
 	}
@@ -230,19 +255,22 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 								}
 							}
 							else if (buttonDropItem.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
-								if (game.getSelectedCharacter()->getSelectedItem() != -1) {
+								if (game.getSelectedCharacter()->getSelectedItemIndex() != -1) {
 									game.characterDropItem(game.getSelectedCharacter());
 									tileMap->updateTile(game.getSelectedCharacter()->getPosition());
 								}
 							}
+							else if (buttonEquipItem.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
+								game.getSelectedCharacter()->equipSelected();
+							}
 							else {
 								for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-									if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i].getMainType() != Type_None) {
-										game.getSelectedCharacter()->setSelectedItem(i);
+									if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i]->getMainType() != Type_None) {
+										game.getSelectedCharacter()->setSelectedItemIndex(i);
 										break;
 									}
 									else {
-										game.getSelectedCharacter()->setSelectedItem(-1);
+										game.getSelectedCharacter()->setSelectedItemIndex(-1);
 									}
 								}
 							}
@@ -294,9 +322,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 		timeAccumulator += delta;
 
 		for (auto &character : game.getCharacters()) {
-			if (character.isMoving()) {
-				character.move(delta);
-			}
+			character.update(delta);
 		}
 
 		App.clear();
@@ -353,12 +379,11 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 		}
 		if (it->getTeam() == 1) {
 			characterShape.setTexture(*texPlayer1);
-			characterShape.setTextureRect(sf::IntRect(it->getDirection() * TILESIZE, it->getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
 		}
 		else {
 			characterShape.setTexture(*texPlayer2);
-			characterShape.setTextureRect(sf::IntRect(it->getDirection() * TILESIZE, it->getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
 		}
+		characterShape.setTextureRect(it->getAnimationManager().getFrame());
 
 		App.draw(characterShape);
 	}
@@ -427,8 +452,12 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		textPickupItem.setPosition(App.getSize().x - MENUSIZE + 12, 400);
 
 		//Drop item button and text
-		buttonDropItem.setPosition(App.getSize().x - MENUSIZE + 110, 400);
-		textDropItem.setPosition(App.getSize().x - MENUSIZE + 112, 400);
+		buttonDropItem.setPosition(App.getSize().x - MENUSIZE + 70, 400);
+		textDropItem.setPosition(App.getSize().x - MENUSIZE + 72, 400);
+
+		//Equip item button and text
+		buttonEquipItem.setPosition(App.getSize().x - MENUSIZE + 130, 400);
+		textEquipItem.setPosition(App.getSize().x - MENUSIZE + 132, 400);
 
 		//Inventory item positions
 		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
@@ -446,6 +475,10 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 	//TODO: Process selected character attributes here and draw them on the interface...
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
 		textAP.setString("Action points: " + std::to_string(game.getSelectedCharacter()->getActionPoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxActionPoints()));
+
+		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) {
+			equippedItem.setPosition((App.getSize().x - MENUSIZE + 18) + ((game.getSelectedCharacter()->getSelectedWeaponIndex() % ITEMS_PER_ROW) * (TILESIZE + 12)), 430 + (game.getSelectedCharacter()->getSelectedWeaponIndex() / ITEMS_PER_ROW) * (TILESIZE + 12));
+		}
 	}
 
 	currentTime = fpsclock.getElapsedTime().asMicroseconds() / 1000000.0f;
@@ -464,11 +497,14 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		App.draw(textPickupItem);
 		App.draw(buttonDropItem);
 		App.draw(textDropItem);
+		App.draw(buttonEquipItem);
+		App.draw(textEquipItem);
+		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) App.draw(equippedItem);
 		// Draw items
 		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i].getSubType() * TILESIZE, 0, TILESIZE, TILESIZE));
+			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i]->getSubType() * TILESIZE, 0, TILESIZE, TILESIZE));
 			App.draw(inventoryItems[i]);
-			if (game.getSelectedCharacter()->getSelectedItem() == i) {
+			if (game.getSelectedCharacter()->getSelectedItemIndex() == i) {
 				selectedItem.setPosition(inventoryItems[i].getPosition());
 				App.draw(selectedItem);
 			}

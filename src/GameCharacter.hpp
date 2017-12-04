@@ -2,19 +2,30 @@
 #define LASER_CHARACTER_HPP
 
 #include <SFML/System/Vector2.hpp>
+#include <memory>
 #include "Inventory.hpp"
 #include "Weapon.hpp"
+#include "AnimationManager.hpp"
 #include "constants.hpp"
 
 #define AP_COST_MOVEMENT 1
 #define AP_COST_PICK_ITEM 1
 #define AP_COST_DROP_ITEM 1
+#define AP_COST_EQUIP 1
 
 enum direction {
 	left,
 	right,
 	down,
 	up
+};
+
+enum animations {
+	walk_left,
+	walk_right,
+	walk_down,
+	walk_up,
+	die
 };
 
 class GameCharacter {
@@ -27,21 +38,25 @@ public:
 	sf::Vector2u	getPosition() const { return currentPosition; }
 	sf::Vector2u	getRenderPosition() const;
 	unsigned int	getDirection() const { return direction; }
-	unsigned int	getAnimationFrame() const { return animation; }
-	int				getSelectedItem() const { return selectedItem; }
+	int				getSelectedItemIndex() const { return selectedItemIdx; }
+	int				getSelectedWeaponIndex() const { return selectedWeaponIdx; }
 	bool			isDead() const { return (health == 0); }
 	bool			isMoving() const { return moving; }
-	Weapon&			getEquipped() { return currentItem; }
+	std::shared_ptr<Weapon>			getEquipped() { return equippedWeapon; }
 	bool			moveTo(sf::Vector2i target_dir);
-	void			move(int delta_ms);
+	void			update(int delta_ms);
 	int 			shoot();
 	void			resetActionPoints() { actionPoints = maxActionPoints; }
 	void 			sufferDamage(int dmg);
     unsigned int    getLengthofSight() const {return lengthofSight;}
-	bool			addItem(Item obj);
+	bool			addItem(std::shared_ptr<Item> obj);
 	bool			removeSelectedItem();
 	Inventory&		getInventory() { return inventory; }
-	void			setSelectedItem(int idx) { selectedItem = idx; }
+	void			setSelectedItemIndex(int idx) { selectedItemIdx = idx; }
+	void			setSelectedWeaponIndex(int idx) {selectedWeaponIdx = idx; }
+	bool			equipSelected();
+	void			setAnimationManager(AnimationManager animationManager) { this->animationManager = animationManager; }
+	AnimationManager getAnimationManager() const { return animationManager;  }
 
 private:
 	void			moveLeft();
@@ -51,20 +66,21 @@ private:
 
 	sf::Vector2u currentPosition; // Position on the map in tile coordinates
 	sf::Vector2u previousPosition;
+
+	AnimationManager animationManager;
 	float moveFactor = 0;
-	int animationTime = 0;
 	direction direction = down;
-	unsigned int animation = 0;
 	bool moving = false;
 	unsigned int maxActionPoints = 20;
 
 	unsigned int actionPoints = maxActionPoints;
 	Inventory inventory;
-	unsigned int health = 10;
-	Weapon currentItem = Weapon();//placeholder
+	unsigned int health = 5;
+	std::shared_ptr<Weapon> equippedWeapon = std::make_shared<Hands>(Hands());
 	unsigned int team;
-    unsigned int lengthofSight=10;
-	int selectedItem = -1;
+    unsigned int lengthofSight=9;
+	int selectedItemIdx = -1;
+	int selectedWeaponIdx = -1;
 };
 
 #endif
