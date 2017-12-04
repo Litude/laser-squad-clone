@@ -14,7 +14,7 @@ ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 	sf::Font Font;
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::Red);
-	rs.setSize(sf::Vector2f(20, 20));
+	rs.setSize(sf::Vector2f(200.f, 50.f));
 
 	if (!Texture.loadFromFile("img/mainmenu.png"))
 	{
@@ -38,7 +38,8 @@ ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 	mapeditor.setCallback([&] {this->openScreen(ScreenResult::Exit); });
 	buttons.push_back(mapeditor);
 
-	Button quit("Quit", Font, sf::Text::Bold, 25, sf::Vector2f(350.f, 350.f), rs);
+	Button quit("Quit", Font, sf::Text::Bold, 25, sf::Vector2f(400.f, 400.f), rs);
+	quit.setCallback([&] {this->openScreen(ScreenResult::Exit); });
 	buttons.push_back(quit);
 /*
 	Button quit("Quit", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 350.f));

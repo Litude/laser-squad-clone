@@ -95,17 +95,24 @@ void Button::setPosition(sf::Vector2f pos)
   b_pos = pos;
   switch(b_type) {
     case text: {
+		b_text.setOrigin(b_text.getGlobalBounds().width / 2, b_text.getGlobalBounds().height / 2);
       b_text.setPosition(b_pos);
     }
     break;
     case sprite: {
+      b_sprite.setOrigin(b_sprite.getGlobalBounds().width/2, b_sprite.getGlobalBounds().height/2);
       b_sprite.setPosition(b_pos);
-      sf::Vector2f textPosition = sf::Vector2f(b_sprite.getPosition().x, b_sprite.getPosition().y - b_sprite.getGlobalBounds().height/4);
+      sf::Vector2f textPosition = sf::Vector2f(b_sprite.getPosition().x, b_sprite.getPosition().y);
+      b_text.setOrigin(b_text.getGlobalBounds().width/2, b_text.getGlobalBounds().height/2);
+      b_text.setPosition(textPosition);
     }
     break;
     case rectangle: {
+      b_Rshape.setOrigin(b_Rshape.getGlobalBounds().width/2, b_Rshape.getGlobalBounds().height/2);
       b_Rshape.setPosition(b_pos);
-      sf::Vector2f textPosition = sf::Vector2f(b_Rshape.getPosition().x, b_Rshape.getPosition().y - b_Rshape.getGlobalBounds().height/4);
+      sf::Vector2f textPosition = sf::Vector2f(b_Rshape.getPosition().x , b_Rshape.getPosition().y);
+      b_text.setOrigin(b_text.getGlobalBounds().width/2, b_text.getGlobalBounds().height/2);
+      b_text.setPosition(textPosition);
     }
     break;
   }
@@ -118,9 +125,43 @@ void Button::update(sf::Event& e, sf::RenderWindow& window)
 {
   // Mouse handling
   sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-  bool isHovering = mousePos.x >= b_text.getPosition().x && mousePos.x <= b_text.getPosition().x + b_text.getLocalBounds().width
-                    && mousePos.y >= b_text.getPosition().y && mousePos.y <= b_text.getPosition().y + b_text.getLocalBounds().height + 10.f;
 
+  sf::Vector2f objPos;
+  sf::FloatRect objGlobalBounds;
+
+  switch(b_type){
+    case text: {
+      objPos = b_text.getPosition();
+      objGlobalBounds = b_text.getGlobalBounds();
+	  objPos.y += b_text.getGlobalBounds().height * 0.5f;
+    }
+    break;
+    case sprite: {
+	  objPos = b_sprite.getPosition();
+	  objGlobalBounds = b_sprite.getGlobalBounds();
+    }
+    break;
+    case rectangle: {
+	  objPos = b_Rshape.getPosition();
+	  objGlobalBounds = b_Rshape.getGlobalBounds();
+    }
+    break;
+  }
+  /*
+  bool isHovering = mousePos.x >= b_text.getPosition().x && mousePos.x <= b_text.getPosition().x + b_text.getLocalBounds().width
+                  && mousePos.y >= b_text.getPosition().y && mousePos.y <= b_text.getPosition().y + b_text.getLocalBounds().height + 10.f;
+	*/
+
+  bool isHovering =    mousePos.x >= objPos.x - objGlobalBounds.width / 2
+                       && mousePos.x <= objPos.x + objGlobalBounds.width / 2
+                       && mousePos.y >= objPos.y - objGlobalBounds.height / 2
+                       && mousePos.y <= objPos.y + objGlobalBounds.height / 2;
+
+                    /*   bool mouseInButton =    m_mousePosition.x >= m_button.getPosition().x - m_button.getGlobalBounds().width/2
+                            && m_mousePosition.x <= m_button.getPosition().x + m_button.getGlobalBounds().width/2
+                            && m_mousePosition.y >= m_button.getPosition().y - m_button.getGlobalBounds().height/2
+                            && m_mousePosition.y <= m_button.getPosition().y + m_button.getGlobalBounds().height/2;
+*/
   if(e.type == sf::Event::MouseMoved) {
   if(isHovering){
       b_state = hovered;
