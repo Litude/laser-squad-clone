@@ -31,7 +31,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.getGrid().getTile(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
 
 	game.getGrid().getTile(7, 4).addItem(HealthPackSmall());
-	//game.getGrid().getTile(7, 6).addItem(Pistol()); //removed due to conflict
+	game.getGrid().getTile(7, 6).addItem(Pistol());
 	game.getGrid().getTile(15, 6).addItem(HealthPackLarge());
 	game.getGrid().getTile(15, 6).addItem(HealthPackLarge());
 
