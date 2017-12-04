@@ -70,8 +70,8 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 	//Interface drawing initialization
 	font = std::make_shared<sf::Font>(sf::Font());
-	if (!font->loadFromFile("font/ARIALN.TTF")) {
-		std::cout << "Could not load 'font/ARIALN.TTF'\n";
+	if (!font->loadFromFile("font/Pixellari.ttf")) {
+		std::cout << "Could not load 'font/Pixellari.ttf'\n";
 	}
 
 	//Interface element attributes that won't change during execution

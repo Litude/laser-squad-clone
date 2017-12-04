@@ -109,9 +109,9 @@ bool MainMenuScreen::initComponents(sf::RenderWindow & App)
 	logoSprite.setTexture(*logoTexture);
 
 	font = std::make_shared<sf::Font>(sf::Font());
-	if (!font->loadFromFile("font/ARIALN.TTF"))
+	if (!font->loadFromFile("font/Pixellari.ttf"))
 	{
-		std::cerr << "Error loading ARIALN.TTF" << std::endl;
+		std::cerr << "Error loading Pixellari.ttf" << std::endl;
 		return ScreenResult::Exit;
 	}
 
