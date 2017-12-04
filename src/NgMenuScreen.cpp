@@ -5,34 +5,11 @@ NgMenuScreen::NgMenuScreen(void)
 {
 }
 
-ScreenResult NgMenuScreen::Run(sf::RenderWindow & App) {
+ScreenResult NgMenuScreen::Run(sf::RenderWindow & App) 
+{
+	initComponents(App);
 	m_screenResult = ScreenResult::NewGameScene;
 	sf::Event Event;
-	sf::Texture Texture;
-	sf::Sprite Sprite;
-	sf::Font Font;
-
-	if (!Texture.loadFromFile("img/newgamemenu.png"))
-	{
-		std::cerr << "Error loading newgamemenu.png" << std::endl;
-		return ScreenResult::Exit;
-	}
-	Sprite.setTexture(Texture);
-
-	if (!Font.loadFromFile("font/ARIALN.TTF"))
-	{
-		std::cerr << "Error loading ARIALN.TTF" << std::endl;
-		return ScreenResult::Exit;
-	}
-
-	std::vector<Button> buttons;
-	Button launchgame("Launch game", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f));
-	launchgame.setCallback([&] {this->openScreen(ScreenResult::GameScene); });
-	buttons.push_back(launchgame);
-
-	Button back("Back", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f));
-	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
-	buttons.push_back(back);
 
 	auto selectedButtonItem = buttons.begin();
 
@@ -48,40 +25,34 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App) {
 			{
 				switch (Event.key.code)
 				{
-					case sf::Keyboard::Up:
-						if (selectedButtonItem > buttons.begin()) { selectedButtonItem--; }
-						break;
-					case sf::Keyboard::Down:
-						if (selectedButtonItem < buttons.end() - 1) { selectedButtonItem++; }
-						break;
-					case sf::Keyboard::Return:
-						selectedButtonItem->click();
-						break;
-					default:
-						break;
-					}
-					for (auto &button : buttons) {
-						button.setState(state::normal);
-					}
+				case sf::Keyboard::Up:
+					if (selectedButtonItem > buttons.begin()) { selectedButtonItem--; }
+					break;
+				case sf::Keyboard::Down:
+					if (selectedButtonItem < buttons.end() - 1) { selectedButtonItem++; }
+					break;
+				case sf::Keyboard::Return:
+					selectedButtonItem->click();
+					break;
+				default:
+					break;
+				}
+				for (auto &button : buttons) {
+					button.setState(state::normal);
+				}
 			}
 		}
-
 
 		for (auto it = buttons.begin(); it != buttons.end(); ++it) {
 			it->setState(state::normal);
 			it->update(Event, App);
-			if(it->getState() == state::hovered){
+			if (it->getState() == state::hovered){
 				selectedButtonItem = it;
 			}
 		}
 
 		selectedButtonItem->setState(state::hovered);
-		App.clear();
-		App.draw(Sprite);
-		for (auto button : buttons) {
-			App.draw(button);
-		}
-		App.display();
+		drawUI(App);
 	}
 
 	return m_screenResult;
@@ -90,4 +61,64 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App) {
 void NgMenuScreen::openScreen(ScreenResult res)
 {
 	m_screenResult = res;
+}
+
+void NgMenuScreen::drawUI(sf::RenderWindow &App)
+{
+	App.clear();
+	App.draw(backgroundSprite);
+	App.draw(logoSprite);
+	for (auto button : buttons) {
+		App.draw(button);
+	}
+	App.display();
+}
+
+void NgMenuScreen::updateLayout(sf::RenderWindow & App)
+{
+	backgroundSprite.setScale(
+		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
+		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
+	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, logoSprite.getGlobalBounds().height * 1.f });
+	float factor = 0.05f;
+	for (auto &button : buttons) {
+		button.setPosition({ App.getView().getSize().x * 0.5f - button.getGlobalBounds().width * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height + App.getView().getSize().y * factor });
+		factor += 0.05f;
+	}
+}
+
+bool NgMenuScreen::initComponents(sf::RenderWindow & App)
+{
+	backgroundTexture = std::make_shared<sf::Texture>(sf::Texture());
+	if (!backgroundTexture->loadFromFile("img/background.png"))
+	{
+		std::cerr << "Error loading background.png" << std::endl;
+		return ScreenResult::Exit;
+	}
+	backgroundSprite.setTexture(*backgroundTexture);
+
+	logoTexture = std::make_shared<sf::Texture>(sf::Texture());
+	if (!logoTexture->loadFromFile("img/logo.png"))
+	{
+		std::cerr << "Error loading logo.png" << std::endl;
+		return ScreenResult::Exit;
+	}
+	logoSprite.setTexture(*logoTexture);
+
+	font = std::make_shared<sf::Font>(sf::Font());
+	if (!font->loadFromFile("font/ARIALN.TTF"))
+	{
+		std::cerr << "Error loading ARIALN.TTF" << std::endl;
+		return ScreenResult::Exit;
+	}
+
+	Button launchgame("Launch game", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f));
+	launchgame.setCallback([&] {this->openScreen(ScreenResult::GameScene); });
+	buttons.push_back(launchgame);
+
+	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f));
+	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
+	buttons.push_back(back);
+
+	updateLayout(App);
 }

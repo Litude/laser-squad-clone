@@ -69,6 +69,27 @@ Button::~Button()
 {
 }
 
+const sf::FloatRect  Button::getGlobalBounds()
+{
+	switch (b_type) {
+	case text:
+	{
+		return b_text.getGlobalBounds();
+	}
+	break;
+	case sprite:
+	{
+		return b_sprite.getGlobalBounds();
+	}
+	break;
+	case rectangle:
+	{
+		return b_Rshape.getGlobalBounds();
+	}
+	break;
+	}
+}
+
 void Button::setState(sf::Uint32 st)
 {
   b_state = st;
@@ -204,5 +225,7 @@ void Button::setCallback(std::function<void()> callback)
 
 void Button::click()
 {
-	b_callback();
+	if (b_callback != nullptr) {
+		b_callback();
+	}
 }
