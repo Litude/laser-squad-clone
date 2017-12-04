@@ -129,7 +129,11 @@ bool GameCharacter::removeSelectedItem()
 {
 	if (actionPoints >= AP_COST_DROP_ITEM) {
 		inventory[selectedItemIdx] = std::make_shared<Item>(Item());
-		if (selectedItemIdx == selectedWeaponIdx) selectedWeaponIdx = -1;
+		if (selectedItemIdx == selectedWeaponIdx)
+		{
+			selectedWeaponIdx = -1;
+			equippedWeapon = std::make_shared<Hands>(Hands());
+		}
 		selectedItemIdx = -1;
 		actionPoints -= AP_COST_DROP_ITEM;
 		return true;

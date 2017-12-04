@@ -76,7 +76,7 @@ private:
 	unsigned int actionPoints = maxActionPoints;
 	Inventory inventory;
 	unsigned int health = 5;
-	std::shared_ptr<Weapon> equippedWeapon = std::make_shared<Hands>(Hands()); // TODO: This must be freed
+	std::shared_ptr<Weapon> equippedWeapon = std::make_shared<Hands>(Hands());
 	unsigned int team;
     unsigned int lengthofSight=9;
 	int selectedItemIdx = -1;
