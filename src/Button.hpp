@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <functional>
 #include "Screen.hpp"
 
 enum state {
@@ -29,6 +30,8 @@ public:
   sf::Vector2f getPos() {return b_pos;}
   sf::Uint32 getState() {return b_state;}
   void update(sf::Event& e, sf::RenderWindow& window);
+  void setCallback(std::function<void()> callback);
+  void click();
 private:
   sf::Text text;
   sf::Font b_font;
@@ -39,5 +42,6 @@ private:
   sf::Uint32 b_style;
   float width = text.getLocalBounds().width;
   float height = text.getLocalBounds().height;
+  std::function<void()> b_callback;
 };
 #endif

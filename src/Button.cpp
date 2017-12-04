@@ -62,6 +62,7 @@ void Button::update(sf::Event& e, sf::RenderWindow& window)
       {
         if(isHovering) {
           b_state = clicked;
+		  click();
         }else{
           b_state = normal;
         }
@@ -69,4 +70,14 @@ void Button::update(sf::Event& e, sf::RenderWindow& window)
       break;
     }
   }
+}
+
+void Button::setCallback(std::function<void()> callback)
+{
+	this->b_callback = callback;
+}
+
+void Button::click()
+{
+	b_callback();
 }

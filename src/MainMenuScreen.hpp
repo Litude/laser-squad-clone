@@ -10,7 +10,9 @@ class MainMenuScreen : public Screen
 public:
 	MainMenuScreen(void);
 	virtual ScreenResult Run(sf::RenderWindow &App);
+	void openScreen(ScreenResult res);
 private:
+	ScreenResult m_screenResult;
 };
 
 #endif

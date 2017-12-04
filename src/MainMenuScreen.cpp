@@ -7,6 +7,7 @@ MainMenuScreen::MainMenuScreen(void)
 
 ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 {
+	m_screenResult = ScreenResult::MainMenuScene;
 	sf::Event Event;
 	sf::Texture Texture;
 	sf::Sprite Sprite;
@@ -26,11 +27,21 @@ ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 		std::cerr << "Error loading ARIALN.TTF" << std::endl;
 		return ScreenResult::Exit;
 	}
-	 Button newgame("New game", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f));
-	 Button mapeditor("Map editor", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f));
-	 Button quit("Quit", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 350.f));
 
-	while (1)
+	std::vector<Button> buttons;
+	Button newgame("New game", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f));
+	newgame.setCallback([&] {this->openScreen(ScreenResult::NewGameScene); });
+	buttons.push_back(newgame);
+	Button mapeditor("Map editor", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f));
+	mapeditor.setCallback([&] {this->openScreen(ScreenResult::Exit); });
+	buttons.push_back(mapeditor);
+	Button quit("Quit", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 350.f));
+	quit.setCallback([&] {this->openScreen(ScreenResult::Exit); });
+	buttons.push_back(quit);
+
+	auto selectedButtonItem = buttons.begin();
+
+	while (m_screenResult == ScreenResult::MainMenuScene)
 	{
 		while (App.pollEvent(Event))
 		{
@@ -45,62 +56,40 @@ ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 				switch (Event.key.code)
 				{
 				case sf::Keyboard::Up:
-				  if(menu > 0) {menu--;}
+					if (selectedButtonItem > buttons.begin()) { selectedButtonItem--; }
 					break;
 				case sf::Keyboard::Down:
-					if(menu < nofMenus - 1) {menu++;}
+					if (selectedButtonItem < buttons.end() - 1) { selectedButtonItem++; }
 					break;
 				case sf::Keyboard::Return:
-					if (menu == 0)
-					{
-						return ScreenResult::NewGameScene; //New game
-					} else if(menu == 1) {
-						return ScreenResult::Exit; // TO DO: Map editor screen
-					}
-					else if(menu == 2)
-					{
-						return ScreenResult::Exit; //Exit game
-					}
+					selectedButtonItem->click();
 					break;
 				default:
 					break;
 				}
+				for (auto &button : buttons) {
+					button.setState(state::normal);
+				}
 			}
 		}
-		/*
-		//Drawing the highlighted option
-		if (menu == 0)
-		{
-			newgame.setState(hovered);
-			mapeditor.setState(normal);
-			quit.setState(normal);
-		}
-		else if (menu == 1)
-		{
-			newgame.setState(normal);
-			mapeditor.setState(hovered);
-			quit.setState(normal);
-		} else {
-			newgame.setState(normal);
-			mapeditor.setState(normal);
-			quit.setState(hovered);
-		}*/
+		selectedButtonItem->setState(state::hovered);
 
-		// Sprite.setColor(sf::Color(255, 255, 255, 255));
-		if(newgame.getState() == clicked) {return ScreenResult::NewGameScene;}
-		if(mapeditor.getState() == clicked) {return ScreenResult::Exit;}
-		if(quit.getState() == clicked) {return ScreenResult::Exit;}
-		newgame.update(Event, App);
-		mapeditor.update(Event, App);
-		quit.update(Event, App);
+		for (auto &button : buttons) {
+			button.update(Event, App);
+		}
 
 		App.clear();
 		App.draw(Sprite);
-		App.draw(newgame.getText());
-		App.draw(mapeditor.getText());
-		App.draw(quit.getText());
+		for (auto button : buttons) {
+			App.draw(button.getText());
+		}
 		App.display();
 	}
 
-	return ScreenResult::Exit;
+	return m_screenResult;
+}
+
+void MainMenuScreen::openScreen(ScreenResult res)
+{
+	m_screenResult = res;
 }
