@@ -41,6 +41,7 @@ public:
   sf::Text getText() {return b_text;}
   sf::Vector2f getPos() {return b_pos;}
   sf::Uint32 getState() {return b_state;}
+  const sf::FloatRect getGlobalBounds();
   void update(sf::Event& e, sf::RenderWindow& window);
   void setCallback(std::function<void()> callback);
   void click();
