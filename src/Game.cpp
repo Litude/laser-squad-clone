@@ -50,7 +50,7 @@ bool Game::characterMoveDown(gc_iterator it) {
 }
 
 bool Game::characterPickUpItem(std::vector<GameCharacter>::iterator it) {
-	if (getSelectedCharacter()->addItem(getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).getTopItem())) {
+	if (getSelectedCharacter()->addItem(std::make_shared<Item>(getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).getTopItem()))) {
 		getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).popItem();
 		return true;
 	}
@@ -58,7 +58,7 @@ bool Game::characterPickUpItem(std::vector<GameCharacter>::iterator it) {
 }
 
 bool Game::characterDropItem(std::vector<GameCharacter>::iterator it) {
-	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItem()]);
+	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(*getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItem()]);
 	if (getSelectedCharacter()->removeSelectedItem()) {
 		return true;
 	}
@@ -101,7 +101,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 		auto deviated = it->getEquipped().deviate(target);
 		auto endTile = traceFromCharacter(it, deviated);
 		std::cout << "landed at tile at coords: (" << endTile.x << ", " << endTile.y << ")" << std::endl;
-		for (auto gc : characters) {
+		for (auto &gc : characters) {
 			if (gc.getPosition() == endTile) {
 				int dmg = it->getEquipped().getDamage();
 				gc.sufferDamage(dmg);

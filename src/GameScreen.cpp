@@ -116,6 +116,23 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 		std::cout << "Could not load 'img/character2_sheet.png'\n";
 	}
 
+	// Set up animations
+	Animation animation_walk_left(9, 0, 8, 62000);
+	Animation animation_walk_right(11, 0, 8, 62000);
+	Animation animation_walk_down(10, 0, 8, 62000);
+	Animation animation_walk_up(8, 0, 8, 62000);
+	Animation animation_die(20, 0, 5, 125000, false);
+	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
+	animManager.addAnim(animation_walk_left);
+	animManager.addAnim(animation_walk_right);
+	animManager.addAnim(animation_walk_down);
+	animManager.addAnim(animation_walk_up);
+	animManager.addAnim(animation_die);
+	animManager.changeAnim(animations::walk_down); // Initial animation
+	for (auto &character : game.getCharacters()) {
+		character.setAnimationManager(animManager);
+	}
+
 	//Ray tracing line for shooting
 	rayLine[0].color = sf::Color::Red;
 	rayLine[1].color = sf::Color::Green;
@@ -237,7 +254,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 							}
 							else {
 								for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-									if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i].getMainType() != Type_None) {
+									if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i]->getMainType() != Type_None) {
 										game.getSelectedCharacter()->setSelectedItem(i);
 										break;
 									}
@@ -294,9 +311,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 		timeAccumulator += delta;
 
 		for (auto &character : game.getCharacters()) {
-			if (character.isMoving()) {
-				character.move(delta);
-			}
+			character.update(delta);
 		}
 
 		App.clear();
@@ -353,12 +368,11 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 		}
 		if (it->getTeam() == 1) {
 			characterShape.setTexture(*texPlayer1);
-			characterShape.setTextureRect(sf::IntRect(it->getDirection() * TILESIZE, it->getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
 		}
 		else {
 			characterShape.setTexture(*texPlayer2);
-			characterShape.setTextureRect(sf::IntRect(it->getDirection() * TILESIZE, it->getAnimationFrame() % NUM_ANIMATIONS * TILESIZE, TILESIZE, TILESIZE));
 		}
+		characterShape.setTextureRect(it->getAnimationManager().getFrame());
 
 		App.draw(characterShape);
 	}
@@ -466,7 +480,7 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		App.draw(textDropItem);
 		// Draw items
 		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i].getSubType() * TILESIZE, 0, TILESIZE, TILESIZE));
+			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i]->getSubType() * TILESIZE, 0, TILESIZE, TILESIZE));
 			App.draw(inventoryItems[i]);
 			if (game.getSelectedCharacter()->getSelectedItem() == i) {
 				selectedItem.setPosition(inventoryItems[i].getPosition());
