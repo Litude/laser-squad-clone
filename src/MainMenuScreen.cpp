@@ -82,11 +82,11 @@ void MainMenuScreen::updateLayout(sf::RenderWindow & App)
 	backgroundSprite.setScale(
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
-	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, logoSprite.getGlobalBounds().height * 1.f });
-	float factor = 0.05f;
+	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, App.getView().getSize().y * 0.5f - logoSprite.getGlobalBounds().height * 1.f });
+	unsigned int i = 0;
 	for (auto &button : buttons) {
-		button.setPosition({ App.getView().getSize().x * 0.5f - button.getGlobalBounds().width * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height + App.getView().getSize().y * factor });
-		factor += 0.05f;
+		button.setPosition({ App.getView().getSize().x * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + button.getGlobalBounds().height * 1.5f * i });
+		i++;
 	}
 }
 
@@ -119,17 +119,18 @@ bool MainMenuScreen::initComponents(sf::RenderWindow & App)
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
 
-	Button newgame("New game", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f));
+	sf::RectangleShape rs;
+	rs.setFillColor(sf::Color::White);
+	rs.setSize(sf::Vector2f(140, 40));
+
+	Button newgame("New game", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f), rs);
 	newgame.setCallback([&] {this->openScreen(ScreenResult::NewGameScene); });
 	buttons.push_back(newgame);
 
-	Button mapeditor("Map editor", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f));
+	Button mapeditor("Map editor", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
 	mapeditor.setCallback([&] {this->openScreen(ScreenResult::Exit); });
 	buttons.push_back(mapeditor);
 
-	sf::RectangleShape rs;
-	rs.setFillColor(sf::Color::White);
-	rs.setSize(sf::Vector2f(120, 40));
 	Button quit("Quit", *font, sf::Text::Bold, 25, sf::Vector2f(350.f, 350.f), rs);
 	quit.setCallback([&] {this->openScreen(ScreenResult::Exit); });
 	buttons.push_back(quit);

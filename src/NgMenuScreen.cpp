@@ -79,11 +79,11 @@ void NgMenuScreen::updateLayout(sf::RenderWindow & App)
 	backgroundSprite.setScale(
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
-	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, logoSprite.getGlobalBounds().height * 1.f });
-	float factor = 0.05f;
+	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, App.getView().getSize().y * 0.5f - logoSprite.getGlobalBounds().height * 1.f });
+	unsigned int i = 0;
 	for (auto &button : buttons) {
-		button.setPosition({ App.getView().getSize().x * 0.5f - button.getGlobalBounds().width * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height + App.getView().getSize().y * factor });
-		factor += 0.05f;
+		button.setPosition({ App.getView().getSize().x * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + button.getGlobalBounds().height * 1.5f * i });
+		i++;
 	}
 }
 
