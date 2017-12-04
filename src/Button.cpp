@@ -184,5 +184,7 @@ void Button::setCallback(std::function<void()> callback)
 
 void Button::click()
 {
-	b_callback();
+	if (b_callback != nullptr) {
+		b_callback();
+	}
 }
