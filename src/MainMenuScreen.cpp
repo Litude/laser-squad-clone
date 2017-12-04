@@ -12,8 +12,9 @@ ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 	sf::Texture Texture;
 	sf::Sprite Sprite;
 	sf::Font Font;
-	int menu = 0;
-	int nofMenus = 3; // Number of items currently in the main menu
+	sf::RectangleShape rs;
+	rs.setFillColor(sf::Color::Red);
+	rs.setSize(sf::Vector2f(20, 20));
 
 	if (!Texture.loadFromFile("img/mainmenu.png"))
 	{
@@ -32,13 +33,18 @@ ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 	Button newgame("New game", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f));
 	newgame.setCallback([&] {this->openScreen(ScreenResult::NewGameScene); });
 	buttons.push_back(newgame);
+
 	Button mapeditor("Map editor", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f));
 	mapeditor.setCallback([&] {this->openScreen(ScreenResult::Exit); });
 	buttons.push_back(mapeditor);
+
+	Button quit("Quit", Font, sf::Text::Bold, 25, sf::Vector2f(350.f, 350.f), rs);
+	buttons.push_back(quit);
+/*
 	Button quit("Quit", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 350.f));
 	quit.setCallback([&] {this->openScreen(ScreenResult::Exit); });
 	buttons.push_back(quit);
-
+*/
 	auto selectedButtonItem = buttons.begin();
 
 	while (m_screenResult == ScreenResult::MainMenuScene)
@@ -67,21 +73,22 @@ ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 				default:
 					break;
 				}
-				for (auto &button : buttons) {
-					button.setState(state::normal);
-				}
 			}
 		}
-		selectedButtonItem->setState(state::hovered);
 
-		for (auto &button : buttons) {
-			button.update(Event, App);
+		for (auto it = buttons.begin(); it != buttons.end(); ++it) {
+			it->setState(state::normal);
+			it->update(Event, App);
+			if(it->getState() == state::hovered){
+				selectedButtonItem = it;
+			}
 		}
 
+		selectedButtonItem->setState(state::hovered);
 		App.clear();
 		App.draw(Sprite);
 		for (auto button : buttons) {
-			App.draw(button.getText());
+			App.draw(button);
 		}
 		App.display();
 	}

@@ -10,7 +10,9 @@ class NgMenuScreen : public Screen
 public:
 	NgMenuScreen(void);
 	virtual ScreenResult Run(sf::RenderWindow &App);
+	void openScreen(ScreenResult res);
 private:
+	ScreenResult m_screenResult;
 };
 
 #endif
