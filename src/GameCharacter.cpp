@@ -82,10 +82,11 @@ void GameCharacter::update(int delta_ms) {
 }
 
 int GameCharacter::shoot() {
+	getEquipped()->testInheritance();
 	if (isDead()) return 0;
-	if (actionPoints >= currentItem.apCost() && currentItem.canFire()) {
-		actionPoints -= currentItem.apCost();
-		return currentItem.fire();
+	if (actionPoints >= getEquipped()->apCost() && getEquipped()->canFire()) {
+		actionPoints -= getEquipped()->apCost();
+		return getEquipped()->fire();
 	} else {
 		return 0;
 	}
@@ -130,6 +131,16 @@ bool GameCharacter::removeSelectedItem()
 		inventory[selectedItem] = std::make_shared<Item>(Item());
 		selectedItem = -1;
 		actionPoints -= AP_COST_DROP_ITEM;
+		return true;
+	}
+	return false;
+}
+
+bool GameCharacter::equipSelected()
+{
+	if (selectedItem == -1) return false;
+	if (inventory[selectedItem]->getMainType() == Type_Weapon) {
+		equippedWeapon = std::dynamic_pointer_cast<Weapon>(inventory[selectedItem]);
 		return true;
 	}
 	return false;

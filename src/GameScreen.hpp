@@ -37,6 +37,7 @@ private:
 	sf::RectangleShape buttonEndTurn{ sf::Vector2f(100, 80) };
 	sf::RectangleShape buttonPickupItem{ sf::Vector2f(50, 20) };
 	sf::RectangleShape buttonDropItem{ sf::Vector2f(50, 20) };
+	sf::RectangleShape buttonEquipItem{ sf::Vector2f(50, 20) };
 	sf::RectangleShape selectedCharacter;
 	sf::RectangleShape selectedItem;
 	sf::Text textCurTurn;
@@ -46,6 +47,7 @@ private:
 	sf::Text textMouseMode;
 	sf::Text textPickupItem;
 	sf::Text textDropItem;
+	sf::Text textEquipItem;
 	sf::VertexArray rayLine{ sf::Lines, 2 };
 	std::vector<sf::Sprite> mapTiles;
 	sf::Clock fpsclock;

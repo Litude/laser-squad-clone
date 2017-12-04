@@ -2,6 +2,7 @@
 #define LASER_CHARACTER_HPP
 
 #include <SFML/System/Vector2.hpp>
+#include <memory>
 #include "Inventory.hpp"
 #include "Weapon.hpp"
 #include "AnimationManager.hpp"
@@ -39,7 +40,7 @@ public:
 	int				getSelectedItem() const { return selectedItem; }
 	bool			isDead() const { return (health == 0); }
 	bool			isMoving() const { return moving; }
-	Weapon&			getEquipped() { return currentItem; }
+	std::shared_ptr<Weapon>			getEquipped() { return equippedWeapon; }
 	bool			moveTo(sf::Vector2i target_dir);
 	void			update(int delta_ms);
 	int 			shoot();
@@ -50,6 +51,7 @@ public:
 	bool			removeSelectedItem();
 	Inventory&		getInventory() { return inventory; }
 	void			setSelectedItem(int idx) { selectedItem = idx; }
+	bool			equipSelected();
 	void			setAnimationManager(AnimationManager animationManager) { this->animationManager = animationManager; }
 	AnimationManager getAnimationManager() const { return animationManager;  }
 
@@ -71,7 +73,7 @@ private:
 	unsigned int actionPoints = maxActionPoints;
 	Inventory inventory;
 	unsigned int health = 5;
-	Weapon currentItem = Hands();//placeholder
+	std::shared_ptr<Weapon> equippedWeapon = std::make_shared<Hands>(Hands()); // TODO: This must be freed
 	unsigned int team;
     unsigned int lengthofSight=9;
 	int selectedItem = -1;

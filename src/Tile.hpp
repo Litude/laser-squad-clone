@@ -5,6 +5,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <memory>
 #include "Item.hpp"
 
 enum TileGround { black = 0, dirt = 1, grass = 2, wood = 3, stone = 4, metal = 5 };
@@ -24,18 +25,18 @@ public:
 	TileGround getGround() const;
 	TileBlock getBlock() const;
 	ItemSubType getTopItemType() const;
-	Item getTopItem();
+	std::shared_ptr<Item> getTopItem();
 	void popItem();
-	const std::vector<Item>& getItems() const;
-	bool removeItem(int item);
-	bool addItem(Item obj);
+	//const std::vector<Item>& getItems() const;
+	//bool removeItem(int item);
+	bool addItem(std::shared_ptr<Item> obj);
 	bool isSolid() const;
 	void setTile(TileGround tg, TileBlock tb);
 
 private:
 	TileGround ground;
 	TileBlock block;
-	std::vector<Item> items;
+	std::vector<std::shared_ptr<Item>> items;
 };
 
 std::ostream& operator<<(std::ostream& out, const Tile& t);

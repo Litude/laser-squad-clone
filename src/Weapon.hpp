@@ -19,6 +19,7 @@ public:
 	WeaponType getType() const;
 	unsigned getDamage() const;
 	unsigned apCost() const;
+	virtual void testInheritance() { std::cout << "Testing failed" << std::endl;  };
 private:
 	unsigned ap;
 	unsigned loadedAmmo;
@@ -35,11 +36,19 @@ private:
 class Hands : public Weapon {
 public:
 	Hands() : Weapon(SubType_None, "Hands", 1, UINT32_MAX, 3, 1, 1, projectile, 100, 1) {};
+	virtual void testInheritance() { std::cout << "Testing hands" << std::endl; };
 };
 
 class Pistol : public Weapon {
 public:
 	Pistol() : Weapon(SubType_Weapon_Pistol, "Pistol", 5, 3, 5, 2, 1, projectile, 70, 10) {};
+	virtual void testInheritance() override { std::cout << "Testing pistol" << std::endl; };
+};
+
+class Shotgun : public Weapon {
+public:
+	Shotgun() : Weapon(SubType_Weapon_Shotgun, "Shotgun", 5, 3, 5, 2, 1, projectile, 70, 10) {};
+	virtual void testInheritance() override { std::cout << "Testing shotgun" << std::endl; };
 };
 
 #endif

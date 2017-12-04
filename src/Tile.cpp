@@ -6,11 +6,11 @@ TileGround Tile::getGround() const { return ground; }
 
 ItemSubType Tile::getTopItemType() const {
 	if (items.size() == 0) return SubType_None;
-	return items.at(items.size() - 1).getSubType();
+	return items.at(items.size() - 1)->getSubType();
 }
 
-Item Tile::getTopItem() {
-	if (items.size() == 0) return Item();
+std::shared_ptr<Item> Tile::getTopItem() {
+	if (items.size() == 0) return std::make_shared<Item>(Item());
 	return items.at(items.size() - 1);
 }
 
@@ -19,11 +19,11 @@ void Tile::popItem() {
 	items.pop_back();
 }
 
-const std::vector<Item>& Tile::getItems() const { return items; }
+//const std::vector<Item>& Tile::getItems() const { return items; }
 
 bool Tile::isSolid() const { return !(block == air); }
 
-bool Tile::addItem(Item obj) {
+bool Tile::addItem(std::shared_ptr<Item> obj) {
 	items.push_back(obj);
 	return true;
 }
