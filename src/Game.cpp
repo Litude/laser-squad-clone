@@ -101,7 +101,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator gc, sf::Vector2
 		auto deviated = gc->getEquipped().deviate(target);
 		auto endTile = traceFromCharacter(gc, deviated);
 		std::cout << "landed at tile at coords: (" << endTile.x << ", " << endTile.y << ")" << std::endl;
-		for (auto gc : characters) {
+		for (auto &gc : characters) {
 			if (gc.getPosition() == endTile) {
 				int dmg = 5;//placeholder damage
 				gc.sufferDamage(dmg);
