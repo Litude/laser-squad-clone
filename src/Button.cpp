@@ -14,6 +14,7 @@ Button::Button(std::string str, sf::Font& font, sf::Uint32 style, int size, sf::
   //b_text.setPosition(position);
   b_text.setFont(font);
   b_text.setStyle(style);
+  b_text.setOrigin(b_text.getGlobalBounds().width / 2, b_text.getGlobalBounds().height / 2);
 
   b_text.setFillColor(sf::Color(0, 0, 0, 100));
   b_hoveredColor = sf::Color(0, 0, 0, 255);
@@ -32,6 +33,7 @@ Button::Button(std::string str, sf::Font& font, sf::Uint32 style, int size, sf::
   b_text.setPosition(position);
   b_text.setFont(font);
   b_text.setStyle(style);
+  b_text.setOrigin(b_text.getGlobalBounds().width / 2, b_text.getGlobalBounds().height / 2);
 
   b_text.setFillColor(sf::Color(0, 0, 0, 100));
   b_hoveredColor = sf::Color(0, 0, 0, 255);
@@ -55,6 +57,7 @@ Button::Button(std::string str, sf::Font& font, sf::Uint32 style, int size, sf::
   b_text.setPosition(position);
   b_text.setFont(font);
   b_text.setStyle(style);
+  b_text.setOrigin(b_text.getGlobalBounds().width / 2, b_text.getGlobalBounds().height / 2);
 
   b_text.setFillColor(sf::Color(0, 0, 0, 100));
   b_hoveredColor = sf::Color(0, 0, 0, 255);
@@ -131,7 +134,7 @@ void Button::setPosition(sf::Vector2f pos)
     case rectangle: {
       b_Rshape.setOrigin(b_Rshape.getGlobalBounds().width/2, b_Rshape.getGlobalBounds().height/2);
       b_Rshape.setPosition(b_pos);
-      sf::Vector2f textPosition = sf::Vector2f(b_Rshape.getPosition().x , b_Rshape.getPosition().y);
+	  sf::Vector2f textPosition = sf::Vector2f(b_Rshape.getPosition().x, b_Rshape.getPosition().y - b_Rshape.getGlobalBounds().height / 8);
       b_text.setOrigin(b_text.getGlobalBounds().width/2, b_text.getGlobalBounds().height/2);
       b_text.setPosition(textPosition);
     }
