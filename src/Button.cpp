@@ -29,7 +29,7 @@ void Button::update(sf::Event& e, sf::RenderWindow& window)
   // Mouse handling
   sf::Vector2i mousePos = sf::Mouse::getPosition(window);
   bool isHovering = mousePos.x >= text.getPosition().x && mousePos.x <= text.getPosition().x + text.getLocalBounds().width
-                    && mousePos.y >= text.getPosition().y && mousePos.y <= text.getPosition().y + text.getLocalBounds().height;
+                    && mousePos.y >= text.getPosition().y && mousePos.y <= text.getPosition().y + text.getLocalBounds().height + 10.f;
 
   switch(b_state) {
     case normal: {
@@ -66,6 +66,7 @@ void Button::update(sf::Event& e, sf::RenderWindow& window)
           b_state = normal;
         }
       }
+      break;
     }
   }
 }

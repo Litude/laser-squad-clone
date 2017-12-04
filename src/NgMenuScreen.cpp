@@ -1,4 +1,5 @@
 #include "NgMenuScreen.hpp"
+#include "Button.hpp"
 
 NgMenuScreen::NgMenuScreen(void)
 {
@@ -9,9 +10,6 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App) {
 	sf::Texture Texture;
 	sf::Sprite Sprite;
 	sf::Font Font;
-	sf::Text Menu1;
-	sf::Text Menu2;
-	sf::Text Menu3;
 	int menu = 0;
 
 	/*
@@ -34,15 +32,9 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App) {
 		std::cerr << "Error loading ARIALN.TTF" << std::endl;
 		return ScreenResult::Exit;
 	}
-	Menu1.setFont(Font);
-	Menu1.setCharacterSize(20);
-	Menu1.setString("Launch game");
-	Menu1.setPosition({ 350.f, 250.f });
 
-	Menu2.setFont(Font);
-	Menu2.setCharacterSize(20);
-	Menu2.setString("Back");
-	Menu2.setPosition({ 350.f, 300.f });
+	Button launchgame("Launch game", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f));
+	Button back("Back", Font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f));
 
 	while (1)
 	{
@@ -67,6 +59,7 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App) {
 					{
 						return ScreenResult::GameScene; //New game
 					} else {
+						std::cout << " " + back.getState();
 						return ScreenResult::MainMenuScene; // Back to main menu
 					}
 					break;
@@ -75,27 +68,16 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App) {
 				}
 			}
 		}
-		Sprite.setColor(sf::Color(255, 255, 255, 255));
-		//Drawing the highlighted option
-		if (menu == 0)
-		{
-			Menu1.setColor(sf::Color(0, 0, 0, highlighted_alpha));
-			Menu1.setStyle(sf::Text::Bold);
-			Menu2.setColor(sf::Color(0, 0, 0, non_highlighted_alpha));
-			Menu2.setStyle(sf::Text::Regular);
-			}
-		else
-		{
-			Menu1.setColor(sf::Color(0, 0, 0, non_highlighted_alpha));
-			Menu1.setStyle(sf::Text::Regular);
-			Menu2.setColor(sf::Color(0, 0, 0, highlighted_alpha));
-			Menu2.setStyle(sf::Text::Bold);
-    }
+		if(launchgame.getState() == clicked) {return ScreenResult::GameScene;}
+		if(back.getState() == clicked) {return ScreenResult::MainMenuScene;}
+
+		launchgame.update(Event, App);
+		back.update(Event, App);
 		App.clear();
 
 		App.draw(Sprite);
-		App.draw(Menu1);
-		App.draw(Menu2);
+		App.draw(launchgame.getText());
+		App.draw(back.getText());
 		App.display();
 	}
 
