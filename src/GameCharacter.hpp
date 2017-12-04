@@ -11,6 +11,7 @@
 #define AP_COST_MOVEMENT 1
 #define AP_COST_PICK_ITEM 1
 #define AP_COST_DROP_ITEM 1
+#define AP_COST_EQUIP 1
 
 enum direction {
 	left,
@@ -37,7 +38,8 @@ public:
 	sf::Vector2u	getPosition() const { return currentPosition; }
 	sf::Vector2u	getRenderPosition() const;
 	unsigned int	getDirection() const { return direction; }
-	int				getSelectedItem() const { return selectedItem; }
+	int				getSelectedItemIndex() const { return selectedItemIdx; }
+	int				getSelectedWeaponIndex() const { return selectedWeaponIdx; }
 	bool			isDead() const { return (health == 0); }
 	bool			isMoving() const { return moving; }
 	std::shared_ptr<Weapon>			getEquipped() { return equippedWeapon; }
@@ -50,7 +52,8 @@ public:
 	bool			addItem(std::shared_ptr<Item> obj);
 	bool			removeSelectedItem();
 	Inventory&		getInventory() { return inventory; }
-	void			setSelectedItem(int idx) { selectedItem = idx; }
+	void			setSelectedItemIndex(int idx) { selectedItemIdx = idx; }
+	void			setSelectedWeaponIndex(int idx) {selectedWeaponIdx = idx; }
 	bool			equipSelected();
 	void			setAnimationManager(AnimationManager animationManager) { this->animationManager = animationManager; }
 	AnimationManager getAnimationManager() const { return animationManager;  }
@@ -76,7 +79,8 @@ private:
 	std::shared_ptr<Weapon> equippedWeapon = std::make_shared<Hands>(Hands()); // TODO: This must be freed
 	unsigned int team;
     unsigned int lengthofSight=9;
-	int selectedItem = -1;
+	int selectedItemIdx = -1;
+	int selectedWeaponIdx = -1;
 };
 
 #endif

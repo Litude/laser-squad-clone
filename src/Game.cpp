@@ -58,7 +58,7 @@ bool Game::characterPickUpItem(std::vector<GameCharacter>::iterator it) {
 }
 
 bool Game::characterDropItem(std::vector<GameCharacter>::iterator it) {
-	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItem()]);
+	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItemIndex()]);
 	if (getSelectedCharacter()->removeSelectedItem()) {
 		return true;
 	}

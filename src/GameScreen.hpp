@@ -40,6 +40,7 @@ private:
 	sf::RectangleShape buttonEquipItem{ sf::Vector2f(50, 20) };
 	sf::RectangleShape selectedCharacter;
 	sf::RectangleShape selectedItem;
+	sf::RectangleShape equippedItem;
 	sf::Text textCurTurn;
 	sf::Text textEndTurn;
 	sf::Text textFPS;

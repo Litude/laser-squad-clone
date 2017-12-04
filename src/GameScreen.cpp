@@ -111,6 +111,9 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	selectedItem.setOutlineThickness(2.0f);
 	selectedItem.setFillColor(sf::Color::Transparent);
 
+	equippedItem = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
+	equippedItem.setFillColor(sf::Color::Red);
+
 	texPlayer1 = std::make_shared<sf::Texture>(sf::Texture());
 	if (!texPlayer1->loadFromFile("img/character1_sheet.png")) {
 		std::cout << "Could not load 'img/character1_sheet.png'\n";
@@ -252,7 +255,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 								}
 							}
 							else if (buttonDropItem.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
-								if (game.getSelectedCharacter()->getSelectedItem() != -1) {
+								if (game.getSelectedCharacter()->getSelectedItemIndex() != -1) {
 									game.characterDropItem(game.getSelectedCharacter());
 									tileMap->updateTile(game.getSelectedCharacter()->getPosition());
 								}
@@ -263,11 +266,11 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 							else {
 								for (unsigned int i = 0; i < MAX_ITEMS; i++) {
 									if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i]->getMainType() != Type_None) {
-										game.getSelectedCharacter()->setSelectedItem(i);
+										game.getSelectedCharacter()->setSelectedItemIndex(i);
 										break;
 									}
 									else {
-										game.getSelectedCharacter()->setSelectedItem(-1);
+										game.getSelectedCharacter()->setSelectedItemIndex(-1);
 									}
 								}
 							}
@@ -472,6 +475,10 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 	//TODO: Process selected character attributes here and draw them on the interface...
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
 		textAP.setString("Action points: " + std::to_string(game.getSelectedCharacter()->getActionPoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxActionPoints()));
+
+		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) {
+			equippedItem.setPosition((App.getSize().x - MENUSIZE + 18) + ((game.getSelectedCharacter()->getSelectedWeaponIndex() % ITEMS_PER_ROW) * (TILESIZE + 12)), 430 + (game.getSelectedCharacter()->getSelectedWeaponIndex() / ITEMS_PER_ROW) * (TILESIZE + 12));
+		}
 	}
 
 	currentTime = fpsclock.getElapsedTime().asMicroseconds() / 1000000.0f;
@@ -492,11 +499,12 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		App.draw(textDropItem);
 		App.draw(buttonEquipItem);
 		App.draw(textEquipItem);
+		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) App.draw(equippedItem);
 		// Draw items
 		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
 			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i]->getSubType() * TILESIZE, 0, TILESIZE, TILESIZE));
 			App.draw(inventoryItems[i]);
-			if (game.getSelectedCharacter()->getSelectedItem() == i) {
+			if (game.getSelectedCharacter()->getSelectedItemIndex() == i) {
 				selectedItem.setPosition(inventoryItems[i].getPosition());
 				App.draw(selectedItem);
 			}
