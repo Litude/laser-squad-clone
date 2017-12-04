@@ -50,7 +50,7 @@ bool Game::characterMoveDown(gc_iterator it) {
 }
 
 bool Game::characterPickUpItem(std::vector<GameCharacter>::iterator it) {
-	if (getSelectedCharacter()->addItem(getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).getTopItem())) {
+	if (getSelectedCharacter()->addItem(std::make_shared<Item>(getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).getTopItem()))) {
 		getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).popItem();
 		return true;
 	}
@@ -58,7 +58,7 @@ bool Game::characterPickUpItem(std::vector<GameCharacter>::iterator it) {
 }
 
 bool Game::characterDropItem(std::vector<GameCharacter>::iterator it) {
-	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItem()]);
+	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(*getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItem()]);
 	if (getSelectedCharacter()->removeSelectedItem()) {
 		return true;
 	}

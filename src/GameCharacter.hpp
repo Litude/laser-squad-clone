@@ -38,7 +38,7 @@ public:
 	void			resetActionPoints() { actionPoints = maxActionPoints; }
 	void 			sufferDamage(int dmg);
     unsigned int    getLengthofSight() const {return lengthofSight;}
-	bool			addItem(Item obj);
+	bool			addItem(std::shared_ptr<Item> obj);
 	bool			removeSelectedItem();
 	Inventory&		getInventory() { return inventory; }
 	void			setSelectedItem(int idx) { selectedItem = idx; }
@@ -63,7 +63,7 @@ private:
 	unsigned int health = 10;
 	Weapon currentItem = Weapon();//placeholder
 	unsigned int team;
-    unsigned int lengthofSight=10;
+    unsigned int lengthofSight=9;
 	int selectedItem = -1;
 };
 

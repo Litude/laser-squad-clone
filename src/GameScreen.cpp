@@ -237,7 +237,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 							}
 							else {
 								for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-									if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i].getMainType() != Type_None) {
+									if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i]->getMainType() != Type_None) {
 										game.getSelectedCharacter()->setSelectedItem(i);
 										break;
 									}
@@ -466,7 +466,7 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		App.draw(textDropItem);
 		// Draw items
 		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i].getSubType() * TILESIZE, 0, TILESIZE, TILESIZE));
+			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i]->getSubType() * TILESIZE, 0, TILESIZE, TILESIZE));
 			App.draw(inventoryItems[i]);
 			if (game.getSelectedCharacter()->getSelectedItem() == i) {
 				selectedItem.setPosition(inventoryItems[i].getPosition());

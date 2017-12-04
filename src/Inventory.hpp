@@ -2,17 +2,18 @@
 #define LASER_INVENTORY_HPP
 
 #include <vector>
+#include <memory>
 #include "Item.hpp"
 #include "constants.hpp"
 
 class Inventory {
 public:
 	Inventory();
-	bool							add(Item& newItem);
-	std::vector<Item>::iterator		remove(std::vector<Item>::iterator it);
-	Item& operator[](unsigned n);
+	bool											add(std::shared_ptr<Item>& newItem);
+	std::vector<std::shared_ptr<Item>>::iterator	remove(std::vector<std::shared_ptr<Item>>::iterator it);
+	std::shared_ptr<Item>& operator[](unsigned n);
 private:
-	std::vector<Item>					items;
+	std::vector<std::shared_ptr<Item>>				items;
 };
 
 #endif

@@ -110,7 +110,7 @@ sf::Vector2u GameCharacter::getRenderPosition() const
 	return renderPosition;
 }
 
-bool GameCharacter::addItem(Item obj)
+bool GameCharacter::addItem(std::shared_ptr<Item> obj)
 {
 	if (actionPoints >= AP_COST_PICK_ITEM) {
 		if (inventory.add(obj)) {
@@ -124,7 +124,7 @@ bool GameCharacter::addItem(Item obj)
 bool GameCharacter::removeSelectedItem()
 {
 	if (actionPoints >= AP_COST_DROP_ITEM) {
-		inventory[selectedItem] = Item();
+		inventory[selectedItem] = std::make_shared<Item>(Item());
 		selectedItem = -1;
 		actionPoints -= AP_COST_DROP_ITEM;
 		return true;
