@@ -2,6 +2,8 @@
 
 WeaponType Weapon::getType() const { return wt; }
 
+unsigned Weapon::getDamage() const { return damage; }
+
 unsigned Weapon::apCost() const { return ap; }
 
 bool Weapon::canFire() const { return loadedAmmo > 0; }
@@ -28,8 +30,8 @@ bool Weapon::reload(unsigned ammo) {
 const sf::Vector2u Weapon::deviate(sf::Vector2u target) const {
 	sf::Vector2i deviated = static_cast<sf::Vector2i>(target);
 	if ((rand() % 100 + 1) > accuracy) {
-		int dx = rand() % 3 - 1;
-		int dy = rand() % 3 - 1;
+		int dx = rand() % (deviation*2 + 1) - deviation;
+		int dy = rand() % (deviation*2 + 1) - deviation;
 		deviated.x += dx;
 		deviated.y += dy;
 		std::cout << "Shot deviated by: (" << dx << ", " << dy << ")" << std::endl;

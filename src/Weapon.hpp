@@ -15,6 +15,7 @@ public:
 	int			fire();
 	const sf::Vector2u deviate(sf::Vector2u target) const;
 	WeaponType getType() const;
+	unsigned getDamage() const;
 	unsigned apCost() const;
 private:
 	unsigned ap = 5;
@@ -25,7 +26,7 @@ private:
 	unsigned deviation = 1;
 	WeaponType wt = projectile;
 
-	int accuracy = 50;
+	int accuracy = 70;
 };
 
 #endif
