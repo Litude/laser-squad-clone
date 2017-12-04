@@ -9,7 +9,15 @@ ItemSubType Tile::getTopItemType() const {
 	return items.at(items.size() - 1).getSubType();
 }
 
-sf::Texture& Tile::getTexture() { return texture; }
+Item Tile::getTopItem() {
+	if (items.size() == 0) return Item();
+	return items.at(items.size() - 1);
+}
+
+void Tile::popItem() {
+	if (items.size() == 0) return;
+	items.pop_back();
+}
 
 const std::vector<Item>& Tile::getItems() const { return items; }
 

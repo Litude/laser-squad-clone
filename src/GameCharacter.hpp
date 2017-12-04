@@ -6,6 +6,10 @@
 #include "Weapon.hpp"
 #include "constants.hpp"
 
+#define AP_COST_MOVEMENT 1
+#define AP_COST_PICK_ITEM 1
+#define AP_COST_DROP_ITEM 1
+
 enum direction {
 	left,
 	right,
@@ -24,6 +28,7 @@ public:
 	sf::Vector2u	getRenderPosition() const;
 	unsigned int	getDirection() const { return direction; }
 	unsigned int	getAnimationFrame() const { return animation; }
+	int				getSelectedItem() const { return selectedItem; }
 	bool			isDead() const { return (health == 0); }
 	bool			isMoving() const { return moving; }
 	Weapon&			getEquipped() { return currentItem; }
@@ -33,12 +38,16 @@ public:
 	void			resetActionPoints() { actionPoints = maxActionPoints; }
 	void 			sufferDamage(int dmg);
     unsigned int    getLengthofSight() const {return lengthofSight;}
+	bool			addItem(Item obj);
+	bool			removeSelectedItem();
+	Inventory&		getInventory() { return inventory; }
+	void			setSelectedItem(int idx) { selectedItem = idx; }
 
 private:
-	bool			moveLeft();
-	bool			moveRight();
-	bool			moveUp();
-	bool			moveDown();
+	void			moveLeft();
+	void			moveRight();
+	void			moveUp();
+	void			moveDown();
 
 	sf::Vector2u currentPosition; // Position on the map in tile coordinates
 	sf::Vector2u previousPosition;
@@ -55,6 +64,7 @@ private:
 	Weapon currentItem = Weapon();//placeholder
 	unsigned int team;
     unsigned int lengthofSight=10;
+	int selectedItem = -1;
 };
 
 #endif

@@ -31,6 +31,8 @@ public:
 	bool                                    characterMoveDown(std::vector<GameCharacter>::iterator it);
 	bool                                    characterMove(std::vector<GameCharacter>::iterator it, sf::Vector2i direction);
 	const std::vector<sf::Vector2u>         characterShoot(gc_iterator gc, sf::Vector2u target);
+	bool									characterPickUpItem(std::vector<GameCharacter>::iterator it);
+	bool									characterDropItem(std::vector<GameCharacter>::iterator it);
 	const sf::Vector2u                      traceFromCharacter(gc_iterator it, sf::Vector2u target);
 	const sf::Vector2u                      getEndTile(coord_iterator coord_begin, coord_iterator coord_end, int maxRange=12);
     std::vector<sf::Vector2u>               seenCoordinates(std::vector<GameCharacter>::iterator it);

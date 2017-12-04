@@ -49,6 +49,26 @@ bool Game::characterMoveDown(gc_iterator it) {
 	return characterMove(it, dir);
 }
 
+bool Game::characterPickUpItem(std::vector<GameCharacter>::iterator it) {
+	if (getSelectedCharacter()->addItem(getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).getTopItem())) {
+		getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).popItem();
+		return true;
+	}
+	return false;
+}
+
+bool Game::characterDropItem(std::vector<GameCharacter>::iterator it) {
+	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItem()]);
+	if (getSelectedCharacter()->removeSelectedItem()) {
+		return true;
+	}
+	else {
+		// Could not drop the item, probably not enough AP so we need to pop the item we just added to the map
+		getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).popItem();
+		return false;
+	}
+}
+
 // Trace line from gamecharacter location to target, returning
 // first tile that blocks tracing
 const sf::Vector2u Game::traceFromCharacter(gc_iterator it, sf::Vector2u target) {
@@ -104,7 +124,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator gc, sf::Vector2
 // NOTE: iterator must point to at least one valid element
 const sf::Vector2u Game::getEndTile(coord_iterator coords_begin, coord_iterator coords_end, int maxRange) {
 	for (auto it = coords_begin; it != coords_end; ++it) {
-		if (grid(*it).isSolid() || std::distance(coords_begin, it) >= maxRange || 
+		if (grid(*it).isSolid() || std::distance(coords_begin, it) >= maxRange ||
 			std::any_of(characters.begin(), characters.end(),
 			[it](GameCharacter gc) { return gc.getPosition() == *it; })) return *it;
 	}
