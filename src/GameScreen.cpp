@@ -139,7 +139,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 	// Create a render-texture to draw visible tiles based on line of sight
 	renderTexture_visibleTiles = std::make_shared<sf::RenderTexture>();
-	if (!renderTexture_visibleTiles->create(gameView.getSize().x, gameView.getSize().y))
+	if (!renderTexture_visibleTiles->create(game.getGrid().getWidth() * TILESIZE, game.getGrid().getHeight() * TILESIZE))
 	{
 		std::cout << "Could not initialize render texture\n";
 	}
