@@ -17,6 +17,7 @@ public:
 	int			fire();
 	const sf::Vector2u deviate(sf::Vector2u target) const;
 	WeaponType getType() const;
+	unsigned getDamage() const;
 	unsigned apCost() const;
 private:
 	unsigned ap;
@@ -38,7 +39,7 @@ public:
 
 class Pistol : public Weapon {
 public:
-	Pistol() : Weapon(SubType_Weapon_Pistol, "Pistol", 5, 3, 5, 2, 1, projectile, 50, 10) {};
+	Pistol() : Weapon(SubType_Weapon_Pistol, "Pistol", 5, 3, 5, 2, 1, projectile, 70, 10) {};
 };
 
 #endif
