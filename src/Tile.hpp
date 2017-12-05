@@ -24,7 +24,7 @@ public:
 
 	TileGround getGround() const;
 	TileBlock getBlock() const;
-	ItemSubType getTopItemType() const;
+	ItemIcon getTopItemIcon() const;
 	std::shared_ptr<Item> getTopItem();
 	void popItem();
 	//const std::vector<Item>& getItems() const;

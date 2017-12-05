@@ -4,9 +4,9 @@ TileBlock Tile::getBlock() const { return block; }
 
 TileGround Tile::getGround() const { return ground; }
 
-ItemSubType Tile::getTopItemType() const {
-	if (items.size() == 0) return SubType_None;
-	return items.at(items.size() - 1)->getSubType();
+ItemIcon Tile::getTopItemIcon() const {
+	if (items.size() == 0) return Icon_None;
+	return items.at(items.size() - 1)->getIcon();
 }
 
 std::shared_ptr<Item> Tile::getTopItem() {

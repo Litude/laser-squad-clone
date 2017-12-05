@@ -154,7 +154,7 @@ void TileMap::setItemTile(Tile tile, sf::Vector2u tilePosition)
 	int j = tilePosition.y;
 
 	// Determine the tile to draw on the tileset
-	int itemNumber = tile.getTopItemType();
+	int itemNumber = tile.getTopItemIcon();
 
 	// Find tile's position in the ground tileset texture
 	int tu = itemNumber % (m_tileset_items.getSize().x / m_tileSize.x);

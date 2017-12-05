@@ -9,11 +9,11 @@ Inventory::Inventory() {
 }
 
 bool Inventory::add(std::shared_ptr<Item>& newItem) {
-	if (newItem->getMainType() == Type_None) return false; //do not add "empty" items
+	if (newItem->getType() == Type_None) return false; //do not add "empty" items
 
 	auto curItem = items.begin();
 	while (curItem != items.end()) {
-		if ((*curItem)->getMainType() == Type_None) {
+		if ((*curItem)->getType() == Type_None) {
 			//Found an empty slot
 			*curItem = newItem;
 			return true;
