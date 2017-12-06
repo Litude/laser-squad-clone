@@ -196,6 +196,10 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 		inventoryItems[i].setTexture(*texItems);
 	}
 	updateLayout(App);
+
+	// Center gameview
+	zoomViewAt(sf::Vector2i(gameView.getCenter().x, gameView.getCenter().y), App, gameView, 3.f);
+	gameView.setCenter(sf::Vector2f(game.getGrid().getWidth() / 2 * TILESIZE, game.getGrid().getHeight() / 2 * TILESIZE));
 }
 
 ScreenResult GameScreen::Run(sf::RenderWindow & App)
@@ -214,6 +218,13 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				App.close();
 				return ScreenResult::Exit;
 			}
+			if (event.type == sf::Event::MouseWheelScrolled)
+			{
+				if (event.mouseWheelScroll.delta > 0)
+					zoomViewAt({ event.mouseWheelScroll.x, event.mouseWheelScroll.y }, App, gameView, (1.f / 1.1f));
+				else if (event.mouseWheelScroll.delta < 0)
+					zoomViewAt({ event.mouseWheelScroll.x, event.mouseWheelScroll.y }, App, gameView, 1.1f);
+			}
 			// Update buttons
 			buttonExit.update(event, App);
 			buttonEndTurn.update(event, App);
@@ -225,22 +236,30 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				switch (event.key.code) {
 				case sf::Keyboard::Left:
 					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						game.characterMoveLeft(game.getSelectedCharacter());
+						if (game.characterMoveLeft(game.getSelectedCharacter())) {
+							//gameView.move(sf::Vector2f(-TILESIZE, 0));
+						}
 					}
 					break;
 				case sf::Keyboard::Right:
 					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						game.characterMoveRight(game.getSelectedCharacter());
+						if (game.characterMoveRight(game.getSelectedCharacter())) {
+							//gameView.move(sf::Vector2f(TILESIZE, 0));
+						}
 					}
 					break;
 				case sf::Keyboard::Down:
 					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						game.characterMoveDown(game.getSelectedCharacter());
+						if (game.characterMoveDown(game.getSelectedCharacter())) {
+							//gameView.move(sf::Vector2f(0, TILESIZE));
+						}
 					}
 					break;
 				case sf::Keyboard::Up:
 					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						game.characterMoveUp(game.getSelectedCharacter());
+						if (game.characterMoveUp(game.getSelectedCharacter())) {
+							//gameView.move(sf::Vector2f(0, -TILESIZE));
+						}
 					}
 					break;
 
@@ -346,6 +365,11 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 void GameScreen::DrawGame(sf::RenderWindow &App) {
 
 	App.setView(gameView);
+	// Center the camera on the selected player (linear interpolation)
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		float factor = 0.01f;
+		gameView.setCenter(sf::Vector2f(gameView.getCenter().x + (game.getSelectedCharacter()->getRenderPosition().x - gameView.getCenter().x) * factor, gameView.getCenter().y + (game.getSelectedCharacter()->getRenderPosition().y - gameView.getCenter().y) * factor));
+	}
 
 	//Draw the map
 	App.draw(*tileMap);
@@ -593,6 +617,17 @@ sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, con
 	clickedTile.x /= TILESIZE;
 	clickedTile.y /= TILESIZE;
 	return clickedTile;
+}
+
+void GameScreen::zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom)
+{
+	const sf::Vector2f before{ window.mapPixelToCoords(pixel) };
+	view.zoom(zoom);
+	window.setView(view);
+	const sf::Vector2f after{ window.mapPixelToCoords(pixel) };
+	const sf::Vector2f offset{ before - after };
+	view.move(offset);
+	window.setView(view);
 }
 
 void GameScreen::exitToMainMenu() {

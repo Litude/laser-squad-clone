@@ -23,6 +23,7 @@ private:
 	ScreenResult m_screenResult;
 private:
 	void exitToMainMenu();
+	void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom);
 	void endTurn();
 	void pickupItem();
 	void dropItem();
