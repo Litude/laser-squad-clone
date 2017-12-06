@@ -78,12 +78,18 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	interfaceBkg.setFillColor(sf::Color::Black);
 	textFPS.setFont(*font);
 	textFPS.setCharacterSize(12);
-	textCurTurn.setFont(*font);
-	textCurTurn.setCharacterSize(12);
-	textAP.setFont(*font);
-	textAP.setCharacterSize(12);
+	textCurTurnLabel.setFont(*font);
+	textCurTurnLabel.setCharacterSize(24);
+	textCurTurnLabel.setString("Player");
+	textCurTurnValue.setFont(*font);
+	textCurTurnValue.setCharacterSize(24);
+	textAPLabel.setFont(*font);
+	textAPLabel.setCharacterSize(24);
+	textAPLabel.setString("APs");
+	textAPValue.setFont(*font);
+	textAPValue.setCharacterSize(24);
 	textMouseMode.setFont(*font);
-	textMouseMode.setCharacterSize(12);
+	textMouseMode.setCharacterSize(24);
 
 	backgroundTexture = std::make_shared<sf::Texture>(sf::Texture());
 	if (!backgroundTexture->loadFromFile("img/background.png"))
@@ -402,15 +408,17 @@ void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u
 void GameScreen::DrawUI(sf::RenderWindow &App) {
 	unsigned int menuSize = App.getSize().x / 4;
 
+	updateUIComponents(App);
+
 	//Interface elements that always need to be updated
-	textCurTurn.setString("Current turn: Player " + std::to_string(game.getCurrentPlayer()));
+	textCurTurnValue.setString(std::to_string(game.getCurrentPlayer()));
 
 	std::string mm = (mouseMode == MouseMode::shoot) ? "SHOOT MODE" : "SELECT MODE";
 	textMouseMode.setString(mm);
 
 	//TODO: Process selected character attributes here and draw them on the interface...
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		textAP.setString("Action points: " + std::to_string(game.getSelectedCharacter()->getActionPoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxActionPoints()));
+		textAPValue.setString(std::to_string(game.getSelectedCharacter()->getActionPoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxActionPoints()));
 
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) {
 			unsigned int margin = 10;
@@ -431,7 +439,8 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 
 	// Draw action points
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		App.draw(textAP);
+		App.draw(textAPLabel);
+		App.draw(textAPValue);
 		App.draw(buttonPickupItem);
 		App.draw(buttonDropItem);
 		App.draw(buttonEquipItem);
@@ -450,8 +459,8 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 	App.draw(textFPS);
 	App.draw(textMouseMode);
 	App.draw(buttonEndTurn);
-	App.draw(textCurTurn);
-
+	App.draw(textCurTurnLabel);
+	App.draw(textCurTurnValue);
 }
 
 void GameScreen::updateLayout(sf::RenderWindow & App)
@@ -480,23 +489,11 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 	interfaceBkg.setPosition(App.getSize().x - menuSize, 0);
 
 	// End turn button
-	buttonEndTurn.setPosition(sf::Vector2f(menuCenterX, 260));
+	buttonEndTurn.setPosition(sf::Vector2f(menuCenterX, App.getSize().y - buttonEndTurn.getGlobalBounds().height / 2 - margin));
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
 	rs.setSize(sf::Vector2f(menuSize - margin, 40));
 	buttonEndTurn.setRectangleShape(rs);
-
-	// FPS counter text
-	textFPS.setPosition(App.getSize().x - menuSize + 52, 0);
-
-	// Current turn text
-	textCurTurn.setPosition(App.getSize().x - menuSize + 52, 50);
-
-	// Mousemode text
-	textMouseMode.setPosition(App.getSize().x - menuSize + 52, 90);
-
-	// AP text
-	textAP.setPosition(App.getSize().x - menuSize + 52, 100);
 
 	// Pick up item button
 	rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
@@ -523,6 +520,29 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 
 	selectedItem.setSize(sf::Vector2f(inventoryItems[0].getGlobalBounds().width, inventoryItems[0].getGlobalBounds().height));
 	equippedItem.setSize(sf::Vector2f(inventoryItems[0].getGlobalBounds().width, inventoryItems[0].getGlobalBounds().height));
+
+	updateUIComponents(App);
+}
+
+void GameScreen::updateUIComponents(sf::RenderWindow & App)
+{
+	unsigned int menuSize = App.getSize().x / 4;
+	unsigned int menuCenterX = App.getSize().x - menuSize / 2;
+	unsigned int margin = 10;
+
+	// FPS counter text
+	textFPS.setPosition(menuCenterX - menuSize / 2 + margin, 0);
+
+	// AP text
+	textAPLabel.setPosition(menuCenterX - menuSize / 2 + margin, 100);
+	textAPValue.setPosition(menuCenterX + menuSize / 2 - margin - textAPValue.getGlobalBounds().width, 100);
+
+	// Current turn text
+	textCurTurnLabel.setPosition(menuCenterX - menuSize / 2 + margin, 50);
+	textCurTurnValue.setPosition(menuCenterX + menuSize / 2 - margin - textCurTurnValue.getGlobalBounds().width, 50);
+
+	// Mousemode text
+	textMouseMode.setPosition(menuCenterX - textMouseMode.getGlobalBounds().width / 2, 150);
 }
 
 void GameScreen::endTurn() {

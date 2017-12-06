@@ -27,6 +27,7 @@ private:
 	void DrawGame(sf::RenderWindow &App);
 	void DrawUI(sf::RenderWindow &App);
 	void updateLayout(sf::RenderWindow & App);
+	void updateUIComponents(sf::RenderWindow & App);
 	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
 	void DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles);
 
@@ -48,9 +49,11 @@ private:
 	sf::RectangleShape selectedCharacter;
 	sf::RectangleShape selectedItem;
 	sf::RectangleShape equippedItem;
-	sf::Text textCurTurn;
+	sf::Text textCurTurnLabel;
+	sf::Text textCurTurnValue;
 	sf::Text textFPS;
-	sf::Text textAP;
+	sf::Text textAPLabel;
+	sf::Text textAPValue;
 	sf::Text textMouseMode;
 	sf::VertexArray rayLine{ sf::Lines, 2 };
 	std::vector<sf::Sprite> mapTiles;
