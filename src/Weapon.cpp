@@ -1,6 +1,6 @@
 #include "Weapon.hpp"
 
-WeaponType Weapon::getType() const { return wt; }
+//WeaponType Weapon::getType() const { return wt; }
 
 unsigned Weapon::getDamage() const { return damage; }
 
