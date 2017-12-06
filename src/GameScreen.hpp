@@ -6,6 +6,7 @@
 #include "Screen.hpp"
 #include "Game.hpp"
 #include "TileMap.hpp"
+#include "Button.hpp"
 #include <SFML/Graphics.hpp>
 #include "Util.hpp"
 #include "Weapon.hpp"
@@ -21,9 +22,18 @@ public:
 	GameScreen(sf::RenderWindow &App);
 	virtual ScreenResult Run(sf::RenderWindow &App);
 private:
+	ScreenResult m_screenResult;
+private:
+	void exitToMainMenu();
+	void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom);
 	void endTurn();
+	void pickupItem();
+	void dropItem();
+	void equipItem();
 	void DrawGame(sf::RenderWindow &App);
 	void DrawUI(sf::RenderWindow &App);
+	void updateLayout(sf::RenderWindow & App);
+	void updateUIComponents(sf::RenderWindow & App);
 	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
 	void DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles);
 	void addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination);
@@ -34,29 +44,30 @@ private:
 	std::shared_ptr<sf::Texture> texPlayer1;
 	std::shared_ptr<sf::Texture> texPlayer2;
 	std::shared_ptr<sf::Texture> texItems;
+	std::shared_ptr<sf::Texture> backgroundTexture;
+	sf::Sprite backgroundSprite;
 	sf::View gameView;
 	sf::View interfaceView;
 	
 	sf::RectangleShape interfaceBkg;
-	sf::RectangleShape buttonEndTurn{ sf::Vector2f(100, 80) };
-	sf::RectangleShape buttonPickupItem{ sf::Vector2f(50, 20) };
-	sf::RectangleShape buttonDropItem{ sf::Vector2f(50, 20) };
-	sf::RectangleShape buttonEquipItem{ sf::Vector2f(50, 20) };
+	Button buttonEndTurn;
+	Button buttonPickupItem;
+	Button buttonDropItem;
+	Button buttonEquipItem;
+	Button buttonExit;
 	sf::RectangleShape selectedCharacter;
 	sf::RectangleShape selectedItem;
 	sf::RectangleShape equippedItem;
-	
-	sf::Text textCurTurn;
-	sf::Text textEndTurn;
+	sf::Text textCurTurnLabel;
+	sf::Text textCurTurnValue;
 	sf::Text textFPS;
-	sf::Text textAP;
+	sf::Text textAPLabel;
+	sf::Text textAPValue;
 	sf::Text textMouseMode;
-	sf::Text textPickupItem;
-	sf::Text textDropItem;
-	sf::Text textEquipItem;
 
 	int rayIncr = 1;
 	sf::VertexArray rayLine{ sf::Lines, 2 };
+
 	std::vector<sf::Sprite> mapTiles;
 	sf::Clock fpsclock;
 	sf::Clock clock;
@@ -71,7 +82,6 @@ private:
 	std::vector<Projectile> activeProjectiles;
 
 	MouseMode::Mode mouseMode = MouseMode::select;
-	bool resized = true;
 };
 
 #endif

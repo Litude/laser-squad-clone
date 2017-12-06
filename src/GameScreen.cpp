@@ -4,6 +4,8 @@
 
 GameScreen::GameScreen(sf::RenderWindow &App)
 {
+	m_screenResult = ScreenResult::GameScene;
+
 	//Game logic initialization
 	game = Game();
 
@@ -70,35 +72,54 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 	//Interface drawing initialization
 	font = std::make_shared<sf::Font>(sf::Font());
-	if (!font->loadFromFile("font/ARIALN.TTF")) {
-		std::cout << "Could not load 'font/ARIALN.TTF'\n";
+	if (!font->loadFromFile("font/Pixellari.ttf")) {
+		std::cout << "Could not load 'font/Pixellari.ttf'\n";
 	}
 
 	//Interface element attributes that won't change during execution
-	interfaceBkg.setFillColor(sf::Color::Blue);
+	interfaceBkg.setFillColor(sf::Color(0, 0, 0, 200));
 	textFPS.setFont(*font);
 	textFPS.setCharacterSize(12);
-	textCurTurn.setFont(*font);
-	textCurTurn.setCharacterSize(12);
-	textEndTurn.setFont(*font);
-	textEndTurn.setString("End turn");
-	textAP.setFont(*font);
-	textAP.setCharacterSize(12);
+	textCurTurnLabel.setFont(*font);
+	textCurTurnLabel.setCharacterSize(24);
+	textCurTurnLabel.setString("Player");
+	textCurTurnValue.setFont(*font);
+	textCurTurnValue.setCharacterSize(24);
+	textAPLabel.setFont(*font);
+	textAPLabel.setCharacterSize(24);
+	textAPLabel.setString("APs");
+	textAPValue.setFont(*font);
+	textAPValue.setCharacterSize(24);
 	textMouseMode.setFont(*font);
-	textMouseMode.setCharacterSize(12);
-	textPickupItem.setFont(*font);
-	textPickupItem.setCharacterSize(12);
-	textPickupItem.setString("Pick up");
-	textDropItem.setFont(*font);
-	textDropItem.setCharacterSize(12);
-	textDropItem.setString("Drop");
-	textEquipItem.setFont(*font);
-	textEquipItem.setCharacterSize(12);
-	textEquipItem.setString("Equip");
-	buttonEndTurn.setFillColor(sf::Color::Magenta);
-	buttonPickupItem.setFillColor(sf::Color::Magenta);
-	buttonDropItem.setFillColor(sf::Color::Magenta);
-	buttonEquipItem.setFillColor(sf::Color::Magenta);
+	textMouseMode.setCharacterSize(24);
+
+	backgroundTexture = std::make_shared<sf::Texture>(sf::Texture());
+	if (!backgroundTexture->loadFromFile("img/background.png"))
+	{
+		std::cerr << "Error loading background.png" << std::endl;
+	}
+	backgroundSprite.setTexture(*backgroundTexture);
+
+	sf::RectangleShape rs;
+	rs.setFillColor(sf::Color::White);
+	rs.setSize(sf::Vector2f(140, 40));
+
+	buttonExit = Button("Exit to Main Menu", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
+	buttonExit.setCallback([&] { this->exitToMainMenu(); });
+
+	buttonEndTurn = Button("End turn", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
+	buttonEndTurn.setCallback([&] { this->endTurn(); });
+
+	rs.setSize(sf::Vector2f(50, 20));
+
+	buttonPickupItem = Button("Pick", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
+	buttonPickupItem.setCallback([&] { this->pickupItem(); });
+
+	buttonDropItem = Button("Drop", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
+	buttonDropItem.setCallback([&] { this->dropItem(); });
+
+	buttonEquipItem = Button("Equip", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
+	buttonEquipItem.setCallback([&] { this->equipItem(); });
 
 	//Game drawing initialization
 	selectedCharacter = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
@@ -174,6 +195,11 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
 		inventoryItems[i].setTexture(*texItems);
 	}
+	updateLayout(App);
+
+	// Center gameview
+	zoomViewAt(sf::Vector2i(gameView.getCenter().x, gameView.getCenter().y), App, gameView, 3.f);
+	gameView.setCenter(sf::Vector2f(game.getGrid().getWidth() / 2 * TILESIZE, game.getGrid().getHeight() / 2 * TILESIZE));
 }
 
 ScreenResult GameScreen::Run(sf::RenderWindow & App)
@@ -185,34 +211,55 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 	}
 	sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
 
-	while (App.isOpen()) {
+	while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
 		sf::Event event;
 		while (App.pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
 				App.close();
 				return ScreenResult::Exit;
 			}
+			if (event.type == sf::Event::MouseWheelScrolled)
+			{
+				if (event.mouseWheelScroll.delta > 0)
+					zoomViewAt({ event.mouseWheelScroll.x, event.mouseWheelScroll.y }, App, gameView, (1.f / 1.1f));
+				else if (event.mouseWheelScroll.delta < 0)
+					zoomViewAt({ event.mouseWheelScroll.x, event.mouseWheelScroll.y }, App, gameView, 1.1f);
+			}
+			// Update buttons
+			buttonExit.update(event, App);
+			buttonEndTurn.update(event, App);
+			buttonPickupItem.update(event, App);
+			buttonDropItem.update(event, App);
+			buttonEquipItem.update(event, App);
 			//Handle keyboard input
 			if (event.type == sf::Event::KeyPressed) {
 				switch (event.key.code) {
 				case sf::Keyboard::Left:
 					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						game.characterMoveLeft(game.getSelectedCharacter());
+						if (game.characterMoveLeft(game.getSelectedCharacter())) {
+							//gameView.move(sf::Vector2f(-TILESIZE, 0));
+						}
 					}
 					break;
 				case sf::Keyboard::Right:
 					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						game.characterMoveRight(game.getSelectedCharacter());
+						if (game.characterMoveRight(game.getSelectedCharacter())) {
+							//gameView.move(sf::Vector2f(TILESIZE, 0));
+						}
 					}
 					break;
 				case sf::Keyboard::Down:
 					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						game.characterMoveDown(game.getSelectedCharacter());
+						if (game.characterMoveDown(game.getSelectedCharacter())) {
+							//gameView.move(sf::Vector2f(0, TILESIZE));
+						}
 					}
 					break;
 				case sf::Keyboard::Up:
 					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						game.characterMoveUp(game.getSelectedCharacter());
+						if (game.characterMoveUp(game.getSelectedCharacter())) {
+							//gameView.move(sf::Vector2f(0, -TILESIZE));
+						}
 					}
 					break;
 
@@ -236,42 +283,22 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				default:
 					break;
 				}
-					
+
 			}
 			//Handle mouse input
 			if (event.type == sf::Event::MouseButtonReleased) {
-
-				if (event.mouseButton.x >= App.getSize().x - MENUSIZE) {
+				unsigned int menuSize = App.getSize().x / 4;
+				if (event.mouseButton.x >= App.getSize().x - menuSize) {
 					//Clicked on the menubar
 					if (event.mouseButton.button == 0) {
-						if (buttonEndTurn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
-							endTurn();
-						}
-						else if (game.getSelectedCharacter() != game.getCharacters().end()) {
-							//Check for stuff that requires a game character to be selected
-							if (buttonPickupItem.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
-								if (game.characterPickUpItem(game.getSelectedCharacter())) {
-									tileMap->updateTile(game.getSelectedCharacter()->getPosition());
+						if (game.getSelectedCharacter() != game.getCharacters().end()) {
+							for (unsigned int i = 0; i < MAX_ITEMS; i++) {
+								if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i]->getType() != Type_None) {
+									game.getSelectedCharacter()->setSelectedItemIndex(i);
+									break;
 								}
-							}
-							else if (buttonDropItem.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
-								if (game.getSelectedCharacter()->getSelectedItemIndex() != -1) {
-									game.characterDropItem(game.getSelectedCharacter());
-									tileMap->updateTile(game.getSelectedCharacter()->getPosition());
-								}
-							}
-							else if (buttonEquipItem.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
-								game.getSelectedCharacter()->equipSelected();
-							}
-							else {
-								for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-									if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i]->getType() != Type_None) {
-										game.getSelectedCharacter()->setSelectedItemIndex(i);
-										break;
-									}
-									else {
-										game.getSelectedCharacter()->setSelectedItemIndex(-1);
-									}
+								else {
+									game.getSelectedCharacter()->setSelectedItemIndex(-1);
 								}
 							}
 						}
@@ -307,7 +334,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				}
 			}
 			if (event.type == sf::Event::Resized) {
-				resized = true;
+				updateLayout(App);
 			}
 			if (event.type == sf::Event::MouseMoved && mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end()) {
 				auto gc = game.getSelectedCharacter();
@@ -339,29 +366,19 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 		DrawUI(App);
 		DrawGame(App);
 
-		if (resized == true) resized = false;
-
 		App.display();
 	}
-	return ScreenResult::MainMenuScene;
+	return m_screenResult;
 }
 
 void GameScreen::DrawGame(sf::RenderWindow &App) {
 
 	App.setView(gameView);
-
-	if (resized) {
-		gameView.setSize(App.getSize().x - MENUSIZE, App.getSize().y);
-		gameView.setCenter((App.getSize().x - MENUSIZE) / 2, App.getSize().y / 2); //TODO: This needs to take into account changes to the view
-		gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - MENUSIZE) / App.getSize().x, 1));
+	// Center the camera on the selected player (linear interpolation)
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		float factor = 0.01f;
+		gameView.setCenter(sf::Vector2f(gameView.getCenter().x + (game.getSelectedCharacter()->getRenderPosition().x - gameView.getCenter().x) * factor, gameView.getCenter().y + (game.getSelectedCharacter()->getRenderPosition().y - gameView.getCenter().y) * factor));
 	}
-
-	//Calculate which tiles we can actually see before drawing the map
-	//TODO: The calculation might break when moving the view at arbitrary (non-TILESIZE) amounts
-	int y0 = std::max(static_cast<int>((gameView.getCenter().y - App.getSize().y / 2) / TILESIZE), 0);
-	int ymax = std::min(static_cast<int>(y0 + App.getSize().y / TILESIZE) + 1, static_cast<int>(game.getGrid().getHeight() - 1));
-	int x0 = std::max(static_cast<int>((gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2) / TILESIZE), 0);
-	int xmax = std::min(static_cast<int>(x0 + (App.getSize().x - MENUSIZE) / TILESIZE) + 1, static_cast<int>(game.getGrid().getWidth() - 1));
 
 	//Draw the map
 	App.draw(*tileMap);
@@ -444,65 +461,24 @@ void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u
 }
 
 void GameScreen::DrawUI(sf::RenderWindow &App) {
+	unsigned int menuSize = App.getSize().x / 4;
 
-	//Interface elements that only need to be updated after resizing the window
-	if (resized) {
-
-		//Update view
-		interfaceView.setSize(App.getSize().x, App.getSize().y);
-		interfaceView.setCenter(App.getSize().x / 2, App.getSize().y / 2);
-
-		//Interface background
-		interfaceBkg.setSize(sf::Vector2f(MENUSIZE, App.getSize().y));
-		interfaceBkg.setPosition(App.getSize().x - MENUSIZE, 0);
-
-		//End turn button and text
-		buttonEndTurn.setPosition(App.getSize().x - MENUSIZE + 50, 260);
-		textEndTurn.setPosition(App.getSize().x - MENUSIZE + 52, 280);
-
-		//FPS counter text
-		textFPS.setPosition(App.getSize().x - MENUSIZE + 52, 0);
-
-		//Current turn text
-		textCurTurn.setPosition(App.getSize().x - MENUSIZE + 52, 50);
-
-		//mousemode text
-		textMouseMode.setPosition(App.getSize().x - MENUSIZE + 52, 90);
-
-		//AP text
-		textAP.setPosition(App.getSize().x - MENUSIZE + 52, 100);
-
-		//Pick up item button and text
-		buttonPickupItem.setPosition(App.getSize().x - MENUSIZE + 10, 400);
-		textPickupItem.setPosition(App.getSize().x - MENUSIZE + 12, 400);
-
-		//Drop item button and text
-		buttonDropItem.setPosition(App.getSize().x - MENUSIZE + 70, 400);
-		textDropItem.setPosition(App.getSize().x - MENUSIZE + 72, 400);
-
-		//Equip item button and text
-		buttonEquipItem.setPosition(App.getSize().x - MENUSIZE + 130, 400);
-		textEquipItem.setPosition(App.getSize().x - MENUSIZE + 132, 400);
-
-		//Inventory item positions
-		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-			inventoryItems[i].setPosition((App.getSize().x - MENUSIZE + 18) + ((i % ITEMS_PER_ROW) * (TILESIZE + 12)), 430 + (i / ITEMS_PER_ROW) * (TILESIZE + 12));
-		}
-
-	}
+	updateUIComponents(App);
 
 	//Interface elements that always need to be updated
-	textCurTurn.setString("Current turn: Player " + std::to_string(game.getCurrentPlayer()));
+	textCurTurnValue.setString(std::to_string(game.getCurrentPlayer()));
 
 	std::string mm = (mouseMode == MouseMode::shoot) ? "SHOOT MODE" : "SELECT MODE";
 	textMouseMode.setString(mm);
 
 	//TODO: Process selected character attributes here and draw them on the interface...
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		textAP.setString("Action points: " + std::to_string(game.getSelectedCharacter()->getActionPoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxActionPoints()));
+		textAPValue.setString(std::to_string(game.getSelectedCharacter()->getActionPoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxActionPoints()));
 
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) {
-			equippedItem.setPosition((App.getSize().x - MENUSIZE + 18) + ((game.getSelectedCharacter()->getSelectedWeaponIndex() % ITEMS_PER_ROW) * (TILESIZE + 12)), 430 + (game.getSelectedCharacter()->getSelectedWeaponIndex() / ITEMS_PER_ROW) * (TILESIZE + 12));
+			unsigned int margin = 10;
+			unsigned int offset = menuSize / 4;
+			equippedItem.setPosition((App.getSize().x - menuSize + margin) + ((game.getSelectedCharacter()->getSelectedWeaponIndex() % ITEMS_PER_ROW) * offset), 330 + (game.getSelectedCharacter()->getSelectedWeaponIndex() / ITEMS_PER_ROW) * (offset));
 		}
 	}
 
@@ -513,17 +489,16 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 
 	//Draw elements
 	App.setView(interfaceView);
+	App.draw(backgroundSprite);
 	App.draw(interfaceBkg); //Must always be first since it covers the whole area and will hide anything "under" it
 
 	// Draw action points
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		App.draw(textAP);
+		App.draw(textAPLabel);
+		App.draw(textAPValue);
 		App.draw(buttonPickupItem);
-		App.draw(textPickupItem);
 		App.draw(buttonDropItem);
-		App.draw(textDropItem);
 		App.draw(buttonEquipItem);
-		App.draw(textEquipItem);
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) App.draw(equippedItem);
 		// Draw items
 		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
@@ -538,10 +513,98 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 
 	App.draw(textFPS);
 	App.draw(textMouseMode);
+	App.draw(buttonExit);
 	App.draw(buttonEndTurn);
-	App.draw(textCurTurn);
-	App.draw(textEndTurn);
+	App.draw(textCurTurnLabel);
+	App.draw(textCurTurnValue);
+}
 
+void GameScreen::updateLayout(sf::RenderWindow & App)
+{
+	unsigned int menuSize = App.getSize().x / 4;
+	unsigned int menuCenterX = App.getSize().x - menuSize / 2;
+	unsigned int margin = 10;
+
+	/** Game View */
+
+	gameView.setSize(App.getSize().x - menuSize, App.getSize().y);
+	gameView.setCenter((App.getSize().x - menuSize) / 2, App.getSize().y / 2); //TODO: This needs to take into account changes to the view
+	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - menuSize) / App.getSize().x, 1));
+	
+	/** UI View */
+
+	backgroundSprite.setScale(
+		App.getSize().x / backgroundSprite.getLocalBounds().width,
+		App.getSize().y / backgroundSprite.getLocalBounds().height);
+
+	interfaceView.setSize(App.getSize().x, App.getSize().y);
+	interfaceView.setCenter(App.getSize().x / 2, App.getSize().y / 2);
+
+	// Interface background
+	interfaceBkg.setSize(sf::Vector2f(menuSize, App.getSize().y));
+	interfaceBkg.setPosition(App.getSize().x - menuSize, 0);
+
+	// Exit button
+	buttonExit.setPosition(sf::Vector2f(menuCenterX, App.getSize().y - buttonExit.getGlobalBounds().height / 2 - margin));
+	sf::RectangleShape rs;
+	rs.setFillColor(sf::Color::White);
+	rs.setSize(sf::Vector2f(menuSize - margin, 40));
+	buttonExit.setRectangleShape(rs);
+
+	// End turn button
+	buttonEndTurn.setPosition(sf::Vector2f(menuCenterX, buttonExit.getPos().y - buttonExit.getGlobalBounds().height / 2 - buttonEndTurn.getGlobalBounds().height / 2 - margin));
+	rs.setFillColor(sf::Color::White);
+	rs.setSize(sf::Vector2f(menuSize - margin, 40));
+	buttonEndTurn.setRectangleShape(rs);
+
+	// Pick up item button
+	rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
+	buttonPickupItem.setRectangleShape(rs);
+	buttonPickupItem.setPosition(sf::Vector2f(menuCenterX - menuSize / 2 + buttonPickupItem.getGlobalBounds().width / 2 + margin, 300));
+
+	// Drop item button
+	rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
+	buttonDropItem.setRectangleShape(rs);
+	buttonDropItem.setPosition(sf::Vector2f(menuCenterX, 300));
+
+	// Equip item button
+	rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
+	buttonEquipItem.setRectangleShape(rs);
+	buttonEquipItem.setPosition(sf::Vector2f(App.getSize().x - buttonEquipItem.getGlobalBounds().width / 2 - margin, 300));
+
+	// Inventory item positions
+	unsigned int offset = menuSize / 4;
+	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
+		inventoryItems[i].setTextureRect(sf::IntRect(0, 0, TILESIZE, TILESIZE));
+		inventoryItems[i].setScale(sf::Vector2f(menuSize / ITEMS_PER_ROW / TILESIZE, menuSize / ITEMS_PER_ROW / TILESIZE));
+		inventoryItems[i].setPosition((App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset), 330 + (i / ITEMS_PER_ROW) * (offset));
+	}
+
+	selectedItem.setSize(sf::Vector2f(inventoryItems[0].getGlobalBounds().width, inventoryItems[0].getGlobalBounds().height));
+	equippedItem.setSize(sf::Vector2f(inventoryItems[0].getGlobalBounds().width, inventoryItems[0].getGlobalBounds().height));
+
+	updateUIComponents(App);
+}
+
+void GameScreen::updateUIComponents(sf::RenderWindow & App)
+{
+	unsigned int menuSize = App.getSize().x / 4;
+	unsigned int menuCenterX = App.getSize().x - menuSize / 2;
+	unsigned int margin = 10;
+
+	// FPS counter text
+	textFPS.setPosition(menuCenterX - menuSize / 2 + margin, 0);
+
+	// AP text
+	textAPLabel.setPosition(menuCenterX - menuSize / 2 + margin, 100);
+	textAPValue.setPosition(menuCenterX + menuSize / 2 - margin - textAPValue.getGlobalBounds().width, 100);
+
+	// Current turn text
+	textCurTurnLabel.setPosition(menuCenterX - menuSize / 2 + margin, 50);
+	textCurTurnValue.setPosition(menuCenterX + menuSize / 2 - margin - textCurTurnValue.getGlobalBounds().width, 50);
+
+	// Mousemode text
+	textMouseMode.setPosition(menuCenterX - textMouseMode.getGlobalBounds().width / 2, 150);
 }
 
 void GameScreen::endTurn() {
@@ -549,6 +612,29 @@ void GameScreen::endTurn() {
 	rayLine[0].position = sf::Vector2f(0, 0);
 	rayLine[1].position = sf::Vector2f(0, 0);
 	game.endTurn();
+}
+
+void GameScreen::pickupItem() {
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		if (game.characterPickUpItem(game.getSelectedCharacter())) {
+			tileMap->updateTile(game.getSelectedCharacter()->getPosition());
+		}
+	}
+}
+
+void GameScreen::dropItem() {
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		if (game.getSelectedCharacter()->getSelectedItemIndex() != -1) {
+			game.characterDropItem(game.getSelectedCharacter());
+			tileMap->updateTile(game.getSelectedCharacter()->getPosition());
+		}
+	}
+}
+
+void GameScreen::equipItem() {
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		game.getSelectedCharacter()->equipSelected();
+	}
 }
 
 sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const {
@@ -564,3 +650,17 @@ void GameScreen::addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u worl
 	activeProjectiles.push_back(p);
 }
 
+void GameScreen::zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom)
+{
+	const sf::Vector2f before{ window.mapPixelToCoords(pixel) };
+	view.zoom(zoom);
+	window.setView(view);
+	const sf::Vector2f after{ window.mapPixelToCoords(pixel) };
+	const sf::Vector2f offset{ before - after };
+	view.move(offset);
+	window.setView(view);
+}
+
+void GameScreen::exitToMainMenu() {
+	m_screenResult = ScreenResult::MainMenuScene;
+}
