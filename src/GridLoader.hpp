@@ -7,37 +7,30 @@
 #include <string>
 #include "libs/json.hpp"
 #include "Grid.hpp"
-#include "alt_Tile.hpp"
-//#include "Game.hpp"
+#include "Tile.hpp"
+#include "Game.hpp"
 
 namespace jreader {
 
 	static std::map<std::string, TileBlock> block = {{"wall", wall}, {"tree", tree}, {"bush", bush}, {"air", air}};
 	static std::map<std::string, TileGround> ground = {{"grass", grass}, {"dirt", dirt}, {"wood", wood}, {"stone", stone}, {"metal", metal}, {"black", black}};
+	static std::vector<std::string> block_str = {"black", "dirt", "grass", "wood", "stone", "metal"};
+	static std::vector<std::string> ground_str = {"air", "wall", "tree", "bush"};
 
-	Tile createTile(nlohmann::json j) {
+	Tile createTile(nlohmann::json& j) {
 		return Tile();
 	}
 
-	Grid loadGrid(nlohmann::json map);
-
-	Grid loadJSON(std::string filepath) {
-		nlohmann::json jloader;
-
-		std::ifstream is(filepath);
-		is >> jloader;
-		is.close();
-
-		if (jloader["map"] == nullptr) {
-			return Grid();
+	nlohmann::json createTile(Tile& tile) {
+		nlohmann:json jt;
+		jtile["ground"] = ground_str[t.getGround()];
+		jtile["block"] = block_str[t.getBlock()];
+		for (int item : tile.getItems()) {
+			jtile["items"].push_back(item);
 		}
-
-		Grid g = loadGrid(jloader["map"]);
-
-		return g;
 	}
 
-	Grid loadGrid(nlohmann::json jgrid) {
+	Grid loadGrid(nlohmann::json& jgrid) {
 
 		unsigned mapSize;
 		unsigned mapWidth;
@@ -70,12 +63,36 @@ namespace jreader {
 		return g;
 	}
 
-	bool writeJSON(std::string filepath) {
+	Grid loadJSON(std::string filepath) {
+		nlohmann::json jloader;
+
+		std::ifstream is(filepath);
+		is >> jloader;
+		is.close();
+
+		if (jloader["map"] == nullptr) {
+			std::cout << "JSON file had no map element. Skipping map load." << std::endl;
+			return Grid();
+		}
+
+		Grid g = loadGrid(jloader["map"]);
+
+		return g;
+	}
+
+	bool writeJSON(Game& game, std::string filepath) {
+		nlohmann::json writer;
+		writer["map"] = nlohmann::json::array();
+		for (auto tile : g.getGrid()) {
+			nlohmann::json jtile = {
+				jtile = createTile(tile);
+			}
+			writer["map"].push_back(jtile);
+		}
 		return true;
 	}	
 
 }
-
 
 
 #endif
