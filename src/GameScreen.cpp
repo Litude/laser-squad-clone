@@ -75,7 +75,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	}
 
 	//Interface element attributes that won't change during execution
-	interfaceBkg.setFillColor(sf::Color::Blue);
+	interfaceBkg.setFillColor(sf::Color::Black);
 	textFPS.setFont(*font);
 	textFPS.setCharacterSize(12);
 	textCurTurn.setFont(*font);
@@ -84,6 +84,13 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	textAP.setCharacterSize(12);
 	textMouseMode.setFont(*font);
 	textMouseMode.setCharacterSize(12);
+
+	backgroundTexture = std::make_shared<sf::Texture>(sf::Texture());
+	if (!backgroundTexture->loadFromFile("img/background.png"))
+	{
+		std::cerr << "Error loading background.png" << std::endl;
+	}
+	backgroundSprite.setTexture(*backgroundTexture);
 
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
@@ -419,6 +426,7 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 
 	//Draw elements
 	App.setView(interfaceView);
+	App.draw(backgroundSprite);
 	App.draw(interfaceBkg); //Must always be first since it covers the whole area and will hide anything "under" it
 
 	// Draw action points
@@ -459,6 +467,10 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - menuSize) / App.getSize().x, 1));
 	
 	/** UI View */
+
+	backgroundSprite.setScale(
+		(App.getSize().x - menuSize) / backgroundSprite.getLocalBounds().width,
+		App.getSize().y / backgroundSprite.getLocalBounds().height);
 
 	interfaceView.setSize(App.getSize().x, App.getSize().y);
 	interfaceView.setCenter(App.getSize().x / 2, App.getSize().y / 2);
@@ -504,6 +516,7 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 	// Inventory item positions
 	unsigned int offset = menuSize / 4;
 	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
+		inventoryItems[i].setTextureRect(sf::IntRect(0, 0, TILESIZE, TILESIZE));
 		inventoryItems[i].setScale(sf::Vector2f(menuSize / ITEMS_PER_ROW / TILESIZE, menuSize / ITEMS_PER_ROW / TILESIZE));
 		inventoryItems[i].setPosition((App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset), 430 + (i / ITEMS_PER_ROW) * (offset));
 	}

@@ -36,6 +36,8 @@ private:
 	std::shared_ptr<sf::Texture> texPlayer1;
 	std::shared_ptr<sf::Texture> texPlayer2;
 	std::shared_ptr<sf::Texture> texItems;
+	std::shared_ptr<sf::Texture> backgroundTexture;
+	sf::Sprite backgroundSprite;
 	sf::View gameView;
 	sf::View interfaceView;
 	sf::RectangleShape interfaceBkg;
