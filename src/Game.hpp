@@ -33,8 +33,8 @@ public:
 	const std::vector<sf::Vector2u>         characterShoot(gc_iterator gc, sf::Vector2u target);
 	bool									characterPickUpItem(std::vector<GameCharacter>::iterator it);
 	bool									characterDropItem(std::vector<GameCharacter>::iterator it);
-	const sf::Vector2u                      traceFromCharacter(gc_iterator it, sf::Vector2u target);
-	const sf::Vector2u                      getEndTile(coord_iterator coord_begin, coord_iterator coord_end, int maxRange=12);
+	const sf::Vector2u                      traceFromCharacter(gc_iterator gc, sf::Vector2u target, bool ignoreCharacters=false);
+	const sf::Vector2u                      getEndTile(coord_iterator coord_begin, coord_iterator coord_end, bool ignoreCharacters, int maxRange=12);
     std::vector<sf::Vector2u>               seenCoordinates(std::vector<GameCharacter>::iterator it);
     bool                                    lineofSight(int x1,int y1,int x2,int y2);
 private:
