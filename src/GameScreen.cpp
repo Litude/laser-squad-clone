@@ -177,6 +177,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
 		inventoryItems[i].setTexture(*texItems);
 	}
+	updateLayout(App);
 }
 
 ScreenResult GameScreen::Run(sf::RenderWindow & App)
@@ -286,7 +287,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				}
 			}
 			if (event.type == sf::Event::Resized) {
-				resized = true;
+				updateLayout(App);
 			}
 			if (event.type == sf::Event::MouseMoved && mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end()) {
 				auto gc = game.getSelectedCharacter();
@@ -318,8 +319,6 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 		DrawUI(App);
 		DrawGame(App);
 
-		if (resized == true) resized = false;
-
 		App.display();
 	}
 	return ScreenResult::MainMenuScene;
@@ -328,12 +327,6 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 void GameScreen::DrawGame(sf::RenderWindow &App) {
 
 	App.setView(gameView);
-
-	if (resized) {
-		gameView.setSize(App.getSize().x - MENUSIZE, App.getSize().y);
-		gameView.setCenter((App.getSize().x - MENUSIZE) / 2, App.getSize().y / 2); //TODO: This needs to take into account changes to the view
-		gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - MENUSIZE) / App.getSize().x, 1));
-	}
 
 	//Calculate which tiles we can actually see before drawing the map
 	//TODO: The calculation might break when moving the view at arbitrary (non-TILESIZE) amounts
@@ -407,49 +400,6 @@ void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u
 }
 
 void GameScreen::DrawUI(sf::RenderWindow &App) {
-
-	//Interface elements that only need to be updated after resizing the window
-	if (resized) {
-
-		//Update view
-		interfaceView.setSize(App.getSize().x, App.getSize().y);
-		interfaceView.setCenter(App.getSize().x / 2, App.getSize().y / 2);
-
-		//Interface background
-		interfaceBkg.setSize(sf::Vector2f(MENUSIZE, App.getSize().y));
-		interfaceBkg.setPosition(App.getSize().x - MENUSIZE, 0);
-
-		//End turn button and text
-		buttonEndTurn.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 50, 260));
-
-		//FPS counter text
-		textFPS.setPosition(App.getSize().x - MENUSIZE + 52, 0);
-
-		//Current turn text
-		textCurTurn.setPosition(App.getSize().x - MENUSIZE + 52, 50);
-
-		//mousemode text
-		textMouseMode.setPosition(App.getSize().x - MENUSIZE + 52, 90);
-
-		//AP text
-		textAP.setPosition(App.getSize().x - MENUSIZE + 52, 100);
-
-		//Pick up item button
-		buttonPickupItem.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 10, 400));
-
-		//Drop item button
-		buttonDropItem.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 70, 400));
-
-		//Equip item button and text
-		buttonEquipItem.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 130, 400));
-
-		//Inventory item positions
-		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-			inventoryItems[i].setPosition((App.getSize().x - MENUSIZE + 18) + ((i % ITEMS_PER_ROW) * (TILESIZE + 12)), 430 + (i / ITEMS_PER_ROW) * (TILESIZE + 12));
-		}
-
-	}
-
 	//Interface elements that always need to be updated
 	textCurTurn.setString("Current turn: Player " + std::to_string(game.getCurrentPlayer()));
 
@@ -497,6 +447,53 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 	App.draw(buttonEndTurn);
 	App.draw(textCurTurn);
 
+}
+
+void GameScreen::updateLayout(sf::RenderWindow & App)
+{
+	/** Game View */
+	gameView.setSize(App.getSize().x - MENUSIZE, App.getSize().y);
+	gameView.setCenter((App.getSize().x - MENUSIZE) / 2, App.getSize().y / 2); //TODO: This needs to take into account changes to the view
+	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - MENUSIZE) / App.getSize().x, 1));
+	
+	/** UI View */
+
+	//Update view
+	interfaceView.setSize(App.getSize().x, App.getSize().y);
+	interfaceView.setCenter(App.getSize().x / 2, App.getSize().y / 2);
+
+	//Interface background
+	interfaceBkg.setSize(sf::Vector2f(MENUSIZE, App.getSize().y));
+	interfaceBkg.setPosition(App.getSize().x - MENUSIZE, 0);
+
+	//End turn button and text
+	buttonEndTurn.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 50, 260));
+
+	//FPS counter text
+	textFPS.setPosition(App.getSize().x - MENUSIZE + 52, 0);
+
+	//Current turn text
+	textCurTurn.setPosition(App.getSize().x - MENUSIZE + 52, 50);
+
+	//mousemode text
+	textMouseMode.setPosition(App.getSize().x - MENUSIZE + 52, 90);
+
+	//AP text
+	textAP.setPosition(App.getSize().x - MENUSIZE + 52, 100);
+
+	//Pick up item button
+	buttonPickupItem.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 10, 400));
+
+	//Drop item button
+	buttonDropItem.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 70, 400));
+
+	//Equip item button and text
+	buttonEquipItem.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 130, 400));
+
+	//Inventory item positions
+	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
+		inventoryItems[i].setPosition((App.getSize().x - MENUSIZE + 18) + ((i % ITEMS_PER_ROW) * (TILESIZE + 12)), 430 + (i / ITEMS_PER_ROW) * (TILESIZE + 12));
+	}
 }
 
 void GameScreen::endTurn() {

@@ -26,6 +26,7 @@ private:
 	void equipItem();
 	void DrawGame(sf::RenderWindow &App);
 	void DrawUI(sf::RenderWindow &App);
+	void updateLayout(sf::RenderWindow & App);
 	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
 	void DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles);
 
@@ -63,7 +64,6 @@ private:
 	std::vector<sf::Sprite> inventoryItems;
 
 	MouseMode::Mode mouseMode = MouseMode::select;
-	bool resized = true;
 };
 
 #endif
