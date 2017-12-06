@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 
 	ScreenResult result = ScreenResult::MainMenuScene;
 
-	std::shared_ptr<Screen> screen;
+	std::unique_ptr<Screen> screen;
 
 	//Main loop
 	while (result != ScreenResult::Exit)
@@ -25,16 +25,16 @@ int main(int argc, char* argv[]) {
 		switch (result)
 		{
 		case MainMenuScene:
-			screen = std::make_shared<MainMenuScreen>(MainMenuScreen());
+			screen.reset(new MainMenuScreen());
 			result = screen->Run(App);
 			break;
 		case NewGameScene:
-			screen = std::make_shared<NgMenuScreen>(NgMenuScreen());
+			screen.reset(new NgMenuScreen());
 			result = screen->Run(App);
 			break;
 		case GameScene:
 			// TODO: Pass NewGameScreen parameters to GameScreen here
-			screen = std::make_shared<GameScreen>(GameScreen(App));
+			screen.reset(new GameScreen(App));
 			result = screen->Run(App);
 			break;
 		case Exit:

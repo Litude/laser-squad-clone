@@ -80,25 +80,28 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	textFPS.setCharacterSize(12);
 	textCurTurn.setFont(*font);
 	textCurTurn.setCharacterSize(12);
-	textEndTurn.setFont(*font);
-	textEndTurn.setString("End turn");
 	textAP.setFont(*font);
 	textAP.setCharacterSize(12);
 	textMouseMode.setFont(*font);
 	textMouseMode.setCharacterSize(12);
-	textPickupItem.setFont(*font);
-	textPickupItem.setCharacterSize(12);
-	textPickupItem.setString("Pick up");
-	textDropItem.setFont(*font);
-	textDropItem.setCharacterSize(12);
-	textDropItem.setString("Drop");
-	textEquipItem.setFont(*font);
-	textEquipItem.setCharacterSize(12);
-	textEquipItem.setString("Equip");
-	buttonEndTurn.setFillColor(sf::Color::Magenta);
-	buttonPickupItem.setFillColor(sf::Color::Magenta);
-	buttonDropItem.setFillColor(sf::Color::Magenta);
-	buttonEquipItem.setFillColor(sf::Color::Magenta);
+
+	sf::RectangleShape rs;
+	rs.setFillColor(sf::Color::White);
+	rs.setSize(sf::Vector2f(140, 40));
+
+	buttonEndTurn = Button("End turn", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
+	buttonEndTurn.setCallback([&] { this->endTurn(); });
+
+	rs.setSize(sf::Vector2f(50, 20));
+
+	buttonPickupItem = Button("Pick up", *font, sf::Text::Regular, 12, sf::Vector2f(0.f, 0.f), rs);
+	buttonPickupItem.setCallback([&] { this->pickupItem(); });
+
+	buttonDropItem = Button("Drop", *font, sf::Text::Regular, 12, sf::Vector2f(0.f, 0.f), rs);
+	buttonDropItem.setCallback([&] { this->dropItem(); });
+
+	buttonEquipItem = Button("Equip", *font, sf::Text::Regular, 12, sf::Vector2f(0.f, 0.f), rs);
+	buttonEquipItem.setCallback([&] { this->equipItem(); });
 
 	//Game drawing initialization
 	selectedCharacter = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
@@ -192,6 +195,11 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				App.close();
 				return ScreenResult::Exit;
 			}
+			// Update buttons
+			buttonEndTurn.update(event, App);
+			buttonPickupItem.update(event, App);
+			buttonDropItem.update(event, App);
+			buttonEquipItem.update(event, App);
 			//Handle keyboard input
 			if (event.type == sf::Event::KeyPressed) {
 				switch (event.key.code) {
@@ -244,34 +252,14 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				if (event.mouseButton.x >= App.getSize().x - MENUSIZE) {
 					//Clicked on the menubar
 					if (event.mouseButton.button == 0) {
-						if (buttonEndTurn.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
-							endTurn();
-						}
-						else if (game.getSelectedCharacter() != game.getCharacters().end()) {
-							//Check for stuff that requires a game character to be selected
-							if (buttonPickupItem.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
-								if (game.characterPickUpItem(game.getSelectedCharacter())) {
-									tileMap->updateTile(game.getSelectedCharacter()->getPosition());
+						if (game.getSelectedCharacter() != game.getCharacters().end()) {
+							for (unsigned int i = 0; i < MAX_ITEMS; i++) {
+								if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i]->getMainType() != Type_None) {
+									game.getSelectedCharacter()->setSelectedItemIndex(i);
+									break;
 								}
-							}
-							else if (buttonDropItem.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
-								if (game.getSelectedCharacter()->getSelectedItemIndex() != -1) {
-									game.characterDropItem(game.getSelectedCharacter());
-									tileMap->updateTile(game.getSelectedCharacter()->getPosition());
-								}
-							}
-							else if (buttonEquipItem.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App)))) {
-								game.getSelectedCharacter()->equipSelected();
-							}
-							else {
-								for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-									if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i]->getMainType() != Type_None) {
-										game.getSelectedCharacter()->setSelectedItemIndex(i);
-										break;
-									}
-									else {
-										game.getSelectedCharacter()->setSelectedItemIndex(-1);
-									}
+								else {
+									game.getSelectedCharacter()->setSelectedItemIndex(-1);
 								}
 							}
 						}
@@ -432,8 +420,7 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		interfaceBkg.setPosition(App.getSize().x - MENUSIZE, 0);
 
 		//End turn button and text
-		buttonEndTurn.setPosition(App.getSize().x - MENUSIZE + 50, 260);
-		textEndTurn.setPosition(App.getSize().x - MENUSIZE + 52, 280);
+		buttonEndTurn.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 50, 260));
 
 		//FPS counter text
 		textFPS.setPosition(App.getSize().x - MENUSIZE + 52, 0);
@@ -447,17 +434,14 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		//AP text
 		textAP.setPosition(App.getSize().x - MENUSIZE + 52, 100);
 
-		//Pick up item button and text
-		buttonPickupItem.setPosition(App.getSize().x - MENUSIZE + 10, 400);
-		textPickupItem.setPosition(App.getSize().x - MENUSIZE + 12, 400);
+		//Pick up item button
+		buttonPickupItem.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 10, 400));
 
-		//Drop item button and text
-		buttonDropItem.setPosition(App.getSize().x - MENUSIZE + 70, 400);
-		textDropItem.setPosition(App.getSize().x - MENUSIZE + 72, 400);
+		//Drop item button
+		buttonDropItem.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 70, 400));
 
 		//Equip item button and text
-		buttonEquipItem.setPosition(App.getSize().x - MENUSIZE + 130, 400);
-		textEquipItem.setPosition(App.getSize().x - MENUSIZE + 132, 400);
+		buttonEquipItem.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 130, 400));
 
 		//Inventory item positions
 		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
@@ -494,11 +478,8 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
 		App.draw(textAP);
 		App.draw(buttonPickupItem);
-		App.draw(textPickupItem);
 		App.draw(buttonDropItem);
-		App.draw(textDropItem);
 		App.draw(buttonEquipItem);
-		App.draw(textEquipItem);
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) App.draw(equippedItem);
 		// Draw items
 		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
@@ -515,7 +496,6 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 	App.draw(textMouseMode);
 	App.draw(buttonEndTurn);
 	App.draw(textCurTurn);
-	App.draw(textEndTurn);
 
 }
 
@@ -524,6 +504,29 @@ void GameScreen::endTurn() {
 	rayLine[0].position = sf::Vector2f(0, 0);
 	rayLine[1].position = sf::Vector2f(0, 0);
 	game.endTurn();
+}
+
+void GameScreen::pickupItem() {
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		if (game.characterPickUpItem(game.getSelectedCharacter())) {
+			tileMap->updateTile(game.getSelectedCharacter()->getPosition());
+		}
+	}
+}
+
+void GameScreen::dropItem() {
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		if (game.getSelectedCharacter()->getSelectedItemIndex() != -1) {
+			game.characterDropItem(game.getSelectedCharacter());
+			tileMap->updateTile(game.getSelectedCharacter()->getPosition());
+		}
+	}
+}
+
+void GameScreen::equipItem() {
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		game.getSelectedCharacter()->equipSelected();
+	}
 }
 
 sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const {

@@ -6,6 +6,7 @@
 #include "Screen.hpp"
 #include "Game.hpp"
 #include "TileMap.hpp"
+#include "Button.hpp"
 #include <SFML/Graphics.hpp>
 #include "Util.hpp"
 
@@ -20,6 +21,9 @@ public:
 	virtual ScreenResult Run(sf::RenderWindow &App);
 private:
 	void endTurn();
+	void pickupItem();
+	void dropItem();
+	void equipItem();
 	void DrawGame(sf::RenderWindow &App);
 	void DrawUI(sf::RenderWindow &App);
 	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
@@ -34,21 +38,17 @@ private:
 	sf::View gameView;
 	sf::View interfaceView;
 	sf::RectangleShape interfaceBkg;
-	sf::RectangleShape buttonEndTurn{ sf::Vector2f(100, 80) };
-	sf::RectangleShape buttonPickupItem{ sf::Vector2f(50, 20) };
-	sf::RectangleShape buttonDropItem{ sf::Vector2f(50, 20) };
-	sf::RectangleShape buttonEquipItem{ sf::Vector2f(50, 20) };
+	Button buttonEndTurn;
+	Button buttonPickupItem;
+	Button buttonDropItem;
+	Button buttonEquipItem;
 	sf::RectangleShape selectedCharacter;
 	sf::RectangleShape selectedItem;
 	sf::RectangleShape equippedItem;
 	sf::Text textCurTurn;
-	sf::Text textEndTurn;
 	sf::Text textFPS;
 	sf::Text textAP;
 	sf::Text textMouseMode;
-	sf::Text textPickupItem;
-	sf::Text textDropItem;
-	sf::Text textEquipItem;
 	sf::VertexArray rayLine{ sf::Lines, 2 };
 	std::vector<sf::Sprite> mapTiles;
 	sf::Clock fpsclock;
