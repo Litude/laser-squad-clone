@@ -249,8 +249,8 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 			}
 			//Handle mouse input
 			if (event.type == sf::Event::MouseButtonReleased) {
-
-				if (event.mouseButton.x >= App.getSize().x - MENUSIZE) {
+				unsigned int menuSize = App.getSize().x / 4;
+				if (event.mouseButton.x >= App.getSize().x - menuSize) {
 					//Clicked on the menubar
 					if (event.mouseButton.button == 0) {
 						if (game.getSelectedCharacter() != game.getCharacters().end()) {
@@ -328,13 +328,6 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 
 	App.setView(gameView);
 
-	//Calculate which tiles we can actually see before drawing the map
-	//TODO: The calculation might break when moving the view at arbitrary (non-TILESIZE) amounts
-	int y0 = std::max(static_cast<int>((gameView.getCenter().y - App.getSize().y / 2) / TILESIZE), 0);
-	int ymax = std::min(static_cast<int>(y0 + App.getSize().y / TILESIZE) + 1, static_cast<int>(game.getGrid().getHeight() - 1));
-	int x0 = std::max(static_cast<int>((gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2) / TILESIZE), 0);
-	int xmax = std::min(static_cast<int>(x0 + (App.getSize().x - MENUSIZE) / TILESIZE) + 1, static_cast<int>(game.getGrid().getWidth() - 1));
-
 	//Draw the map
 	App.draw(*tileMap);
 
@@ -400,6 +393,8 @@ void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u
 }
 
 void GameScreen::DrawUI(sf::RenderWindow &App) {
+	unsigned int menuSize = App.getSize().x / 4;
+
 	//Interface elements that always need to be updated
 	textCurTurn.setString("Current turn: Player " + std::to_string(game.getCurrentPlayer()));
 
@@ -411,7 +406,9 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		textAP.setString("Action points: " + std::to_string(game.getSelectedCharacter()->getActionPoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxActionPoints()));
 
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) {
-			equippedItem.setPosition((App.getSize().x - MENUSIZE + 18) + ((game.getSelectedCharacter()->getSelectedWeaponIndex() % ITEMS_PER_ROW) * (TILESIZE + 12)), 430 + (game.getSelectedCharacter()->getSelectedWeaponIndex() / ITEMS_PER_ROW) * (TILESIZE + 12));
+			unsigned int margin = 10;
+			unsigned int offset = menuSize / 4;
+			equippedItem.setPosition((App.getSize().x - menuSize + margin) + ((game.getSelectedCharacter()->getSelectedWeaponIndex() % ITEMS_PER_ROW) * offset), 430 + (game.getSelectedCharacter()->getSelectedWeaponIndex() / ITEMS_PER_ROW) * (offset));
 		}
 	}
 
@@ -505,11 +502,14 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 	buttonEquipItem.setPosition(sf::Vector2f(App.getSize().x - buttonEquipItem.getGlobalBounds().width / 2 - margin, 400));
 
 	// Inventory item positions
+	unsigned int offset = menuSize / 4;
 	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
 		inventoryItems[i].setScale(sf::Vector2f(menuSize / ITEMS_PER_ROW / TILESIZE, menuSize / ITEMS_PER_ROW / TILESIZE));
-		unsigned int offset = menuSize / 4;
 		inventoryItems[i].setPosition((App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset), 430 + (i / ITEMS_PER_ROW) * (offset));
 	}
+
+	selectedItem.setSize(sf::Vector2f(inventoryItems[0].getGlobalBounds().width, inventoryItems[0].getGlobalBounds().height));
+	equippedItem.setSize(sf::Vector2f(inventoryItems[0].getGlobalBounds().width, inventoryItems[0].getGlobalBounds().height));
 }
 
 void GameScreen::endTurn() {
