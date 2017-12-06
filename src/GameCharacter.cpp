@@ -145,7 +145,7 @@ bool GameCharacter::equipSelected()
 {
 	if (actionPoints >= AP_COST_EQUIP) {
 		if (selectedItemIdx == -1) return false;
-		if (inventory[selectedItemIdx]->getMainType() == Type_Weapon) {
+		if (inventory[selectedItemIdx]->getType() == Type_Weapon) {
 			selectedWeaponIdx = selectedItemIdx;
 			equippedWeapon = std::dynamic_pointer_cast<Weapon>(inventory[selectedItemIdx]);
 			actionPoints -= AP_COST_EQUIP;
