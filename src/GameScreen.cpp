@@ -112,13 +112,13 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 	rs.setSize(sf::Vector2f(50, 20));
 
-	buttonPickupItem = Button("Pick up", *font, sf::Text::Regular, 12, sf::Vector2f(0.f, 0.f), rs);
+	buttonPickupItem = Button("Pick", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
 	buttonPickupItem.setCallback([&] { this->pickupItem(); });
 
-	buttonDropItem = Button("Drop", *font, sf::Text::Regular, 12, sf::Vector2f(0.f, 0.f), rs);
+	buttonDropItem = Button("Drop", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
 	buttonDropItem.setCallback([&] { this->dropItem(); });
 
-	buttonEquipItem = Button("Equip", *font, sf::Text::Regular, 12, sf::Vector2f(0.f, 0.f), rs);
+	buttonEquipItem = Button("Equip", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
 	buttonEquipItem.setCallback([&] { this->equipItem(); });
 
 	//Game drawing initialization
