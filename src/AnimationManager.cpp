@@ -30,7 +30,7 @@ void AnimationManager::update(const unsigned int dt)
 	if (int((t + dt) / duration) > int(t / duration))
 	{
 		// Calculate the frame number
-		unsigned int frame = unsigned int((t + dt) / duration);
+		unsigned int frame = (unsigned int) ((t + dt) / duration);
 
 		// If reached end and not looping, return
 		if (frame >= this->animations[currentAnim].getLength() && !this->animations[currentAnim].loop) {
