@@ -143,7 +143,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 	//Ray tracing line for shooting
 	rayLine[0].color = sf::Color::Red;
-	rayLine[1].color = sf::Color::Green;
+	rayLine[1].color = sf::Color::Blue;
 
 	// Create a render-texture to draw visible tiles based on line of sight
 	renderTexture_visibleTiles = std::make_shared<sf::RenderTexture>();
@@ -281,7 +281,16 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 					//Clicked on gamescreen
 					//In shoot mode
 					if (mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end()) {
-						game.characterShoot(game.getSelectedCharacter(), getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView));
+						auto gc = game.getSelectedCharacter();
+						auto tiles = game.characterShoot(gc, getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView));
+						for (auto dest : tiles) {
+							addProjectile(gc->getEquipped(), gc->getPosition(), dest);
+						}
+						
+						std::cout << "PROJS:" << std::endl;
+						for (auto proj : activeProjectiles) {
+							std::cout << proj;
+						}
 					}
 					//In select mode
 					else {
@@ -305,7 +314,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				auto target = getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView);
 				auto origin = gc->getPosition();
 				rayLine[0].position = Util::mapToPixels(origin);
-				rayLine[1].position = Util::mapToPixels(game.traceFromCharacter(gc, target));
+				rayLine[1].position = Util::mapToPixels(game.traceFromCharacter(gc, target, true));
 			}
 		}
 
@@ -388,7 +397,23 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 		App.draw(characterShape);
 	}
 
+	//Draw projectiles
+	for (auto proj = activeProjectiles.begin(); proj != activeProjectiles.end(); ) {
+		if (proj->isActive()) {
+			App.draw((*proj).drawable());
+			++proj;
+		} else {
+			proj = activeProjectiles.erase(proj);
+		}
+	}
+
 	if (mouseMode == MouseMode::shoot) {
+		//"animate" rayline
+		if (rayLine[0].color.r == 255 || rayLine[0].color.r == 0) rayIncr *= -1;
+		rayLine[0].color.r += rayIncr;
+		rayLine[0].color.b += rayIncr * -1;
+		rayLine[1].color.r += rayIncr * -1;
+		rayLine[1].color.b += rayIncr;
 		App.draw(rayLine);
 	}
 	// Draw visible area for the selected game character
@@ -532,3 +557,10 @@ sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, con
 	clickedTile.y /= TILESIZE;
 	return clickedTile;
 }
+
+void GameScreen::addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination) {
+	ItemIcon wt = weapon->getIcon();
+	Projectile p(wt, Util::mapToPixels(world_origin), Util::mapToPixels(world_destination));
+	activeProjectiles.push_back(p);
+}
+

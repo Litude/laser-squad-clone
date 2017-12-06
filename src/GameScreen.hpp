@@ -8,6 +8,8 @@
 #include "TileMap.hpp"
 #include <SFML/Graphics.hpp>
 #include "Util.hpp"
+#include "Weapon.hpp"
+#include "Projectile.hpp"
 
 namespace MouseMode {
 	enum Mode { shoot, select };
@@ -24,6 +26,7 @@ private:
 	void DrawUI(sf::RenderWindow &App);
 	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
 	void DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles);
+	void addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination);
 
 	Game game;
 	std::shared_ptr<TileMap> tileMap;
@@ -33,6 +36,7 @@ private:
 	std::shared_ptr<sf::Texture> texItems;
 	sf::View gameView;
 	sf::View interfaceView;
+	
 	sf::RectangleShape interfaceBkg;
 	sf::RectangleShape buttonEndTurn{ sf::Vector2f(100, 80) };
 	sf::RectangleShape buttonPickupItem{ sf::Vector2f(50, 20) };
@@ -41,6 +45,7 @@ private:
 	sf::RectangleShape selectedCharacter;
 	sf::RectangleShape selectedItem;
 	sf::RectangleShape equippedItem;
+	
 	sf::Text textCurTurn;
 	sf::Text textEndTurn;
 	sf::Text textFPS;
@@ -49,6 +54,8 @@ private:
 	sf::Text textPickupItem;
 	sf::Text textDropItem;
 	sf::Text textEquipItem;
+
+	int rayIncr = 1;
 	sf::VertexArray rayLine{ sf::Lines, 2 };
 	std::vector<sf::Sprite> mapTiles;
 	sf::Clock fpsclock;
@@ -61,6 +68,7 @@ private:
 	sf::RectangleShape visibleTileShape;
 	sf::Shader* shader;
 	std::vector<sf::Sprite> inventoryItems;
+	std::vector<Projectile> activeProjectiles;
 
 	MouseMode::Mode mouseMode = MouseMode::select;
 	bool resized = true;
