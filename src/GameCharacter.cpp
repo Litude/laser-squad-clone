@@ -151,6 +151,6 @@ bool GameCharacter::equipSelected()
 			actionPoints -= AP_COST_EQUIP;
 			return true;
 		}
-		return false;
 	}
+	return false;
 }
