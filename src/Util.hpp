@@ -42,7 +42,7 @@ namespace Util {
 		return sf::Vector2f((coords.x * TILESIZE) + TILESIZE/2, (coords.y * TILESIZE) + TILESIZE/2);
 	}
 	
-/*	inline const std::vector<sf::Vector2u> traceLine(sf::Vector2i origin, sf::Vector2i target) {
+	/*inline const std::vector<sf::Vector2u> traceLine(sf::Vector2i origin, sf::Vector2i target) {
 		//return all square coordinates pierced by line
 		std::vector<sf::Vector2u> pierced;
 		int x_sign = (target.x > origin.x) ? 1 : -1;
@@ -50,12 +50,12 @@ namespace Util {
 
 		float slope = ((float) target.y - origin.y) / (target.x - origin.x);
 
-		for (int x = 0; x <= abs(target.x - origin.x); x += x_sign) {
-			for (int y = 0; y <= abs(target.y - origin.y); y += y_sign) {
+		for (int x = 0; x <= abs(target.x - origin.x); x += x_sign) {//+= x_sign) {
+			for (int y = 0; y <= abs(target.y - origin.y); y += y_sign) {// += y_sign) {
 				float xf = (float) y / slope;
 				if ( ((int) (xf + (x_sign * 0.5))) == x ) {
 					std::cout << "adding coord: (" << x + origin.x << ", " << y + origin.y << ")" << std::endl; 
-					sf::Vector2u coord( (unsigned) (x + origin.x), (unsigned) (y + origin.y));
+					sf::Vector2u coord( (unsigned) x + origin.x, (unsigned) y + origin.y);
 					pierced.push_back(coord);
 				}
 			}
