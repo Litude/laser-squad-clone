@@ -36,7 +36,7 @@ public:
   void setPosition(sf::Vector2f pos);
   void setState(sf::Uint32 st);
   void setSprite(sf::Sprite s) {b_sprite = s;};
-  void setRectangleShape(sf::RectangleShape Rshape) {b_Rshape = Rshape;};
+  void setRectangleShape(sf::RectangleShape Rshape);
 
   sf::Text getText() {return b_text;}
   sf::Vector2f getPos() {return b_pos;}

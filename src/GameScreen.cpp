@@ -451,48 +451,64 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 
 void GameScreen::updateLayout(sf::RenderWindow & App)
 {
+	unsigned int menuSize = App.getSize().x / 4;
+	unsigned int menuCenterX = App.getSize().x - menuSize / 2;
+	unsigned int margin = 10;
+
 	/** Game View */
-	gameView.setSize(App.getSize().x - MENUSIZE, App.getSize().y);
-	gameView.setCenter((App.getSize().x - MENUSIZE) / 2, App.getSize().y / 2); //TODO: This needs to take into account changes to the view
-	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - MENUSIZE) / App.getSize().x, 1));
+
+	gameView.setSize(App.getSize().x - menuSize, App.getSize().y);
+	gameView.setCenter((App.getSize().x - menuSize) / 2, App.getSize().y / 2); //TODO: This needs to take into account changes to the view
+	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - menuSize) / App.getSize().x, 1));
 	
 	/** UI View */
 
-	//Update view
 	interfaceView.setSize(App.getSize().x, App.getSize().y);
 	interfaceView.setCenter(App.getSize().x / 2, App.getSize().y / 2);
 
-	//Interface background
-	interfaceBkg.setSize(sf::Vector2f(MENUSIZE, App.getSize().y));
-	interfaceBkg.setPosition(App.getSize().x - MENUSIZE, 0);
+	// Interface background
+	interfaceBkg.setSize(sf::Vector2f(menuSize, App.getSize().y));
+	interfaceBkg.setPosition(App.getSize().x - menuSize, 0);
 
-	//End turn button and text
-	buttonEndTurn.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 50, 260));
+	// End turn button
+	buttonEndTurn.setPosition(sf::Vector2f(menuCenterX, 260));
+	sf::RectangleShape rs;
+	rs.setFillColor(sf::Color::White);
+	rs.setSize(sf::Vector2f(menuSize - margin, 40));
+	buttonEndTurn.setRectangleShape(rs);
 
-	//FPS counter text
-	textFPS.setPosition(App.getSize().x - MENUSIZE + 52, 0);
+	// FPS counter text
+	textFPS.setPosition(App.getSize().x - menuSize + 52, 0);
 
-	//Current turn text
-	textCurTurn.setPosition(App.getSize().x - MENUSIZE + 52, 50);
+	// Current turn text
+	textCurTurn.setPosition(App.getSize().x - menuSize + 52, 50);
 
-	//mousemode text
-	textMouseMode.setPosition(App.getSize().x - MENUSIZE + 52, 90);
+	// Mousemode text
+	textMouseMode.setPosition(App.getSize().x - menuSize + 52, 90);
 
-	//AP text
-	textAP.setPosition(App.getSize().x - MENUSIZE + 52, 100);
+	// AP text
+	textAP.setPosition(App.getSize().x - menuSize + 52, 100);
 
-	//Pick up item button
-	buttonPickupItem.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 10, 400));
+	// Pick up item button
+	rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
+	buttonPickupItem.setRectangleShape(rs);
+	buttonPickupItem.setPosition(sf::Vector2f(menuCenterX - menuSize / 2 + buttonPickupItem.getGlobalBounds().width / 2 + margin, 400));
 
-	//Drop item button
-	buttonDropItem.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 70, 400));
+	// Drop item button
+	rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
+	buttonDropItem.setRectangleShape(rs);
+	buttonDropItem.setPosition(sf::Vector2f(menuCenterX, 400));
 
-	//Equip item button and text
-	buttonEquipItem.setPosition(sf::Vector2f(App.getSize().x - MENUSIZE + 130, 400));
+	// Equip item button
+	rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
+	buttonEquipItem.setRectangleShape(rs);
+	buttonEquipItem.setPosition(sf::Vector2f(App.getSize().x - buttonEquipItem.getGlobalBounds().width / 2 - margin, 400));
 
-	//Inventory item positions
+	// Inventory item positions
 	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-		inventoryItems[i].setPosition((App.getSize().x - MENUSIZE + 18) + ((i % ITEMS_PER_ROW) * (TILESIZE + 12)), 430 + (i / ITEMS_PER_ROW) * (TILESIZE + 12));
+		inventoryItems[i].setScale(sf::Vector2f(menuSize / ITEMS_PER_ROW / TILESIZE, menuSize / ITEMS_PER_ROW / TILESIZE));
+		unsigned int offset = menuSize / 4;
+		inventoryItems[i].setPosition((App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset), 430 + (i / ITEMS_PER_ROW) * (offset));
 	}
 }
 

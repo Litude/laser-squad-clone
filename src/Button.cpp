@@ -72,6 +72,12 @@ Button::~Button()
 {
 }
 
+void Button::setRectangleShape(sf::RectangleShape Rshape) 
+{
+	b_Rshape = Rshape;
+	setPosition(getPos());
+};
+
 const sf::FloatRect  Button::getGlobalBounds()
 {
 	switch (b_type) {
