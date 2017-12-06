@@ -77,7 +77,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	}
 
 	//Interface element attributes that won't change during execution
-	interfaceBkg.setFillColor(sf::Color::Black);
+	interfaceBkg.setFillColor(sf::Color(0, 0, 0, 200));
 	textFPS.setFont(*font);
 	textFPS.setCharacterSize(12);
 	textCurTurnLabel.setFont(*font);
@@ -509,7 +509,7 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 	/** UI View */
 
 	backgroundSprite.setScale(
-		(App.getSize().x - menuSize) / backgroundSprite.getLocalBounds().width,
+		App.getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getSize().y / backgroundSprite.getLocalBounds().height);
 
 	interfaceView.setSize(App.getSize().x, App.getSize().y);
