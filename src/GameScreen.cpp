@@ -4,6 +4,8 @@
 
 GameScreen::GameScreen(sf::RenderWindow &App)
 {
+	m_screenResult = ScreenResult::GameScene;
+
 	//Game logic initialization
 	game = Game();
 
@@ -101,6 +103,9 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
 	rs.setSize(sf::Vector2f(140, 40));
+
+	buttonExit = Button("Exit to Main Menu", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
+	buttonExit.setCallback([&] { this->exitToMainMenu(); });
 
 	buttonEndTurn = Button("End turn", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
 	buttonEndTurn.setCallback([&] { this->endTurn(); });
@@ -202,7 +207,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 	}
 	sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
 
-	while (App.isOpen()) {
+	while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
 		sf::Event event;
 		while (App.pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
@@ -210,6 +215,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				return ScreenResult::Exit;
 			}
 			// Update buttons
+			buttonExit.update(event, App);
 			buttonEndTurn.update(event, App);
 			buttonPickupItem.update(event, App);
 			buttonDropItem.update(event, App);
@@ -334,7 +340,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 
 		App.display();
 	}
-	return ScreenResult::MainMenuScene;
+	return m_screenResult;
 }
 
 void GameScreen::DrawGame(sf::RenderWindow &App) {
@@ -423,7 +429,7 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) {
 			unsigned int margin = 10;
 			unsigned int offset = menuSize / 4;
-			equippedItem.setPosition((App.getSize().x - menuSize + margin) + ((game.getSelectedCharacter()->getSelectedWeaponIndex() % ITEMS_PER_ROW) * offset), 430 + (game.getSelectedCharacter()->getSelectedWeaponIndex() / ITEMS_PER_ROW) * (offset));
+			equippedItem.setPosition((App.getSize().x - menuSize + margin) + ((game.getSelectedCharacter()->getSelectedWeaponIndex() % ITEMS_PER_ROW) * offset), 330 + (game.getSelectedCharacter()->getSelectedWeaponIndex() / ITEMS_PER_ROW) * (offset));
 		}
 	}
 
@@ -458,6 +464,7 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 
 	App.draw(textFPS);
 	App.draw(textMouseMode);
+	App.draw(buttonExit);
 	App.draw(buttonEndTurn);
 	App.draw(textCurTurnLabel);
 	App.draw(textCurTurnValue);
@@ -488,9 +495,15 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 	interfaceBkg.setSize(sf::Vector2f(menuSize, App.getSize().y));
 	interfaceBkg.setPosition(App.getSize().x - menuSize, 0);
 
-	// End turn button
-	buttonEndTurn.setPosition(sf::Vector2f(menuCenterX, App.getSize().y - buttonEndTurn.getGlobalBounds().height / 2 - margin));
+	// Exit button
+	buttonExit.setPosition(sf::Vector2f(menuCenterX, App.getSize().y - buttonExit.getGlobalBounds().height / 2 - margin));
 	sf::RectangleShape rs;
+	rs.setFillColor(sf::Color::White);
+	rs.setSize(sf::Vector2f(menuSize - margin, 40));
+	buttonExit.setRectangleShape(rs);
+
+	// End turn button
+	buttonEndTurn.setPosition(sf::Vector2f(menuCenterX, buttonExit.getPos().y - buttonExit.getGlobalBounds().height / 2 - buttonEndTurn.getGlobalBounds().height / 2 - margin));
 	rs.setFillColor(sf::Color::White);
 	rs.setSize(sf::Vector2f(menuSize - margin, 40));
 	buttonEndTurn.setRectangleShape(rs);
@@ -498,24 +511,24 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 	// Pick up item button
 	rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
 	buttonPickupItem.setRectangleShape(rs);
-	buttonPickupItem.setPosition(sf::Vector2f(menuCenterX - menuSize / 2 + buttonPickupItem.getGlobalBounds().width / 2 + margin, 400));
+	buttonPickupItem.setPosition(sf::Vector2f(menuCenterX - menuSize / 2 + buttonPickupItem.getGlobalBounds().width / 2 + margin, 300));
 
 	// Drop item button
 	rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
 	buttonDropItem.setRectangleShape(rs);
-	buttonDropItem.setPosition(sf::Vector2f(menuCenterX, 400));
+	buttonDropItem.setPosition(sf::Vector2f(menuCenterX, 300));
 
 	// Equip item button
 	rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
 	buttonEquipItem.setRectangleShape(rs);
-	buttonEquipItem.setPosition(sf::Vector2f(App.getSize().x - buttonEquipItem.getGlobalBounds().width / 2 - margin, 400));
+	buttonEquipItem.setPosition(sf::Vector2f(App.getSize().x - buttonEquipItem.getGlobalBounds().width / 2 - margin, 300));
 
 	// Inventory item positions
 	unsigned int offset = menuSize / 4;
 	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
 		inventoryItems[i].setTextureRect(sf::IntRect(0, 0, TILESIZE, TILESIZE));
 		inventoryItems[i].setScale(sf::Vector2f(menuSize / ITEMS_PER_ROW / TILESIZE, menuSize / ITEMS_PER_ROW / TILESIZE));
-		inventoryItems[i].setPosition((App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset), 430 + (i / ITEMS_PER_ROW) * (offset));
+		inventoryItems[i].setPosition((App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset), 330 + (i / ITEMS_PER_ROW) * (offset));
 	}
 
 	selectedItem.setSize(sf::Vector2f(inventoryItems[0].getGlobalBounds().width, inventoryItems[0].getGlobalBounds().height));
@@ -580,4 +593,8 @@ sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, con
 	clickedTile.x /= TILESIZE;
 	clickedTile.y /= TILESIZE;
 	return clickedTile;
+}
+
+void GameScreen::exitToMainMenu() {
+	m_screenResult = ScreenResult::MainMenuScene;
 }

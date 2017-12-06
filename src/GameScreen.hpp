@@ -20,6 +20,9 @@ public:
 	GameScreen(sf::RenderWindow &App);
 	virtual ScreenResult Run(sf::RenderWindow &App);
 private:
+	ScreenResult m_screenResult;
+private:
+	void exitToMainMenu();
 	void endTurn();
 	void pickupItem();
 	void dropItem();
@@ -46,6 +49,7 @@ private:
 	Button buttonPickupItem;
 	Button buttonDropItem;
 	Button buttonEquipItem;
+	Button buttonExit;
 	sf::RectangleShape selectedCharacter;
 	sf::RectangleShape selectedItem;
 	sf::RectangleShape equippedItem;

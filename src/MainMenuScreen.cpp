@@ -18,7 +18,6 @@ ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 		{
 			if (Event.type == sf::Event::Resized)
 			{
-				App.setView(sf::View(sf::FloatRect(0, 0, Event.size.width, Event.size.height)));
 				updateLayout(App);
 			}
 
@@ -79,6 +78,7 @@ void MainMenuScreen::drawUI(sf::RenderWindow &App)
 
 void MainMenuScreen::updateLayout(sf::RenderWindow & App)
 {
+	App.setView(sf::View(sf::FloatRect(0, 0, App.getSize().x, App.getSize().y)));
 	backgroundSprite.setScale(
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
