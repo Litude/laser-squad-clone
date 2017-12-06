@@ -101,23 +101,23 @@ const sf::FloatRect  Button::getGlobalBounds()
 
 void Button::setState(sf::Uint32 st)
 {
-  b_state = st;
-  switch(b_state) {
-    case normal: {
-      b_text.setFillColor(b_color);
-      b_text.setStyle(b_style);
-    }
-    break;
-    case clicked: {
-      b_text.setFillColor(sf::Color::White);
-    }
-    break;
-    case hovered: {
-      b_text.setFillColor(b_hoveredColor);
-      b_text.setStyle(sf::Text::Bold);
-    }
-    break;
-  }
+	b_state = st;
+	switch (b_state) {
+	case normal: {
+		b_text.setFillColor(b_color);
+		b_text.setStyle(b_style);
+	}
+	break;
+	case clicked: {
+		b_text.setStyle(sf::Text::Italic);
+	}
+	break;
+	case hovered: {
+		b_text.setFillColor(b_hoveredColor);
+		b_text.setStyle(sf::Text::Bold);
+	}
+	break;
+	}
 }
 
 void Button::setPosition(sf::Vector2f pos)
