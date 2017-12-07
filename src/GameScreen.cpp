@@ -39,6 +39,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.getGrid().getTile(4, 7).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
 
 	game.getGrid().getTile(7, 4).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
+	game.getGrid().getTile(2, 2).addItem(std::make_shared<Uzi>(Uzi()));
 	game.getGrid().getTile(7, 6).addItem(std::make_shared<Pistol>(Pistol()));
 	game.getGrid().getTile(9, 6).addItem(std::make_shared<Shotgun>(Shotgun()));
 	game.getGrid().getTile(15, 6).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
@@ -318,12 +319,15 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 					//In shoot mode
 					if (mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end()) {
 						auto gc = game.getSelectedCharacter();
+						auto weapon = gc->getEquipped();
 						auto tiles = game.characterShoot(gc, getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView));
+						int k = 0;
 						for (auto dest : tiles) {
-							addProjectile(gc->getEquipped(), gc->getPosition(), dest);
+							addProjectile(weapon, gc->getPosition(), dest, k*(weapon->getDelay()));
+							++k;
 						}
 						
-						std::cout << "PROJS:" << std::endl;
+						//std::cout << "PROJS:" << std::endl;
 						for (auto proj : activeProjectiles) {
 							std::cout << proj;
 						}
@@ -427,9 +431,11 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 	for (auto proj = activeProjectiles.begin(); proj != activeProjectiles.end(); ) {
 		if (proj->isActive()) {
 			App.draw(*proj);
-			++proj;
-		} else {
+		}
+		if (proj->reachedDestination()) {
 			proj = activeProjectiles.erase(proj);
+		} else {
+			++proj;
 		}
 	}
 
@@ -661,9 +667,9 @@ sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, con
 	return clickedTile;
 }
 
-void GameScreen::addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination) {
+void GameScreen::addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination, int delay) {
 	ItemIcon wt = weapon->getIcon();
-	Projectile p(wt, Util::mapToPixels(world_origin), Util::mapToPixels(world_destination));
+	Projectile p(wt, Util::mapToPixels(world_origin), Util::mapToPixels(world_destination), delay);
 	activeProjectiles.push_back(p);
 }
 
