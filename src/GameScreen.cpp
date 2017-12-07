@@ -33,12 +33,14 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.getGrid().getTile(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
 	game.getGrid().getTile(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
 
+	game.getGrid().getTile(3, 6).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
+	game.getGrid().getTile(4, 6).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
+
 	game.getGrid().getTile(7, 4).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
 	game.getGrid().getTile(7, 6).addItem(std::make_shared<Pistol>(Pistol()));
 	game.getGrid().getTile(9, 6).addItem(std::make_shared<Shotgun>(Shotgun()));
 	game.getGrid().getTile(15, 6).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
 	game.getGrid().getTile(15, 6).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-	game.getGrid().getTile(15, 6).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
 
 	//Add 9 pcs to test full inventory
 	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));

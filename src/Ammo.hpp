@@ -10,6 +10,8 @@ enum AmmoType {
 class Ammo : public Item {
 public:
 	Ammo(ItemIcon icon, std::string name, bool stackable, unsigned int amount) : Item(Type_Ammo, icon, name, stackable, amount) {};
+private:
+	AmmoType m_ammoType;
 };
 
 class Ammo9mmBullets : public Ammo {

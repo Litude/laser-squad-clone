@@ -39,6 +39,9 @@ public:
 	ItemType getType() const { return m_itemType; };
 	ItemIcon getIcon() const { return m_itemIcon; };
 	std::string getName() const {return m_itemName; };
+	bool isStackable() const { return m_stackable; };
+	unsigned int getAmount() { return m_amount; };
+	void addAmount(unsigned int amount) { m_amount += amount; }
 private:
 	ItemType m_itemType;
 	ItemIcon m_itemIcon;
