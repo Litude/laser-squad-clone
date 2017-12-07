@@ -84,6 +84,7 @@ private:
 	std::vector<sf::Sprite> inventoryItems;
 	std::vector<sf::Text> inventoryItemTexts;
 	std::vector<Projectile> activeProjectiles;
+	std::list<sf::Vector2u> visibleTiles;
 
 	MouseMode::Mode mouseMode = MouseMode::select;
 };

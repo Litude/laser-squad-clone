@@ -97,13 +97,15 @@ int GameCharacter::shoot() {
 	}
 }
 
-void GameCharacter::sufferDamage(int damage) {
+bool GameCharacter::sufferDamage(int damage) {
 	int armor = 0;//placeholder
 	int dmg = (damage - armor > 0 ? damage - armor : 0);
 	health = ((int) health - dmg > 0 ? health - dmg : 0);
 	if (health == 0) {
 		animationManager.changeAnim(animations::die);
+		return true;
 	}
+	return false;
 }
 
 sf::Vector2u GameCharacter::getRenderPosition() const

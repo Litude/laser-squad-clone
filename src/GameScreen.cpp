@@ -400,12 +400,16 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 	//Draw the map
 	App.draw(*tileMap);
 
-	std::list<sf::Vector2u> visibleTiles;
 	// Calculate visible area for all current player game characters
-	for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
-		if (it->getTeam() != game.getCurrentPlayer()) continue;
-		auto newVisibleTiles = game.seenCoordinates(it);
-		visibleTiles.insert(visibleTiles.end(), newVisibleTiles.begin(), newVisibleTiles.end());
+
+	if (game.calculateLineofSight()) {
+		visibleTiles.clear(); //clear old calculations
+		for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
+			if (it->getTeam() != game.getCurrentPlayer() || it->isDead()) continue;
+			auto newVisibleTiles = game.seenCoordinates(it);
+			visibleTiles.insert(visibleTiles.end(), newVisibleTiles.begin(), newVisibleTiles.end());
+		}
+		game.lineofSightCalculated();
 	}
 
 	//Draw characters

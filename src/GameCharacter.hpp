@@ -51,7 +51,7 @@ public:
 	void			update(int delta_ms);
 	int 			shoot();
 	void			resetActionPoints() { actionPoints = maxActionPoints; }
-	void 			sufferDamage(int dmg);
+	bool 			sufferDamage(int dmg);
     unsigned int    getLengthofSight() const {return lengthofSight;}
 	bool			addItem(std::shared_ptr<Item> obj);
 	bool			removeSelectedItem();

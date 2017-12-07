@@ -2,6 +2,7 @@
 
 void Game::endTurn() {
 	(playerTurnIdx == 1) ? playerTurnIdx = 2 : playerTurnIdx = 1;
+	recalculateLOS = true;
 	selectedCharacter = characters.end();
 	for (auto &character: characters) {
 		character.resetActionPoints();
@@ -33,6 +34,7 @@ bool Game::characterMove(gc_iterator it, sf::Vector2i direction) {
 	if (!getGrid()(target_pos).isSolid() && std::all_of(characters.begin(), characters.end(),
 			[target_pos](GameCharacter gc){ return (sf::Vector2i) gc.getPosition() != target_pos; })) {
 		it->moveTo(direction);
+		recalculateLOS = true;
 		return true;
 	} else {
 		return false;
@@ -116,7 +118,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 		for (auto &gc : characters) {
 			if (gc.getPosition() == endTile) {
 				int dmg = weapon->getDamage();
-				gc.sufferDamage(dmg);
+				if (gc.sufferDamage(dmg)) recalculateLOS = true;
 				std::cout << "character suffered " << dmg << " damage" << std::endl;
 				break;
 			}
