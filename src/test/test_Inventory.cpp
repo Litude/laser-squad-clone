@@ -40,6 +40,38 @@ TEST(InventoryAmmo, CanFindAmmo) {
 	EXPECT_EQ(availableAmmo, item1->getAmount());
 }
 
+TEST(InventoryAmmo, StackAmounts) {
+	Inventory inventory;
+	AmmoShotgunShells shellInstance;
+	Ammo9mmBullets bulletInstance;
+	unsigned int shellRefAmount = shellInstance.getAmount();
+	unsigned int bulletRefAmount = bulletInstance.getAmount();
+
+	std::shared_ptr<Item> item1 = std::make_shared<Ammo>(AmmoShotgunShells());
+	std::shared_ptr<Item> item2 = std::make_shared<Ammo>(AmmoShotgunShells());
+	std::shared_ptr<Item> item3 = std::make_shared<Ammo>(Ammo9mmBullets());
+	std::shared_ptr<Item> item4 = std::make_shared<Ammo>(Ammo9mmBullets());
+
+	inventory.add(item1); //All shotgun shells should stack to this item
+
+	EXPECT_EQ(item1->getAmount(), shellRefAmount);
+
+	inventory.add(item2);
+
+	EXPECT_EQ(item1->getAmount(), shellRefAmount * 2);
+
+	inventory.add(item3); //All 9mm bullet should stack to this item
+
+	EXPECT_EQ(item1->getAmount(), shellRefAmount * 2);
+	EXPECT_EQ(item3->getAmount(), bulletRefAmount);
+
+	inventory.add(item4);
+
+	EXPECT_EQ(item1->getAmount(), shellRefAmount * 2);
+	EXPECT_EQ(item3->getAmount(), bulletRefAmount * 2);
+
+}
+
 TEST(InventoryCapacity, Adding) {
 	Inventory inventory;
 
