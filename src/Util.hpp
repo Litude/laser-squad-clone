@@ -1,7 +1,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#define PI 3.14159265358979323846
+#define PI 3.14159265358979323846f
 #include <vector>
 #include <cmath>
 #include <SFML/System/Vector2.hpp>
@@ -41,7 +41,7 @@ namespace Util {
 
 	template <typename T>
 	const sf::Vector2f mapToPixels(sf::Vector2<T> coords) {
-		return sf::Vector2f((coords.x * TILESIZE) + TILESIZE/2, (coords.y * TILESIZE) + TILESIZE/2);
+		return sf::Vector2f(static_cast<float>((coords.x * TILESIZE) + TILESIZE/2), static_cast<float>((coords.y * TILESIZE) + TILESIZE/2));
 	}
 
 	template <typename T>
