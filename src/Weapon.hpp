@@ -46,7 +46,8 @@ public:
 
 class Shotgun : public Weapon {
 public:
-	Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 5, 3, 5, 2, 1, 70, 10) {};
+	Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 0, 10000, 5, 5, 2, 0, 10) {};
+	//Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 5, 3, 5, 2, 1, 70, 10) {};
 	virtual void testInheritance() override { std::cout << "Testing shotgun" << std::endl; };
 };
 
