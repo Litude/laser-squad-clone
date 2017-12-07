@@ -214,8 +214,8 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	healthbar.setFillColor(sf::Color::Green);
 
 	// Center gameview
-	zoomViewAt(sf::Vector2i(gameView.getCenter().x, gameView.getCenter().y), App, gameView, 3.f);
-	gameView.setCenter(sf::Vector2f(game.getGrid().getWidth() / 2 * TILESIZE, game.getGrid().getHeight() / 2 * TILESIZE));
+	zoomViewAt(sf::Vector2i(static_cast<int>(gameView.getCenter().x), static_cast<int>(gameView.getCenter().y)), App, gameView, 3.f);
+	gameView.setCenter(sf::Vector2f(static_cast<float>(game.getGrid().getWidth() / 2 * TILESIZE), static_cast<float>(game.getGrid().getHeight() / 2 * TILESIZE)));
 }
 
 ScreenResult GameScreen::Run(sf::RenderWindow & App)
@@ -305,7 +305,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 			//Handle mouse input
 			if (event.type == sf::Event::MouseButtonReleased) {
 				unsigned int menuSize = App.getSize().x / 4;
-				if (event.mouseButton.x >= App.getSize().x - menuSize) {
+				if (event.mouseButton.x >= static_cast<int>(App.getSize().x - menuSize)) {
 					//Clicked on the menubar
 					if (event.mouseButton.button == 0) {
 						if (game.getSelectedCharacter() != game.getCharacters().end()) {
@@ -371,7 +371,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 		}
 
 		//Handle time delta dependent actions
-		double delta = clock.restart().asMicroseconds();
+		int delta = static_cast<int>(clock.restart().asMicroseconds());
 		timeAccumulator += delta;
 
 		for (auto &character : game.getCharacters()) {
@@ -421,9 +421,9 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 			}
 		}
 		sf::Sprite characterShape;
-		characterShape.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
+		characterShape.setPosition(static_cast<float>(it->getRenderPosition().x), static_cast<float>(it->getRenderPosition().y));
 		if (it == game.getSelectedCharacter()) {
-			selectedCharacter.setPosition(it->getRenderPosition().x,it->getRenderPosition().y);
+			selectedCharacter.setPosition(static_cast<float>(it->getRenderPosition().x), static_cast<float>(it->getRenderPosition().y));
 			App.draw(selectedCharacter);
 		}
 		if (it->getTeam() == 1) {
@@ -434,8 +434,8 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 		}
 		characterShape.setTextureRect(it->getAnimationManager().getFrame());
 
-		healthbarBkg.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
-		healthbar.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
+		healthbarBkg.setPosition(static_cast<float>(it->getRenderPosition().x), static_cast<float>(it->getRenderPosition().y));
+		healthbar.setPosition(static_cast<float>(it->getRenderPosition().x), static_cast<float>(it->getRenderPosition().y));
 		healthbar.setSize(sf::Vector2f((static_cast<float>(it->getHitpoints()) / it->getMaxHitpoints()) * TILESIZE, 4));
 
 		App.draw(characterShape);
@@ -471,7 +471,7 @@ void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::list<sf::Vector2u> 
 
 	renderTexture_visibleTiles->clear(sf::Color(0, 0, 0, 0));
 	for (auto it = visibleTiles.begin(); it != visibleTiles.end(); ++it) {
-		visibleTileShape.setPosition(it->x * TILESIZE, it->y * TILESIZE);
+		visibleTileShape.setPosition(static_cast<float>(it->x * TILESIZE), static_cast<float>(it->y * TILESIZE));
 		renderTexture_visibleTiles->draw(visibleTileShape); // or any other drawable
 	}
 	renderTexture_visibleTiles->display();
@@ -502,7 +502,7 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) {
 			unsigned int margin = 10;
 			unsigned int offset = menuSize / 4;
-			equippedItem.setPosition((App.getSize().x - menuSize + margin) + ((game.getSelectedCharacter()->getSelectedWeaponIndex() % ITEMS_PER_ROW) * offset), 330 + (game.getSelectedCharacter()->getSelectedWeaponIndex() / ITEMS_PER_ROW) * (offset));
+			equippedItem.setPosition(static_cast<float>((App.getSize().x - menuSize + margin) + ((game.getSelectedCharacter()->getSelectedWeaponIndex() % ITEMS_PER_ROW) * offset)), static_cast<float>(330 + (game.getSelectedCharacter()->getSelectedWeaponIndex() / ITEMS_PER_ROW) * (offset)));
 		}
 	}
 
@@ -558,9 +558,9 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 
 	/** Game View */
 
-	gameView.setSize(App.getSize().x - menuSize, App.getSize().y);
-	gameView.setCenter((App.getSize().x - menuSize) / 2, App.getSize().y / 2); //TODO: This needs to take into account changes to the view
-	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - menuSize) / App.getSize().x, 1));
+	gameView.setSize(static_cast<float>(App.getSize().x - menuSize), static_cast<float>(App.getSize().y));
+	gameView.setCenter(static_cast<float>(App.getSize().x - menuSize / 2), static_cast<float>(App.getSize().y / 2));
+	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - menuSize) / static_cast<float>(App.getSize().x), 1));
 	
 	/** UI View */
 
@@ -568,48 +568,48 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 		App.getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getSize().y / backgroundSprite.getLocalBounds().height);
 
-	interfaceView.setSize(App.getSize().x, App.getSize().y);
-	interfaceView.setCenter(App.getSize().x / 2, App.getSize().y / 2);
+	interfaceView.setSize(static_cast<float>(App.getSize().x), static_cast<float>(App.getSize().y));
+	interfaceView.setCenter(static_cast<float>(App.getSize().x / 2), static_cast<float>(App.getSize().y / 2));
 
 	// Interface background
-	interfaceBkg.setSize(sf::Vector2f(menuSize, App.getSize().y));
-	interfaceBkg.setPosition(App.getSize().x - menuSize, 0);
+	interfaceBkg.setSize(sf::Vector2f(static_cast<float>(menuSize), static_cast<float>(App.getSize().y)));
+	interfaceBkg.setPosition(static_cast<float>(App.getSize().x - menuSize), 0);
 
 	// Exit button
-	buttonExit.setPosition(sf::Vector2f(menuCenterX, App.getSize().y - buttonExit.getGlobalBounds().height / 2 - margin));
+	buttonExit.setPosition(sf::Vector2f(static_cast<float>(menuCenterX), static_cast<float>(App.getSize().y - buttonExit.getGlobalBounds().height / 2 - margin)));
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
-	rs.setSize(sf::Vector2f(menuSize - margin, 40));
+	rs.setSize(sf::Vector2f(static_cast<float>(menuSize - margin), 40));
 	buttonExit.setRectangleShape(rs);
 
 	// End turn button
-	buttonEndTurn.setPosition(sf::Vector2f(menuCenterX, buttonExit.getPos().y - buttonExit.getGlobalBounds().height / 2 - buttonEndTurn.getGlobalBounds().height / 2 - margin));
+	buttonEndTurn.setPosition(sf::Vector2f(static_cast<float>(menuCenterX), static_cast<float>(buttonExit.getPos().y - buttonExit.getGlobalBounds().height / 2 - buttonEndTurn.getGlobalBounds().height / 2 - margin)));
 	rs.setFillColor(sf::Color::White);
-	rs.setSize(sf::Vector2f(menuSize - margin, 40));
+	rs.setSize(sf::Vector2f(static_cast<float>(menuSize - margin), 40));
 	buttonEndTurn.setRectangleShape(rs);
 
 	// Pick up item button
-	rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
+	rs.setSize(sf::Vector2f(static_cast<float>(menuSize / 3 - margin), 40));
 	buttonPickupItem.setRectangleShape(rs);
-	buttonPickupItem.setPosition(sf::Vector2f(menuCenterX - menuSize / 2 + buttonPickupItem.getGlobalBounds().width / 2 + margin, 300));
+	buttonPickupItem.setPosition(sf::Vector2f(static_cast<float>(menuCenterX - menuSize / 2 + buttonPickupItem.getGlobalBounds().width / 2 + margin), 300));
 
 	// Drop item button
-	rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
+	rs.setSize(sf::Vector2f(static_cast<float>(menuSize / 3 - margin), 40));
 	buttonDropItem.setRectangleShape(rs);
-	buttonDropItem.setPosition(sf::Vector2f(menuCenterX, 300));
+	buttonDropItem.setPosition(sf::Vector2f(static_cast<float>(menuCenterX), 300));
 
 	// Equip item button
-	rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
+	rs.setSize(sf::Vector2f(static_cast<float>(menuSize / 3 - margin), 40));
 	buttonEquipItem.setRectangleShape(rs);
-	buttonEquipItem.setPosition(sf::Vector2f(App.getSize().x - buttonEquipItem.getGlobalBounds().width / 2 - margin, 300));
+	buttonEquipItem.setPosition(sf::Vector2f(static_cast<float>(App.getSize().x - buttonEquipItem.getGlobalBounds().width / 2 - margin), 300));
 
 	// Inventory item positions
 	unsigned int offset = menuSize / 4;
 	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
 		inventoryItems[i].setTextureRect(sf::IntRect(0, 0, TILESIZE, TILESIZE));
-		inventoryItems[i].setScale(sf::Vector2f(menuSize / ITEMS_PER_ROW / TILESIZE, menuSize / ITEMS_PER_ROW / TILESIZE));
-		inventoryItems[i].setPosition((App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset), 330 + (i / ITEMS_PER_ROW) * (offset));
-		inventoryItemTexts[i].setPosition((App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset), 330 + (i / ITEMS_PER_ROW) * (offset));
+		inventoryItems[i].setScale(sf::Vector2f(static_cast<float>(menuSize / ITEMS_PER_ROW / TILESIZE), static_cast<float>(menuSize / ITEMS_PER_ROW / TILESIZE)));
+		inventoryItems[i].setPosition((static_cast<float>(App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset)), static_cast<float>(330 + (i / ITEMS_PER_ROW) * (offset)));
+		inventoryItemTexts[i].setPosition((static_cast<float>(App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset)), static_cast<float>(330 + (i / ITEMS_PER_ROW) * (offset)));
 	}
 
 	selectedItem.setSize(sf::Vector2f(inventoryItems[0].getGlobalBounds().width, inventoryItems[0].getGlobalBounds().height));
@@ -620,9 +620,9 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 
 void GameScreen::updateUIComponents(sf::RenderWindow & App)
 {
-	unsigned int menuSize = App.getSize().x / 4;
-	unsigned int menuCenterX = App.getSize().x - menuSize / 2;
-	unsigned int margin = 10;
+	float menuSize = static_cast<float>(App.getSize().x / 4);
+	float menuCenterX = static_cast<float>(App.getSize().x - menuSize / 2);
+	float margin = 10.f;
 
 	// FPS counter text
 	textFPS.setPosition(menuCenterX - menuSize / 2 + margin, 0);

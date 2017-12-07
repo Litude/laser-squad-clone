@@ -76,8 +76,8 @@ private:
 	sf::Clock clock;
 	float lastTime = 0;
 	float currentTime = 0;
-	double timeStep = 16000;
-	double timeAccumulator = 0;
+	int timeStep = 16000;
+	int timeAccumulator = 0;
 	std::shared_ptr<sf::RenderTexture> renderTexture_visibleTiles;
 	sf::RectangleShape visibleTileShape;
 	sf::Shader* shader;
