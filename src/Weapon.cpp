@@ -4,6 +4,8 @@
 
 unsigned Weapon::getDamage() const { return damage; }
 
+unsigned Weapon::getDelay() const { return shot_delay; }
+
 unsigned Weapon::apCost() const { return ap; }
 
 bool Weapon::canFire() const { return loadedAmmo > 0; }
