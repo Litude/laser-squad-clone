@@ -6,7 +6,9 @@ MainMenuScreen::MainMenuScreen(void)
 
 ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 {
-	initComponents(App);
+	if (!initComponents(App)) {
+		return ScreenResult::Exit;
+	}
 	m_screenResult = ScreenResult::MainMenuScene;
 	sf::Event Event;
 
@@ -81,7 +83,7 @@ void MainMenuScreen::drawUI(sf::RenderWindow &App)
 
 void MainMenuScreen::updateLayout(sf::RenderWindow & App)
 {
-	App.setView(sf::View(sf::FloatRect(0, 0, App.getSize().x, App.getSize().y)));
+	App.setView(sf::View(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x), static_cast<float>(App.getSize().y))));
 	backgroundSprite.setScale(
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
@@ -99,7 +101,7 @@ bool MainMenuScreen::initComponents(sf::RenderWindow & App)
 	if (!backgroundTexture->loadFromFile("img/background.png"))
 	{
 		std::cerr << "Error loading background.png" << std::endl;
-		return ScreenResult::Exit;
+		return false;
 	}
 	backgroundSprite.setTexture(*backgroundTexture);
 
@@ -107,7 +109,7 @@ bool MainMenuScreen::initComponents(sf::RenderWindow & App)
 	if (!logoTexture->loadFromFile("img/logo.png"))
 	{
 		std::cerr << "Error loading logo.png" << std::endl;
-		return ScreenResult::Exit;
+		return false;
 	}
 	logoSprite.setTexture(*logoTexture);
 
@@ -115,7 +117,7 @@ bool MainMenuScreen::initComponents(sf::RenderWindow & App)
 	if (!font->loadFromFile("font/Pixellari.ttf"))
 	{
 		std::cerr << "Error loading Pixellari.ttf" << std::endl;
-		return ScreenResult::Exit;
+		return false;
 	}
 
 	backgroundSprite.setScale(
@@ -139,4 +141,6 @@ bool MainMenuScreen::initComponents(sf::RenderWindow & App)
 	buttons.push_back(quit);
 
 	updateLayout(App);
+
+	return true;
 }
