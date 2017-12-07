@@ -1,5 +1,4 @@
 #include "NgMenuScreen.hpp"
-#include "Button.hpp"
 
 NgMenuScreen::NgMenuScreen(void)
 {
@@ -17,10 +16,16 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 	{
 		while (App.pollEvent(Event))
 		{
+			if (Event.type == sf::Event::Resized)
+			{
+				updateLayout(App);
+			}
+
 			if (Event.type == sf::Event::Closed)
 			{
 				return ScreenResult::Exit;
 			}
+
 			if (Event.type == sf::Event::KeyPressed)
 			{
 				switch (Event.key.code)
@@ -36,9 +41,6 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 					break;
 				default:
 					break;
-				}
-				for (auto &button : buttons) {
-					button.setState(state::normal);
 				}
 			}
 		}
@@ -76,6 +78,7 @@ void NgMenuScreen::drawUI(sf::RenderWindow &App)
 
 void NgMenuScreen::updateLayout(sf::RenderWindow & App)
 {
+	App.setView(sf::View(sf::FloatRect(0, 0, App.getSize().x, App.getSize().y)));
 	backgroundSprite.setScale(
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
