@@ -1,3 +1,6 @@
+#ifndef TILE_MAP
+#define TILE_MAP
+
 #include <SFML/Graphics.hpp>
 #include "Grid.hpp"
 
@@ -22,3 +25,5 @@ private:
 	sf::Texture m_tileset_items;
 	enum WallParts { front, side, corner_bottom_left, corner_bottom_right, corner_top_left, corner_top_right, all_sides };
 };
+
+#endif

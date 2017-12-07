@@ -128,7 +128,7 @@ bool MainMenuScreen::initComponents(sf::RenderWindow & App)
 	buttons.push_back(newgame);
 
 	Button mapeditor("Map editor", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
-	mapeditor.setCallback([&] {this->openScreen(ScreenResult::Exit); });
+	mapeditor.setCallback([&] {this->openScreen(ScreenResult::EditorScene); });
 	buttons.push_back(mapeditor);
 
 	Button quit("Quit", *font, sf::Text::Bold, 25, sf::Vector2f(350.f, 350.f), rs);
