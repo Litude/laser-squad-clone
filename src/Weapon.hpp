@@ -10,7 +10,7 @@
 
 class Weapon : public Item {
 public:
-	Weapon(ItemIcon icon, std::string name, unsigned ap, unsigned loadedAmmo, unsigned damage, unsigned shots, unsigned deviation, int accuracy, unsigned range, AmmoType ammotype) : Item(Type_Weapon, icon, name), ap(ap), loadedAmmo(loadedAmmo), maxAmmo(loadedAmmo), damage(damage), shots(shots), deviation(deviation), accuracy(accuracy), range(range), ammotype(ammotype) {};
+	Weapon(ItemIcon icon, std::string name, unsigned ap, unsigned loadedAmmo, unsigned damage, unsigned shots, unsigned deviation, int accuracy, unsigned range, AmmoType ammoType) : Item(Type_Weapon, icon, name), ap(ap), loadedAmmo(loadedAmmo), maxAmmo(loadedAmmo), damage(damage), shots(shots), deviation(deviation), accuracy(accuracy), range(range), ammoType(ammoType) {};
 	bool 		reload(unsigned numberOfAmmo);
 	bool		canFire() const;
 	int			fire();
@@ -20,6 +20,7 @@ public:
 	int			getRange() const { return (int) range; }
 	unsigned	apCost() const;
 	unsigned	getLoadedAmmo() const { return loadedAmmo; };
+	AmmoType	getAmmoType() const { return ammoType; };
 	virtual void testInheritance() { std::cout << "Testing failed" << std::endl;  };
 private:
 	//WeaponType wt
@@ -33,7 +34,7 @@ private:
 
 	int accuracy;
 	unsigned range;
-	AmmoType ammotype;
+	AmmoType ammoType;
 };
 
 class Hands : public Weapon {

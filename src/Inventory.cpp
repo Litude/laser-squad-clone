@@ -49,3 +49,17 @@ std::vector<std::shared_ptr<Item>>::iterator Inventory::remove(std::vector<std::
 std::shared_ptr<Item>& Inventory::operator[](unsigned n) {
 	return items[n];
 }
+
+std::shared_ptr<Ammo> Inventory::findAmmo(AmmoType ammo) {
+	auto curItem = items.begin();
+	while (curItem != items.end()) {
+		if ((*curItem)->getType() == Type_Ammo) {
+			if ((std::dynamic_pointer_cast<Ammo>(*curItem)->getAmmoType()) == ammo) {
+				return std::dynamic_pointer_cast<Ammo>(*curItem);
+			};
+		}
+		++curItem;
+	}
+	//Did not find any ammo, return a dummy item
+	return std::make_shared<Ammo>(Ammo(Icon_None, "None", false, 0, Ammo_None));
+}
