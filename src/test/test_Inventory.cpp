@@ -28,12 +28,13 @@ TEST(InventoryAmmo, CanFindAmmo) {
 	res = inventory.findAmmo(AmmoType::Ammo_Shotgun_Shells);
 	availableAmmo = res->getAmount();
 
-	EXPECT_EQ(availableAmmo, item1->getAmount() + item2->getAmount());
+	//Since ammo of the same type stacks, the total ammo amount should be under item1
+	EXPECT_EQ(availableAmmo, item1->getAmount());
 
 	inventory.add(item3);
 
 	res = inventory.findAmmo(AmmoType::Ammo_Shotgun_Shells);
 	availableAmmo = res->getAmount();
 
-	EXPECT_EQ(availableAmmo, item1->getAmount() + item2->getAmount());
+	EXPECT_EQ(availableAmmo, item1->getAmount());
 }
