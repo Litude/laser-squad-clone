@@ -68,22 +68,22 @@ void TileMap::setGroundTile(Tile tile, sf::Vector2u tilePosition)
 	sf::Vertex* quad = &m_vertices_ground[(i + j * m_grid.getWidth()) * 4];
 
 	// Define tile's 4 corners
-	quad[0].position = sf::Vector2f(i * m_tileSize.x, j * m_tileSize.y);
-	quad[1].position = sf::Vector2f((i + 1) * m_tileSize.x, j * m_tileSize.y);
-	quad[2].position = sf::Vector2f((i + 1) * m_tileSize.x, (j + 1) * m_tileSize.y);
-	quad[3].position = sf::Vector2f(i * m_tileSize.x, (j + 1) * m_tileSize.y);
+	quad[0].position = sf::Vector2f(static_cast<float>(i * m_tileSize.x), static_cast<float>(j * m_tileSize.y));
+	quad[1].position = sf::Vector2f(static_cast<float>((i + 1) * m_tileSize.x), static_cast<float>(j * m_tileSize.y));
+	quad[2].position = sf::Vector2f(static_cast<float>((i + 1) * m_tileSize.x), static_cast<float>((j + 1) * m_tileSize.y));
+	quad[3].position = sf::Vector2f(static_cast<float>(i * m_tileSize.x), static_cast<float>((j + 1) * m_tileSize.y));
 
 	// Define tile's 4 texture coordinates
-	quad[0].texCoords = sf::Vector2f(tu * m_tileSize.x, tv * m_tileSize.y);
-	quad[1].texCoords = sf::Vector2f((tu + 1) * m_tileSize.x, tv * m_tileSize.y);
-	quad[2].texCoords = sf::Vector2f((tu + 1) * m_tileSize.x, (tv + 1) * m_tileSize.y);
-	quad[3].texCoords = sf::Vector2f(tu * m_tileSize.x, (tv + 1) * m_tileSize.y);
+	quad[0].texCoords = sf::Vector2f(static_cast<float>(tu * m_tileSize.x), static_cast<float>(tv * m_tileSize.y));
+	quad[1].texCoords = sf::Vector2f(static_cast<float>((tu + 1) * m_tileSize.x), static_cast<float>(tv * m_tileSize.y));
+	quad[2].texCoords = sf::Vector2f(static_cast<float>((tu + 1) * m_tileSize.x), static_cast<float>((tv + 1) * m_tileSize.y));
+	quad[3].texCoords = sf::Vector2f(static_cast<float>(tu * m_tileSize.x), static_cast<float>((tv + 1) * m_tileSize.y));
 }
 
 void TileMap::setBlockTile(Tile tile, sf::Vector2u tilePosition)
 {
-	int i = tilePosition.x;
-	int j = tilePosition.y;
+	unsigned int i = tilePosition.x;
+	unsigned int j = tilePosition.y;
 
 	// Determine the tile to draw on the tileset
 	int tileNumber_x = tile.getBlock();
@@ -136,16 +136,16 @@ void TileMap::setBlockTile(Tile tile, sf::Vector2u tilePosition)
 	sf::Vertex* quad = &m_vertices_block[(i + j * m_grid.getWidth()) * 4];
 
 	// Define tile's 4 corners
-	quad[0].position = sf::Vector2f(i * m_tileSize.x, j * m_tileSize.y);
-	quad[1].position = sf::Vector2f((i + 1) * m_tileSize.x, j * m_tileSize.y);
-	quad[2].position = sf::Vector2f((i + 1) * m_tileSize.x, (j + 1) * m_tileSize.y);
-	quad[3].position = sf::Vector2f(i * m_tileSize.x, (j + 1) * m_tileSize.y);
+	quad[0].position = sf::Vector2f(static_cast<float>(i * m_tileSize.x), static_cast<float>(j * m_tileSize.y));
+	quad[1].position = sf::Vector2f(static_cast<float>((i + 1) * m_tileSize.x), static_cast<float>(j * m_tileSize.y));
+	quad[2].position = sf::Vector2f(static_cast<float>((i + 1) * m_tileSize.x), static_cast<float>((j + 1) * m_tileSize.y));
+	quad[3].position = sf::Vector2f(static_cast<float>(i * m_tileSize.x), static_cast<float>((j + 1) * m_tileSize.y));
 
 	// Define tile's 4 texture coordinates
-	quad[0].texCoords = sf::Vector2f(tu * m_tileSize.x, tv * m_tileSize.y);
-	quad[1].texCoords = sf::Vector2f((tu + 1) * m_tileSize.x, tv * m_tileSize.y);
-	quad[2].texCoords = sf::Vector2f((tu + 1) * m_tileSize.x, (tv + 1) * m_tileSize.y);
-	quad[3].texCoords = sf::Vector2f(tu * m_tileSize.x, (tv + 1) * m_tileSize.y);
+	quad[0].texCoords = sf::Vector2f(static_cast<float>(tu * m_tileSize.x), static_cast<float>(tv * m_tileSize.y));
+	quad[1].texCoords = sf::Vector2f(static_cast<float>((tu + 1) * m_tileSize.x), static_cast<float>(tv * m_tileSize.y));
+	quad[2].texCoords = sf::Vector2f(static_cast<float>((tu + 1) * m_tileSize.x), static_cast<float>((tv + 1) * m_tileSize.y));
+	quad[3].texCoords = sf::Vector2f(static_cast<float>(tu * m_tileSize.x), static_cast<float>((tv + 1) * m_tileSize.y));
 }
 
 void TileMap::setItemTile(Tile tile, sf::Vector2u tilePosition)
@@ -164,16 +164,16 @@ void TileMap::setItemTile(Tile tile, sf::Vector2u tilePosition)
 	sf::Vertex* quad = &m_vertices_items[(i + j * m_grid.getWidth()) * 4];
 
 	// Define tile's 4 corners
-	quad[0].position = sf::Vector2f(i * m_tileSize.x, j * m_tileSize.y);
-	quad[1].position = sf::Vector2f((i + 1) * m_tileSize.x, j * m_tileSize.y);
-	quad[2].position = sf::Vector2f((i + 1) * m_tileSize.x, (j + 1) * m_tileSize.y);
-	quad[3].position = sf::Vector2f(i * m_tileSize.x, (j + 1) * m_tileSize.y);
+	quad[0].position = sf::Vector2f(static_cast<float>(i * m_tileSize.x), static_cast<float>(j * m_tileSize.y));
+	quad[1].position = sf::Vector2f(static_cast<float>((i + 1) * m_tileSize.x), static_cast<float>(j * m_tileSize.y));
+	quad[2].position = sf::Vector2f(static_cast<float>((i + 1) * m_tileSize.x), static_cast<float>((j + 1) * m_tileSize.y));
+	quad[3].position = sf::Vector2f(static_cast<float>(i * m_tileSize.x), static_cast<float>((j + 1) * m_tileSize.y));
 
 	// Define tile's 4 texture coordinates
-	quad[0].texCoords = sf::Vector2f(tu * m_tileSize.x, tv * m_tileSize.y);
-	quad[1].texCoords = sf::Vector2f((tu + 1) * m_tileSize.x, tv * m_tileSize.y);
-	quad[2].texCoords = sf::Vector2f((tu + 1) * m_tileSize.x, (tv + 1) * m_tileSize.y);
-	quad[3].texCoords = sf::Vector2f(tu * m_tileSize.x, (tv + 1) * m_tileSize.y);
+	quad[0].texCoords = sf::Vector2f(static_cast<float>(tu * m_tileSize.x), static_cast<float>(tv * m_tileSize.y));
+	quad[1].texCoords = sf::Vector2f(static_cast<float>((tu + 1) * m_tileSize.x), static_cast<float>(tv * m_tileSize.y));
+	quad[2].texCoords = sf::Vector2f(static_cast<float>((tu + 1) * m_tileSize.x), static_cast<float>((tv + 1) * m_tileSize.y));
+	quad[3].texCoords = sf::Vector2f(static_cast<float>(tu * m_tileSize.x), static_cast<float>((tv + 1) * m_tileSize.y));
 }
 
 void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
