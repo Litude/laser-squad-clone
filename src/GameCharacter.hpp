@@ -55,6 +55,7 @@ public:
 	void			setSelectedItemIndex(int idx) { selectedItemIdx = idx; }
 	void			setSelectedWeaponIndex(int idx) {selectedWeaponIdx = idx; }
 	bool			equipSelected();
+	void			unequipCharacter();
 	void			setAnimationManager(AnimationManager animationManager) { this->animationManager = animationManager; }
 	AnimationManager getAnimationManager() const { return animationManager;  }
 
