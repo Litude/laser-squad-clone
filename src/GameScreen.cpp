@@ -124,7 +124,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	buttonDropItem = Button("Drop", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
 	buttonDropItem.setCallback([&] { this->dropItem(); });
 
-	buttonEquipItem = Button("Equip", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
+	buttonEquipItem = Button("Use", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
 	buttonEquipItem.setCallback([&] { this->equipItem(); });
 
 	//Game drawing initialization
@@ -664,7 +664,7 @@ void GameScreen::dropItem() {
 
 void GameScreen::equipItem() {
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		game.getSelectedCharacter()->equipSelected();
+		game.getSelectedCharacter()->useSelected();
 	}
 }
 

@@ -145,20 +145,28 @@ bool GameCharacter::removeSelectedItem()
 	return false;
 }
 
-bool GameCharacter::equipSelected()
+bool GameCharacter::useSelected()
 {
-	if (actionPoints >= AP_COST_EQUIP) {
+	if (actionPoints >= AP_COST_USE) {
 		if (selectedItemIdx == -1) return false;
 		if (selectedItemIdx == selectedWeaponIdx) {
 			unequipCharacter();
 			return true;
 		}
-
-		if (inventory[selectedItemIdx]->getType() == Type_Weapon) {
+		switch (inventory[selectedItemIdx]->getType()) {
+		case Type_Weapon:
 			selectedWeaponIdx = selectedItemIdx;
 			equippedWeapon = std::dynamic_pointer_cast<Weapon>(inventory[selectedItemIdx]);
-			actionPoints -= AP_COST_EQUIP;
+			actionPoints -= AP_COST_USE;
 			return true;
+		case Type_Health:
+			if (getHitpoints() == getMaxHitpoints()) return false;
+			health = std::min(getMaxHitpoints(), getHitpoints() + std::dynamic_pointer_cast<Health>(inventory[selectedItemIdx])->getHealingAmount());
+			*inventory[selectedItemIdx] = Item(); //Remove ammo from inventory
+			return true;
+
+		default:
+			return false;
 		}
 	}
 	return false;

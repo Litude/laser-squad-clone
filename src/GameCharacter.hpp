@@ -3,15 +3,17 @@
 
 #include <SFML/System/Vector2.hpp>
 #include <memory>
+#include <algorithm>
 #include "Inventory.hpp"
 #include "Weapon.hpp"
+#include "Health.hpp"
 #include "AnimationManager.hpp"
 #include "constants.hpp"
 
 #define AP_COST_MOVEMENT 1
 #define AP_COST_PICK_ITEM 1
 #define AP_COST_DROP_ITEM 1
-#define AP_COST_EQUIP 1
+#define AP_COST_USE 1
 #define AP_COST_RELOAD 1
 
 enum direction {
@@ -56,7 +58,7 @@ public:
 	Inventory&		getInventory() { return inventory; }
 	void			setSelectedItemIndex(int idx) { selectedItemIdx = idx; }
 	void			setSelectedWeaponIndex(int idx) {selectedWeaponIdx = idx; }
-	bool			equipSelected();
+	bool			useSelected();
 	void			unequipCharacter();
 	void			setAnimationManager(AnimationManager animationManager) { this->animationManager = animationManager; }
 	AnimationManager getAnimationManager() const { return animationManager;  }
