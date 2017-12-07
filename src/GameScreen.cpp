@@ -206,6 +206,13 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	}
 	updateLayout(App);
 
+	healthbarBkg.setFillColor(sf::Color::Red);
+	healthbarBkg.setSize(sf::Vector2f(TILESIZE, 4));
+	healthbarBkg.setOutlineColor(sf::Color::Black);
+	healthbarBkg.setOutlineThickness(1.0f);
+
+	healthbar.setFillColor(sf::Color::Green);
+
 	// Center gameview
 	zoomViewAt(sf::Vector2i(gameView.getCenter().x, gameView.getCenter().y), App, gameView, 3.f);
 	gameView.setCenter(sf::Vector2f(game.getGrid().getWidth() / 2 * TILESIZE, game.getGrid().getHeight() / 2 * TILESIZE));
@@ -421,7 +428,13 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 		}
 		characterShape.setTextureRect(it->getAnimationManager().getFrame());
 
+		healthbarBkg.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
+		healthbar.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
+		healthbar.setSize(sf::Vector2f((static_cast<float>(it->getHitpoints()) / it->getMaxHitpoints()) * TILESIZE, 4));
+
 		App.draw(characterShape);
+		App.draw(healthbarBkg);
+		App.draw(healthbar);
 	}
 
 	//Draw projectiles

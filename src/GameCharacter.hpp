@@ -35,6 +35,7 @@ public:
 	unsigned int	getActionPoints() const { return actionPoints; }
 	unsigned int	getMaxActionPoints() const { return maxActionPoints; }
 	unsigned int	getHitpoints() const { return health; }
+	unsigned int	getMaxHitpoints() const {return maxHealth; }
 	unsigned int	getTeam() const { return team; }
 	sf::Vector2u	getPosition() const { return currentPosition; }
 	sf::Vector2u	getRenderPosition() const;
@@ -79,7 +80,8 @@ private:
 
 	unsigned int actionPoints = maxActionPoints;
 	Inventory inventory;
-	unsigned int health = 5;
+	unsigned int health = 10;
+	unsigned int maxHealth = 10;
 	std::shared_ptr<Weapon> equippedWeapon = std::make_shared<Hands>(Hands());
 	unsigned int team;
     unsigned int lengthofSight=9;
