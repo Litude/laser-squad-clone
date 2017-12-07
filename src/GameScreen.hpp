@@ -79,6 +79,7 @@ private:
 	sf::RectangleShape visibleTileShape;
 	sf::Shader* shader;
 	std::vector<sf::Sprite> inventoryItems;
+	std::vector<sf::Text> inventoryItemTexts;
 	std::vector<Projectile> activeProjectiles;
 
 	MouseMode::Mode mouseMode = MouseMode::select;

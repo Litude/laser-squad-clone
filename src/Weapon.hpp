@@ -15,9 +15,10 @@ public:
 	int			fire();
 	const sf::Vector2u deviate(sf::Vector2u target) const;
 	//WeaponType getType() const;
-	unsigned getDamage() const;
-	int getRange() const { return (int) range; }
-	unsigned apCost() const;
+	unsigned	getDamage() const;
+	int			getRange() const { return (int) range; }
+	unsigned	apCost() const;
+	unsigned	getLoadedAmmo() const { return loadedAmmo; };
 	virtual void testInheritance() { std::cout << "Testing failed" << std::endl;  };
 private:
 	//WeaponType wt
