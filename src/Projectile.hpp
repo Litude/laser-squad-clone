@@ -7,11 +7,12 @@
 #include <SFML/Graphics.hpp>
 #include "constants.hpp"
 #include "Item.hpp"
+#include "Util.hpp"
 
-class Projectile : public sf::Drawable {
+class Projectile {
 public:
 	//origin and destination in pixels
-	Projectile(ItemIcon weaponType, sf::Vector2f origin, sf::Vector2f destination) : m_origin(origin - TILE_CENTER), m_destination(destination - TILE_CENTER) {
+	Projectile(ItemIcon weaponType, sf::Vector2f origin, sf::Vector2f destination) : m_origin(origin), m_destination(destination) {
 		proj.setTexture(*PROJ_TEXTURES);
 		sf::Vector2i defSize(32, 32);
 		sf::IntRect rect(sf::Vector2i(0, 0), defSize);
@@ -39,10 +40,14 @@ public:
 				proj.setTextureRect(rect);
 				break;
 		}
-		proj.setPosition(m_origin);
+		proj.setOrigin(TILE_CENTER);
+
 		sf::Vector2f path = m_destination - m_origin;
 		distance = std::sqrt(std::pow(path.y, 2) + std::pow(path.x, 2));
 		m_offset = path / distance;
+		proj.setPosition(m_origin);
+		std::cout << "ANGLE: " << Util::vecAngle(path) << std::endl;
+		proj.rotate(Util::vecAngle(path));
 	}
 
 	bool isActive() const;
