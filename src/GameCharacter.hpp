@@ -12,6 +12,7 @@
 #define AP_COST_PICK_ITEM 1
 #define AP_COST_DROP_ITEM 1
 #define AP_COST_EQUIP 1
+#define AP_COST_RELOAD 1
 
 enum direction {
 	left,
@@ -59,6 +60,7 @@ public:
 	void			setAnimationManager(AnimationManager animationManager) { this->animationManager = animationManager; }
 	AnimationManager getAnimationManager() const { return animationManager;  }
 	unsigned int	getAmmoAmount(AmmoType ammotype, unsigned int neededAmount=0);
+	void			reloadWeapon();
 
 private:
 	void			moveLeft();

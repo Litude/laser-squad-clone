@@ -84,6 +84,11 @@ void GameCharacter::update(int delta_ms) {
 int GameCharacter::shoot() {
 	getEquipped()->testInheritance();
 	if (isDead()) return 0;
+	if (!getEquipped()->canFire()) {
+		reloadWeapon();
+		return 0;
+	}
+
 	if (actionPoints >= getEquipped()->apCost() && getEquipped()->canFire()) {
 		actionPoints -= getEquipped()->apCost();
 		return getEquipped()->fire();
@@ -168,10 +173,28 @@ void GameCharacter::unequipCharacter()
 unsigned int GameCharacter::getAmmoAmount(AmmoType ammotype, unsigned int neededAmount)
 {
 	std::shared_ptr<Ammo> foundAmmo = getInventory().findAmmo(ammotype);
-	if (foundAmmo->getAmount() == 0) return 0;
+	unsigned int availableAmmo = foundAmmo->getAmount();
+	if (availableAmmo == 0) return 0;
 
-	//if (neededAmount) {
-	//	
-	//}
-	return foundAmmo->getAmount();
+	if (neededAmount != 0) {
+		if (availableAmmo >= neededAmount) {
+			foundAmmo->removeAmount(neededAmount);
+			return neededAmount;
+		} else {
+			foundAmmo->setAmount(0);
+			return availableAmmo;
+		}
+	}
+	return availableAmmo;
+}
+
+void GameCharacter::reloadWeapon()
+{
+	if (getEquipped()->getAmmoType() == Ammo_None) return;
+
+	if (actionPoints >= AP_COST_RELOAD) {
+		unsigned int availableAmmo = getAmmoAmount(getEquipped()->getAmmoType(), getEquipped()->getReloadAmount());
+		getEquipped()->reload(availableAmmo);
+		actionPoints -= AP_COST_RELOAD;
+	}
 }
