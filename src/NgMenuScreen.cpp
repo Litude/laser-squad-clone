@@ -1,11 +1,10 @@
 #include "NgMenuScreen.hpp"
-#include "Button.hpp"
 
 NgMenuScreen::NgMenuScreen(void)
 {
 }
 
-ScreenResult NgMenuScreen::Run(sf::RenderWindow & App) 
+ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 {
 	initComponents(App);
 	m_screenResult = ScreenResult::NewGameScene;
@@ -17,10 +16,16 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 	{
 		while (App.pollEvent(Event))
 		{
+			if (Event.type == sf::Event::Resized)
+			{
+				updateLayout(App);
+			}
+
 			if (Event.type == sf::Event::Closed)
 			{
 				return ScreenResult::Exit;
 			}
+
 			if (Event.type == sf::Event::KeyPressed)
 			{
 				switch (Event.key.code)
@@ -36,9 +41,6 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 					break;
 				default:
 					break;
-				}
-				for (auto &button : buttons) {
-					button.setState(state::normal);
 				}
 			}
 		}
@@ -76,6 +78,7 @@ void NgMenuScreen::drawUI(sf::RenderWindow &App)
 
 void NgMenuScreen::updateLayout(sf::RenderWindow & App)
 {
+	App.setView(sf::View(sf::FloatRect(0, 0, App.getSize().x, App.getSize().y)));
 	backgroundSprite.setScale(
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
@@ -112,11 +115,15 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 		return ScreenResult::Exit;
 	}
 
-	Button launchgame("Launch game", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f));
+	sf::RectangleShape rs;
+	rs.setFillColor(sf::Color::White);
+	rs.setSize(sf::Vector2f(170,40));
+
+	Button launchgame("Launch game", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f), rs);
 	launchgame.setCallback([&] {this->openScreen(ScreenResult::GameScene); });
 	buttons.push_back(launchgame);
 
-	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f));
+	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
 	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
 	buttons.push_back(back);
 

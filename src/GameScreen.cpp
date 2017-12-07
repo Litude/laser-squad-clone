@@ -1,6 +1,7 @@
 #include "GameScreen.hpp"
 #include "constants.hpp"
 #include "Health.hpp"
+#include "Ammo.hpp"
 
 GameScreen::GameScreen(sf::RenderWindow &App)
 {
@@ -31,6 +32,11 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 	game.getGrid().getTile(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
 	game.getGrid().getTile(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
+
+	game.getGrid().getTile(3, 6).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
+	game.getGrid().getTile(4, 6).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
+	game.getGrid().getTile(4, 7).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
+	game.getGrid().getTile(4, 7).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
 
 	game.getGrid().getTile(7, 4).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
 	game.getGrid().getTile(7, 6).addItem(std::make_shared<Pistol>(Pistol()));
@@ -191,9 +197,12 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 		std::cout << "Could not load 'img/tileset_items.png'\n";
 	}
 	inventoryItems.resize(MAX_ITEMS);
+	inventoryItemTexts.resize(MAX_ITEMS);
 
 	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
 		inventoryItems[i].setTexture(*texItems);
+		inventoryItemTexts[i].setFont(*font);
+		inventoryItemTexts[i].setCharacterSize(10);
 	}
 	updateLayout(App);
 
@@ -502,8 +511,15 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) App.draw(equippedItem);
 		// Draw items
 		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i]->getIcon() * TILESIZE, 0, TILESIZE, TILESIZE));
+			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i]->getIcon() * TILESIZE % (texItems->getSize().x), game.getSelectedCharacter()->getInventory()[i]->getIcon() * TILESIZE / (texItems->getSize().x) * TILESIZE, TILESIZE, TILESIZE));
 			App.draw(inventoryItems[i]);
+			if (game.getSelectedCharacter()->getInventory()[i]->isStackable()) {
+				inventoryItemTexts[i].setString(std::to_string(game.getSelectedCharacter()->getInventory()[i]->getAmount()));
+				App.draw(inventoryItemTexts[i]);
+			} else if (game.getSelectedCharacter()->getInventory()[i]->getType() == Type_Weapon){
+				inventoryItemTexts[i].setString(std::to_string(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getLoadedAmmo()));
+				App.draw(inventoryItemTexts[i]);
+			}
 			if (game.getSelectedCharacter()->getSelectedItemIndex() == i) {
 				selectedItem.setPosition(inventoryItems[i].getPosition());
 				App.draw(selectedItem);
@@ -578,6 +594,7 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 		inventoryItems[i].setTextureRect(sf::IntRect(0, 0, TILESIZE, TILESIZE));
 		inventoryItems[i].setScale(sf::Vector2f(menuSize / ITEMS_PER_ROW / TILESIZE, menuSize / ITEMS_PER_ROW / TILESIZE));
 		inventoryItems[i].setPosition((App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset), 330 + (i / ITEMS_PER_ROW) * (offset));
+		inventoryItemTexts[i].setPosition((App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset), 330 + (i / ITEMS_PER_ROW) * (offset));
 	}
 
 	selectedItem.setSize(sf::Vector2f(inventoryItems[0].getGlobalBounds().width, inventoryItems[0].getGlobalBounds().height));

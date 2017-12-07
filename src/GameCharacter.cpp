@@ -131,8 +131,7 @@ bool GameCharacter::removeSelectedItem()
 		inventory[selectedItemIdx] = std::make_shared<Item>(Item());
 		if (selectedItemIdx == selectedWeaponIdx)
 		{
-			selectedWeaponIdx = -1;
-			equippedWeapon = std::make_shared<Hands>(Hands());
+			unequipCharacter();
 		}
 		selectedItemIdx = -1;
 		actionPoints -= AP_COST_DROP_ITEM;
@@ -145,6 +144,11 @@ bool GameCharacter::equipSelected()
 {
 	if (actionPoints >= AP_COST_EQUIP) {
 		if (selectedItemIdx == -1) return false;
+		if (selectedItemIdx == selectedWeaponIdx) {
+			unequipCharacter();
+			return true;
+		}
+
 		if (inventory[selectedItemIdx]->getType() == Type_Weapon) {
 			selectedWeaponIdx = selectedItemIdx;
 			equippedWeapon = std::dynamic_pointer_cast<Weapon>(inventory[selectedItemIdx]);
@@ -153,4 +157,10 @@ bool GameCharacter::equipSelected()
 		}
 	}
 	return false;
+}
+
+void GameCharacter::unequipCharacter()
+{
+	selectedWeaponIdx = -1;
+	equippedWeapon = std::make_shared<Hands>(Hands());
 }
