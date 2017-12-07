@@ -213,6 +213,24 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
             int yy=32;
             
             
+            Animation animation_walk_left(9, 0, 8, 62000);
+            Animation animation_walk_right(11, 0, 8, 62000);
+            Animation animation_walk_down(10, 0, 8, 62000);
+            Animation animation_walk_up(8, 0, 8, 62000);
+            Animation animation_die(20, 0, 5, 125000, false);
+            AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
+            animManager.addAnim(animation_walk_left);
+            animManager.addAnim(animation_walk_right);
+            animManager.addAnim(animation_walk_down);
+            animManager.addAnim(animation_walk_up);
+            animManager.addAnim(animation_die);
+            
+            
+            
+            
+            
+            
+            
             if (event.type == sf::Event::KeyPressed) {
                 
                 switch (event.key.code) {
@@ -250,11 +268,34 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                         if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
                         break;
                         
+                    
                         
-                    case sf::Keyboard::Q:
+                    case sf::Keyboard::Z:
                         game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
                         tileMap->updateTile(coord);
                         break;
+                    case sf::Keyboard::X:
+                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
+                        tileMap->updateTile(coord);
+                        break;
+                    case sf::Keyboard::C:
+                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Pistol>(Pistol()));
+                        tileMap->updateTile(coord);
+                        break;
+                    case sf::Keyboard::V:
+                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Shotgun>(Shotgun()));
+                        tileMap->updateTile(coord);
+                        break;
+                    case sf::Keyboard::M:
+                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
+                        tileMap->updateTile(coord);
+                        break;
+                    case sf::Keyboard::N:
+                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
+                        tileMap->updateTile(coord);
+                        break;
+                        
+                        
                     case sf::Keyboard::T:
                         game.getGrid().getTile(coord.x, coord.y).setTile(TileGround::dirt, TileBlock::tree);;
                         tileMap->updateTile(coord);
@@ -519,10 +560,10 @@ void MapEditor::updateLayout(sf::RenderWindow & App)
     buttonExit.setRectangleShape(rs);
     
     // End turn button
-    buttonEndTurn.setPosition(sf::Vector2f(menuCenterX, buttonExit.getPos().y - buttonExit.getGlobalBounds().height / 2 - buttonEndTurn.getGlobalBounds().height / 2 - margin));
-    rs.setFillColor(sf::Color::White);
-    rs.setSize(sf::Vector2f(menuSize - margin, 40));
-    buttonEndTurn.setRectangleShape(rs);
+    //buttonEndTurn.setPosition(sf::Vector2f(menuCenterX, buttonExit.getPos().y - buttonExit.getGlobalBounds().height / 2 - buttonEndTurn.getGlobalBounds().height / 2 - margin));
+    //rs.setFillColor(sf::Color::White);
+    //rs.setSize(sf::Vector2f(menuSize - margin, 40));
+    //buttonEndTurn.setRectangleShape(rs);
     
     // Pick up item button
     rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));
