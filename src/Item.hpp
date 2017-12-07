@@ -36,9 +36,12 @@ public:
 	virtual ~Item() {};
 	Item(ItemType type, ItemIcon icon, std::string name) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_stackable(false), m_amount(1) {};
 	Item(ItemType type, ItemIcon icon, std::string name, bool stackable, unsigned int amount) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_stackable(stackable), m_amount(amount) {};
-	ItemType getType() const { return m_itemType;} ;
+	ItemType getType() const { return m_itemType; };
 	ItemIcon getIcon() const { return m_itemIcon; };
 	std::string getName() const {return m_itemName; };
+	bool isStackable() const { return m_stackable; };
+	unsigned int getAmount() { return m_amount; };
+	void addAmount(unsigned int amount) { m_amount += amount; }
 private:
 	ItemType m_itemType;
 	ItemIcon m_itemIcon;
