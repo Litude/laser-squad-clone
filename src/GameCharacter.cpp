@@ -172,16 +172,19 @@ void GameCharacter::unequipCharacter()
 
 unsigned int GameCharacter::getAmmoAmount(AmmoType ammotype, unsigned int neededAmount)
 {
-	std::shared_ptr<Ammo> foundAmmo = getInventory().findAmmo(ammotype);
+	std::shared_ptr<Item> foundAmmo = getInventory().findAmmo(ammotype);
 	unsigned int availableAmmo = foundAmmo->getAmount();
 	if (availableAmmo == 0) return 0;
 
 	if (neededAmount != 0) {
 		if (availableAmmo >= neededAmount) {
 			foundAmmo->removeAmount(neededAmount);
+			if (foundAmmo->getAmount() == 0) {
+				*foundAmmo = Item(); //Remove ammo from inventory if amount reaches zero
+			}
 			return neededAmount;
 		} else {
-			foundAmmo->setAmount(0);
+			*foundAmmo = Item(); //Remove ammo from inventory
 			return availableAmmo;
 		}
 	}
