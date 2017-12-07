@@ -426,7 +426,7 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 	//Draw projectiles
 	for (auto proj = activeProjectiles.begin(); proj != activeProjectiles.end(); ) {
 		if (proj->isActive()) {
-			App.draw((*proj).drawable());
+			App.draw(*proj);
 			++proj;
 		} else {
 			proj = activeProjectiles.erase(proj);

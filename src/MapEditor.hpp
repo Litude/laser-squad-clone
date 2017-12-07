@@ -66,6 +66,7 @@ private:
     Button buttonEquipItem;
     Button buttonExit;
     sf::RectangleShape selectedCharacter;
+    sf::RectangleShape selectedTile;
     sf::RectangleShape selectedItem;
     sf::RectangleShape equippedItem;
     sf::Text textCurTurnLabel;
