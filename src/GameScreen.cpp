@@ -1,6 +1,7 @@
 #include "GameScreen.hpp"
 #include "constants.hpp"
 #include "Health.hpp"
+#include "Ammo.hpp"
 
 GameScreen::GameScreen(sf::RenderWindow &App)
 {
@@ -37,6 +38,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.getGrid().getTile(9, 6).addItem(std::make_shared<Shotgun>(Shotgun()));
 	game.getGrid().getTile(15, 6).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
 	game.getGrid().getTile(15, 6).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+	game.getGrid().getTile(15, 6).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
 
 	//Add 9 pcs to test full inventory
 	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
@@ -502,7 +504,7 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) App.draw(equippedItem);
 		// Draw items
 		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i]->getIcon() * TILESIZE, 0, TILESIZE, TILESIZE));
+			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i]->getIcon() * TILESIZE % (texItems->getSize().x), game.getSelectedCharacter()->getInventory()[i]->getIcon() * TILESIZE / (texItems->getSize().x) * TILESIZE, TILESIZE, TILESIZE));
 			App.draw(inventoryItems[i]);
 			if (game.getSelectedCharacter()->getSelectedItemIndex() == i) {
 				selectedItem.setPosition(inventoryItems[i].getPosition());
