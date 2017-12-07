@@ -3,6 +3,7 @@
 
 #include "../Inventory.hpp"
 #include "../Weapon.hpp"
+#include "../Health.hpp"
 
 TEST(InventoryAmmo, CanFindAmmo) {
 	Inventory inventory;
@@ -37,4 +38,40 @@ TEST(InventoryAmmo, CanFindAmmo) {
 	availableAmmo = res->getAmount();
 
 	EXPECT_EQ(availableAmmo, item1->getAmount());
+}
+
+TEST(InventoryCapacity, Adding) {
+	Inventory inventory;
+
+	//Add stuff until max capacity (8 pcs)
+	std::shared_ptr<Item> item1 = std::make_shared<HealthPackSmall>(HealthPackSmall());
+	std::shared_ptr<Item> item2 = std::make_shared<HealthPackSmall>(HealthPackSmall());
+	std::shared_ptr<Item> item3 = std::make_shared<Pistol>(Pistol());
+	std::shared_ptr<Item> item4 = std::make_shared<HealthPackSmall>(HealthPackSmall());
+	std::shared_ptr<Item> item5 = std::make_shared<AmmoShotgunShells>(AmmoShotgunShells());
+	std::shared_ptr<Item> item6 = std::make_shared<HealthPackLarge>(HealthPackLarge());
+	std::shared_ptr<Item> item7 = std::make_shared<Ammo9mmBullets>(Ammo9mmBullets());
+	std::shared_ptr<Item> item8 = std::make_shared<Shotgun>(Shotgun());
+
+	EXPECT_EQ(true, inventory.add(item1));
+	EXPECT_EQ(true, inventory.add(item2));
+	EXPECT_EQ(true, inventory.add(item3));
+	EXPECT_EQ(true, inventory.add(item4));
+	EXPECT_EQ(true, inventory.add(item5));
+	EXPECT_EQ(true, inventory.add(item6));
+	EXPECT_EQ(true, inventory.add(item7));
+	EXPECT_EQ(true, inventory.add(item8));
+
+	//Try adding even more stuff that isn't stackable, should not get added
+	std::shared_ptr<Item> item9 = std::make_shared<Pistol>(Pistol());
+
+	EXPECT_EQ(false, inventory.add(item9));
+
+	//Try stackable stuff which should still get added
+	std::shared_ptr<Item> item10 = std::make_shared<Ammo9mmBullets>(Ammo9mmBullets());
+	std::shared_ptr<Item> item11 = std::make_shared<AmmoShotgunShells>(AmmoShotgunShells());
+
+	EXPECT_EQ(true, inventory.add(item10));
+	EXPECT_EQ(true, inventory.add(item11));
+
 }
