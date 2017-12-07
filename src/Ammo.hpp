@@ -18,3 +18,8 @@ class Ammo9mmBullets : public Ammo {
 public:
 	Ammo9mmBullets() : Ammo(Icon_Ammo_9mm, "9mm Bullets", true, 30) {};
 };
+
+class AmmoShotgunShells : public Ammo {
+public:
+	AmmoShotgunShells() : Ammo(Icon_Ammo_Shells, "Shotgun Shells", true, 20) {};
+};

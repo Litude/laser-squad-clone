@@ -35,6 +35,8 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 	game.getGrid().getTile(3, 6).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
 	game.getGrid().getTile(4, 6).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
+	game.getGrid().getTile(4, 7).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
+	game.getGrid().getTile(4, 7).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
 
 	game.getGrid().getTile(7, 4).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
 	game.getGrid().getTile(7, 6).addItem(std::make_shared<Pistol>(Pistol()));
