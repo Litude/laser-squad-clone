@@ -185,6 +185,7 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
     
     sf::Vector2u coord=sf::Vector2u(10,10);
     selectedTile.setPosition(320,320);
+    AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
     
     while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
         sf::Event event;
@@ -211,6 +212,25 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
             int xx=32;
             int yy=32;
             
+            
+            Animation animation_walk_left(9, 0, 8, 62000);
+            Animation animation_walk_right(11, 0, 8, 62000);
+            Animation animation_walk_down(10, 0, 8, 62000);
+            Animation animation_walk_up(8, 0, 8, 62000);
+            Animation animation_die(20, 0, 5, 125000, false);
+            AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
+            animManager.addAnim(animation_walk_left);
+            animManager.addAnim(animation_walk_right);
+            animManager.addAnim(animation_walk_down);
+            animManager.addAnim(animation_walk_up);
+            animManager.addAnim(animation_die);
+            
+            
+            
+            
+            
+            
+            
             if (event.type == sf::Event::KeyPressed) {
                 
                 switch (event.key.code) {
@@ -226,13 +246,11 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                         break;
                     case sf::Keyboard::Down:
                             coord=sf::Vector2u(coord.x,coord.y+1);
-                            std::cout << "x: " << coord.x << " y: " << coord.y << std::endl;
                             selectedTile.setPosition(coord.x*xx,coord.y*yy);
                         break;
                     case sf::Keyboard::Up:
                         if(coord.y>0){
                             coord=sf::Vector2u(coord.x,coord.y-1);
-                            std::cout << "x: " << coord.x << " y: " << coord.y << std::endl;
                             selectedTile.setPosition(coord.x*xx,coord.y*yy);
                         }
                         break;
@@ -250,11 +268,34 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                         if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
                         break;
                         
+                    
                         
-                    case sf::Keyboard::Q:
+                    case sf::Keyboard::Z:
                         game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
                         tileMap->updateTile(coord);
                         break;
+                    case sf::Keyboard::X:
+                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
+                        tileMap->updateTile(coord);
+                        break;
+                    case sf::Keyboard::C:
+                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Pistol>(Pistol()));
+                        tileMap->updateTile(coord);
+                        break;
+                    case sf::Keyboard::V:
+                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Shotgun>(Shotgun()));
+                        tileMap->updateTile(coord);
+                        break;
+                    case sf::Keyboard::M:
+                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
+                        tileMap->updateTile(coord);
+                        break;
+                    case sf::Keyboard::N:
+                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
+                        tileMap->updateTile(coord);
+                        break;
+                        
+                        
                     case sf::Keyboard::T:
                         game.getGrid().getTile(coord.x, coord.y).setTile(TileGround::dirt, TileBlock::tree);;
                         tileMap->updateTile(coord);
@@ -268,25 +309,33 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                         tileMap->updateTile(coord);
                         break;
                     case sf::Keyboard::H:
-                        if(game.addCharacter(sf::Vector2u(coord.x, coord.y), 1)){
-                            std::cout << "success" << std::endl;
+                        if(!game.addCharacter(sf::Vector2u(coord.x, coord.y), 1)){
+                            std::cout << "Error" << std::endl;
                         };
                         game.setSelectedCharacter(game.getCharacters().end());
-                        tileMap->updateTile(coord);
-                        //characterShape.setPosition(coord.x, coord.y);
+                        animManager.changeAnim(animations::walk_down);
+                        for (auto &character : game.getCharacters()) {
+                            character.setAnimationManager(animManager);
+                        }
                         break;
                     case sf::Keyboard::J:
-                        if(game.addCharacter(sf::Vector2u(coord.x, coord.y), 2)){
-                            std::cout << "success" << std::endl;
+                        if(!game.addCharacter(sf::Vector2u(coord.x, coord.y), 2)){
+                            std::cout << "Error" << std::endl;
                         };
                         game.setSelectedCharacter(game.getCharacters().end());
-                        tileMap->updateTile(coord);
-                        //characterShape.setPosition(coord.x, coord.y);
+                        animManager.changeAnim(animations::walk_down);
+                        for (auto &character : game.getCharacters()) {
+                            character.setAnimationManager(animManager);
+                        }
                         break;
+                        
+                        
                     case sf::Keyboard::R:
                         game.getGrid().getTile(coord.x, coord.y).setTile(TileGround::dirt, air);
                         game.getGrid().getTile(coord.x, coord.y).popItem();
+                        game.removeCharacter(coord);
                         tileMap->updateTile(coord);
+                        game.setSelectedCharacter(game.getCharacters().end());
                         break;
                     default:
                         break;
@@ -417,28 +466,6 @@ void MapEditor::DrawGame(sf::RenderWindow &App) {
         characterShape.setTextureRect(it->getAnimationManager().getFrame());
         App.draw(characterShape);
     }
-    
-    //Draw projectiles
-    //for (auto proj = activeProjectiles.begin(); proj != activeProjectiles.end(); ) {
-    //    if (proj->isActive()) {
-    //        App.draw((*proj).drawable());
-    //        ++proj;
-    //    } else {
-    //        proj = activeProjectiles.erase(proj);
-    //    }
-    //}
-    
-    //if (mouseMode == MouseMode2::shoot) {
-        //"animate" rayline
-    //    if (rayLine[0].color.r == 255 || rayLine[0].color.r == 0) rayIncr *= -1;
-    //    rayLine[0].color.r += rayIncr;
-    //    rayLine[0].color.b += rayIncr * -1;
-    //    rayLine[1].color.r += rayIncr * -1;
-    //    rayLine[1].color.b += rayIncr;
-    //    App.draw(rayLine);
-    //}
-    // Draw visible area for the selected game character
-    //DrawVisibleArea(App, visibleTiles);
 }
 
 void MapEditor::DrawUI(sf::RenderWindow &App) {
@@ -533,10 +560,10 @@ void MapEditor::updateLayout(sf::RenderWindow & App)
     buttonExit.setRectangleShape(rs);
     
     // End turn button
-    buttonEndTurn.setPosition(sf::Vector2f(menuCenterX, buttonExit.getPos().y - buttonExit.getGlobalBounds().height / 2 - buttonEndTurn.getGlobalBounds().height / 2 - margin));
-    rs.setFillColor(sf::Color::White);
-    rs.setSize(sf::Vector2f(menuSize - margin, 40));
-    buttonEndTurn.setRectangleShape(rs);
+    //buttonEndTurn.setPosition(sf::Vector2f(menuCenterX, buttonExit.getPos().y - buttonExit.getGlobalBounds().height / 2 - buttonEndTurn.getGlobalBounds().height / 2 - margin));
+    //rs.setFillColor(sf::Color::White);
+    //rs.setSize(sf::Vector2f(menuSize - margin, 40));
+    //buttonEndTurn.setRectangleShape(rs);
     
     // Pick up item button
     rs.setSize(sf::Vector2f(menuSize / 3 - margin, 40));

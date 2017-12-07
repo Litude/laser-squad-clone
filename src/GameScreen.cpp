@@ -219,7 +219,6 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 		std::cout << "Could not load tilemap\n";
 	}
 	sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
-
 	while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
 		sf::Event event;
 		while (App.pollEvent(event)) {
@@ -271,6 +270,8 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 						}
 					}
 					break;
+                        
+
 
 				case sf::Keyboard::A:
 					if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);

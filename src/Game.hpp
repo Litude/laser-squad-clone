@@ -22,6 +22,7 @@ public:
 	Grid&									getGrid() { return grid; }
 	void									endTurn();
 	bool									addCharacter(sf::Vector2u position, unsigned int team);
+    bool                                    removeCharacter(sf::Vector2u position);
 	void									setSelectedCharacter(std::vector<GameCharacter>::iterator it) { selectedCharacter = it; }
 	void									initializeGrid(unsigned int xSize, unsigned int ySize) {grid = Grid(xSize*ySize, xSize);}
 	std::vector<GameCharacter>&				getCharacters() { return characters; }
