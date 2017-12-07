@@ -53,7 +53,10 @@ ScreenResult MainMenuScreen::Run(sf::RenderWindow & App)
 			}
 		}
 
-		selectedButtonItem->setState(state::hovered);
+		if (selectedButtonItem->getState() != state::clicked) {
+			selectedButtonItem->setState(state::hovered);
+		}
+
 		drawUI(App);
 	}
 
