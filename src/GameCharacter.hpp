@@ -58,6 +58,7 @@ public:
 	void			unequipCharacter();
 	void			setAnimationManager(AnimationManager animationManager) { this->animationManager = animationManager; }
 	AnimationManager getAnimationManager() const { return animationManager;  }
+	unsigned int	getAmmoAmount(AmmoType ammotype, unsigned int neededAmount=0);
 
 private:
 	void			moveLeft();

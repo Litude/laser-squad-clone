@@ -164,3 +164,14 @@ void GameCharacter::unequipCharacter()
 	selectedWeaponIdx = -1;
 	equippedWeapon = std::make_shared<Hands>(Hands());
 }
+
+unsigned int GameCharacter::getAmmoAmount(AmmoType ammotype, unsigned int neededAmount)
+{
+	std::shared_ptr<Ammo> foundAmmo = getInventory().findAmmo(ammotype);
+	if (foundAmmo->getAmount() == 0) return 0;
+
+	//if (neededAmount) {
+	//	
+	//}
+	return foundAmmo->getAmount();
+}

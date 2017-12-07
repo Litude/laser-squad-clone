@@ -518,7 +518,7 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 				inventoryItemTexts[i].setString(std::to_string(game.getSelectedCharacter()->getInventory()[i]->getAmount()));
 				App.draw(inventoryItemTexts[i]);
 			} else if (game.getSelectedCharacter()->getInventory()[i]->getType() == Type_Weapon){
-				inventoryItemTexts[i].setString(std::to_string(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getLoadedAmmo()));
+				inventoryItemTexts[i].setString(std::to_string(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getLoadedAmmo()) + '-' + std::to_string(game.getSelectedCharacter()->getAmmoAmount(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getAmmoType())));
 				App.draw(inventoryItemTexts[i]);
 			}
 			if (game.getSelectedCharacter()->getSelectedItemIndex() == i) {
