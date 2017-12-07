@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <memory>
+#include <list>
 #include "Screen.hpp"
 #include "Game.hpp"
 #include "TileMap.hpp"
@@ -35,7 +36,7 @@ private:
 	void updateLayout(sf::RenderWindow & App);
 	void updateUIComponents(sf::RenderWindow & App);
 	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
-	void DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles);
+	void DrawVisibleArea(sf::RenderWindow &App, std::list<sf::Vector2u> visibleTiles);
 	void addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination);
 
 	Game game;

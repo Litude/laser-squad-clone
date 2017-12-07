@@ -400,10 +400,12 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 	//Draw the map
 	App.draw(*tileMap);
 
-	std::vector<sf::Vector2u> visibleTiles;
-	// Calculate visible area for the selected game character
-	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		visibleTiles = game.seenCoordinates(game.getSelectedCharacter());
+	std::list<sf::Vector2u> visibleTiles;
+	// Calculate visible area for all current player game characters
+	for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
+		if (it->getTeam() != game.getCurrentPlayer()) continue;
+		auto newVisibleTiles = game.seenCoordinates(it);
+		visibleTiles.insert(visibleTiles.end(), newVisibleTiles.begin(), newVisibleTiles.end());
 	}
 
 	//Draw characters
@@ -461,13 +463,8 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 }
 
 // Draw visible area for the selected game character
-void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles) {
-	// Highlight own team characters
-	for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
-		if (it->getTeam() == game.getCurrentPlayer()) {
-			visibleTiles.push_back(it->getPosition());
-		}
-	}
+void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::list<sf::Vector2u> visibleTiles) {
+
 	renderTexture_visibleTiles->clear(sf::Color(0, 0, 0, 0));
 	for (auto it = visibleTiles.begin(); it != visibleTiles.end(); ++it) {
 		visibleTileShape.setPosition(it->x * TILESIZE, it->y * TILESIZE);
