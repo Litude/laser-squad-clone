@@ -12,7 +12,7 @@
 class Projectile {
 public:
 	//origin and destination in pixels
-	Projectile(ItemIcon weaponType, sf::Vector2f origin, sf::Vector2f destination) : m_origin(origin), m_destination(destination) {
+	Projectile(ItemIcon weaponType, sf::Vector2f origin, sf::Vector2f destination, int delay=0) : m_origin(origin), m_destination(destination), delay(delay) {
 		proj.setTexture(*PROJ_TEXTURES);
 		sf::Vector2i defSize(32, 32);
 		sf::IntRect rect(sf::Vector2i(0, 0), defSize);
@@ -46,24 +46,24 @@ public:
 		distance = std::sqrt(std::pow(path.y, 2) + std::pow(path.x, 2));
 		m_offset = path / distance;
 		proj.setPosition(m_origin);
-		std::cout << "ANGLE: " << Util::vecAngle(path) << std::endl;
 		proj.rotate(Util::vecAngle(path));
 	}
 
-	bool isActive() const;
+	bool isActive();
+	bool reachedDestination() const;
 	void draw(sf::RenderTarget&, sf::RenderStates) const { }
 	const sf::Vector2f& getOrigin() const { return m_origin; }
 	const sf::Vector2f& getDestination() const { return m_destination; }
 
-	operator sf::Sprite() { return drawable(); }
 	sf::Sprite drawable();
+	operator sf::Sprite() { return drawable(); }
 
 private:
 	sf::Vector2f m_origin;
 	sf::Vector2f m_destination;
+	int delay;
 	sf::Vector2f m_offset;
 	sf::Sprite proj;
-	bool active = true;
 	int ticks = 0;
 	float distance;
 

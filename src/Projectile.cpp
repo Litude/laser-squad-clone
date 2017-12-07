@@ -10,16 +10,17 @@ std::shared_ptr<sf::Texture> Projectile::loadTextures() {
 
 std::shared_ptr<sf::Texture> Projectile::PROJ_TEXTURES = loadTextures();
 
-bool Projectile::isActive() const {
-	return active;
+bool Projectile::reachedDestination() const {
+	return ticks > (distance + delay);
 }
 
 sf::Sprite Projectile::drawable() {
-	if (active) {
-		proj.move(m_offset);
-	}
-	if (++ticks > distance) active = false;
+	proj.move(m_offset);
 	return proj;
+}
+
+bool Projectile::isActive() {
+	return ++ticks > delay;
 }
 
 std::ostream& operator<<(std::ostream& os, const Projectile& p) {
