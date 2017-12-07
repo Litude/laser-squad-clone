@@ -185,6 +185,7 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
     
     sf::Vector2u coord=sf::Vector2u(10,10);
     selectedTile.setPosition(320,320);
+    AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
     
     while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
         sf::Event event;
@@ -211,6 +212,7 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
             int xx=32;
             int yy=32;
             
+            
             if (event.type == sf::Event::KeyPressed) {
                 
                 switch (event.key.code) {
@@ -226,13 +228,11 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                         break;
                     case sf::Keyboard::Down:
                             coord=sf::Vector2u(coord.x,coord.y+1);
-                            std::cout << "x: " << coord.x << " y: " << coord.y << std::endl;
                             selectedTile.setPosition(coord.x*xx,coord.y*yy);
                         break;
                     case sf::Keyboard::Up:
                         if(coord.y>0){
                             coord=sf::Vector2u(coord.x,coord.y-1);
-                            std::cout << "x: " << coord.x << " y: " << coord.y << std::endl;
                             selectedTile.setPosition(coord.x*xx,coord.y*yy);
                         }
                         break;
@@ -268,25 +268,33 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                         tileMap->updateTile(coord);
                         break;
                     case sf::Keyboard::H:
-                        if(game.addCharacter(sf::Vector2u(coord.x, coord.y), 1)){
-                            std::cout << "success" << std::endl;
+                        if(!game.addCharacter(sf::Vector2u(coord.x, coord.y), 1)){
+                            std::cout << "Error" << std::endl;
                         };
                         game.setSelectedCharacter(game.getCharacters().end());
-                        tileMap->updateTile(coord);
-                        //characterShape.setPosition(coord.x, coord.y);
+                        animManager.changeAnim(animations::walk_down);
+                        for (auto &character : game.getCharacters()) {
+                            character.setAnimationManager(animManager);
+                        }
                         break;
                     case sf::Keyboard::J:
-                        if(game.addCharacter(sf::Vector2u(coord.x, coord.y), 2)){
-                            std::cout << "success" << std::endl;
+                        if(!game.addCharacter(sf::Vector2u(coord.x, coord.y), 2)){
+                            std::cout << "Error" << std::endl;
                         };
                         game.setSelectedCharacter(game.getCharacters().end());
-                        tileMap->updateTile(coord);
-                        //characterShape.setPosition(coord.x, coord.y);
+                        animManager.changeAnim(animations::walk_down);
+                        for (auto &character : game.getCharacters()) {
+                            character.setAnimationManager(animManager);
+                        }
                         break;
+                        
+                        
                     case sf::Keyboard::R:
                         game.getGrid().getTile(coord.x, coord.y).setTile(TileGround::dirt, air);
                         game.getGrid().getTile(coord.x, coord.y).popItem();
+                        game.removeCharacter(coord);
                         tileMap->updateTile(coord);
+                        game.setSelectedCharacter(game.getCharacters().end());
                         break;
                     default:
                         break;
@@ -417,28 +425,6 @@ void MapEditor::DrawGame(sf::RenderWindow &App) {
         characterShape.setTextureRect(it->getAnimationManager().getFrame());
         App.draw(characterShape);
     }
-    
-    //Draw projectiles
-    //for (auto proj = activeProjectiles.begin(); proj != activeProjectiles.end(); ) {
-    //    if (proj->isActive()) {
-    //        App.draw((*proj).drawable());
-    //        ++proj;
-    //    } else {
-    //        proj = activeProjectiles.erase(proj);
-    //    }
-    //}
-    
-    //if (mouseMode == MouseMode2::shoot) {
-        //"animate" rayline
-    //    if (rayLine[0].color.r == 255 || rayLine[0].color.r == 0) rayIncr *= -1;
-    //    rayLine[0].color.r += rayIncr;
-    //    rayLine[0].color.b += rayIncr * -1;
-    //    rayLine[1].color.r += rayIncr * -1;
-    //    rayLine[1].color.b += rayIncr;
-    //    App.draw(rayLine);
-    //}
-    // Draw visible area for the selected game character
-    //DrawVisibleArea(App, visibleTiles);
 }
 
 void MapEditor::DrawUI(sf::RenderWindow &App) {
