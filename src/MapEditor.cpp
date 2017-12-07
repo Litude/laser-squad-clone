@@ -18,44 +18,8 @@ MapEditor::MapEditor(sf::RenderWindow &App)
     game = Game();
     
     game.initializeGrid(30, 30);
-    game.getGrid().getTile(12, 12).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-    game.getGrid().getTile(12, 13).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-    game.getGrid().getTile(12, 14).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-    
-    game.getGrid().getTile(5, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-    game.getGrid().getTile(6, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-    game.getGrid().getTile(7, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-    game.getGrid().getTile(8, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-    game.getGrid().getTile(9, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-    
-    //game.getGrid().getTile(7, 4).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-    //game.getGrid().getTile(7, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-    //game.getGrid().getTile(6, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-    
-    //game.getGrid().getTile(6, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
-    //game.getGrid().getTile(5, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
-    
-    game.getGrid().getTile(7, 2).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-    
-    game.getGrid().getTile(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
-    game.getGrid().getTile(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
-    
-    game.getGrid().getTile(7, 4).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
-    game.getGrid().getTile(7, 6).addItem(std::make_shared<Pistol>(Pistol()));
-    game.getGrid().getTile(9, 6).addItem(std::make_shared<Shotgun>(Shotgun()));
-    game.getGrid().getTile(15, 6).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-    game.getGrid().getTile(15, 6).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-    
-    //Add 9 pcs to test full inventory
-    game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-    game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-    game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-    game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-    game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-    game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-    game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-    game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-    game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+
+
     
     // Test put walls on the edges of the map
     for (unsigned int i = 0; i < game.getGrid().getWidth(); ++i)
@@ -68,14 +32,7 @@ MapEditor::MapEditor(sf::RenderWindow &App)
         }
     }
     
-    // Test updating tile after tilemap has already been created
-    game.getGrid().getTile(12, 16).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
-    
-    game.addCharacter(sf::Vector2u(1, 1), 1);
     game.addCharacter(sf::Vector2u(4, 4), 1);
-    game.addCharacter(sf::Vector2u(8, 8), 2);
-    game.addCharacter(sf::Vector2u(10, 10), 2);
-    
     game.setSelectedCharacter(game.getCharacters().end());
     
     //Interface drawing initialization
@@ -139,6 +96,12 @@ MapEditor::MapEditor(sf::RenderWindow &App)
     selectedItem.setOutlineColor(sf::Color::Yellow);
     selectedItem.setOutlineThickness(2.0f);
     selectedItem.setFillColor(sf::Color::Transparent);
+    
+    selectedTile = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
+    selectedTile.setOutlineColor(sf::Color::Yellow);
+    selectedTile.setOutlineThickness(2.0f);
+    selectedTile.setFillColor(sf::Color::Transparent);
+    selectedTile.setPosition(97,97);
     
     equippedItem = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
     equippedItem.setFillColor(sf::Color::Red);
@@ -219,6 +182,10 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
     }
     sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
     
+    
+    sf::Vector2u coord=sf::Vector2u(10,10);
+    selectedTile.setPosition(320,320);
+    
     while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
         sf::Event event;
         while (App.pollEvent(event)) {
@@ -240,34 +207,33 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
             buttonDropItem.update(event, App);
             buttonEquipItem.update(event, App);
             //Handle keyboard input
+            
+            int xx=32;
+            int yy=32;
+            
             if (event.type == sf::Event::KeyPressed) {
+                
                 switch (event.key.code) {
                     case sf::Keyboard::Left:
-                        if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-                            if (game.characterMoveLeft(game.getSelectedCharacter())) {
-                                //gameView.move(sf::Vector2f(-TILESIZE, 0));
-                            }
+                        if(coord.x>0){
+                            coord=sf::Vector2u(coord.x-1,coord.y);
+                            selectedTile.setPosition(coord.x*xx,coord.y*yy);
                         }
                         break;
                     case sf::Keyboard::Right:
-                        if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-                            if (game.characterMoveRight(game.getSelectedCharacter())) {
-                                //gameView.move(sf::Vector2f(TILESIZE, 0));
-                            }
-                        }
+                            coord=sf::Vector2u(coord.x+1,coord.y);
+                            selectedTile.setPosition(coord.x*xx,coord.y*yy);
                         break;
                     case sf::Keyboard::Down:
-                        if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-                            if (game.characterMoveDown(game.getSelectedCharacter())) {
-                                //gameView.move(sf::Vector2f(0, TILESIZE));
-                            }
-                        }
+                            coord=sf::Vector2u(coord.x,coord.y+1);
+                            std::cout << "x: " << coord.x << " y: " << coord.y << std::endl;
+                            selectedTile.setPosition(coord.x*xx,coord.y*yy);
                         break;
                     case sf::Keyboard::Up:
-                        if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-                            if (game.characterMoveUp(game.getSelectedCharacter())) {
-                                //gameView.move(sf::Vector2f(0, -TILESIZE));
-                            }
+                        if(coord.y>0){
+                            coord=sf::Vector2u(coord.x,coord.y-1);
+                            std::cout << "x: " << coord.x << " y: " << coord.y << std::endl;
+                            selectedTile.setPosition(coord.x*xx,coord.y*yy);
                         }
                         break;
                         
@@ -283,10 +249,44 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                     case sf::Keyboard::W:
                         if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
                         break;
-                        //enter shooting mode
+                        
+                        
                     case sf::Keyboard::Q:
-                        mouseMode = (mouseMode == MouseMode2::shoot) ? MouseMode2::select : MouseMode2::shoot;
-                        std::cout << "mousemode changed to " << mouseMode << std::endl;
+                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+                        tileMap->updateTile(coord);
+                        break;
+                    case sf::Keyboard::T:
+                        game.getGrid().getTile(coord.x, coord.y).setTile(TileGround::dirt, TileBlock::tree);;
+                        tileMap->updateTile(coord);
+                        break;
+                    case sf::Keyboard::Y:
+                        game.getGrid().getTile(coord.x, coord.y).setTile(TileGround::dirt, wall);
+                        tileMap->updateTile(coord);
+                        break;
+                    case sf::Keyboard::B:
+                        game.getGrid().getTile(coord.x, coord.y).setTile(TileGround::dirt, bush);
+                        tileMap->updateTile(coord);
+                        break;
+                    case sf::Keyboard::H:
+                        if(game.addCharacter(sf::Vector2u(coord.x, coord.y), 1)){
+                            std::cout << "success" << std::endl;
+                        };
+                        game.setSelectedCharacter(game.getCharacters().end());
+                        tileMap->updateTile(coord);
+                        //characterShape.setPosition(coord.x, coord.y);
+                        break;
+                    case sf::Keyboard::J:
+                        if(game.addCharacter(sf::Vector2u(coord.x, coord.y), 2)){
+                            std::cout << "success" << std::endl;
+                        };
+                        game.setSelectedCharacter(game.getCharacters().end());
+                        tileMap->updateTile(coord);
+                        //characterShape.setPosition(coord.x, coord.y);
+                        break;
+                    case sf::Keyboard::R:
+                        game.getGrid().getTile(coord.x, coord.y).setTile(TileGround::dirt, air);
+                        game.getGrid().getTile(coord.x, coord.y).popItem();
+                        tileMap->updateTile(coord);
                         break;
                     default:
                         break;
@@ -391,20 +391,17 @@ void MapEditor::DrawGame(sf::RenderWindow &App) {
     //Draw the map
     App.draw(*tileMap);
     
-    std::vector<sf::Vector2u> visibleTiles;
-    // Calculate visible area for the selected game character
-    if (game.getSelectedCharacter() != game.getCharacters().end()) {
-        visibleTiles = game.seenCoordinates(game.getSelectedCharacter());
-    }
+    App.draw(selectedTile);
+    
     
     //Draw characters
     for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
-        if (it->getTeam() != game.getCurrentPlayer()) {
-            if (std::find(visibleTiles.begin(), visibleTiles.end(), it->getPosition()) == visibleTiles.end()) {
+        //if (it->getTeam() != game.getCurrentPlayer()) {
+            //if (std::find(visibleTiles.begin(), visibleTiles.end(), it->getPosition()) == visibleTiles.end()) {
                 // This enemy character is not visible - skip rendering
-                continue;
-            }
-        }
+                //continue;
+          //  }
+        //}
         sf::Sprite characterShape;
         characterShape.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
         if (it == game.getSelectedCharacter()) {
@@ -418,54 +415,30 @@ void MapEditor::DrawGame(sf::RenderWindow &App) {
             characterShape.setTexture(*texPlayer2);
         }
         characterShape.setTextureRect(it->getAnimationManager().getFrame());
-        
         App.draw(characterShape);
     }
     
     //Draw projectiles
-    for (auto proj = activeProjectiles.begin(); proj != activeProjectiles.end(); ) {
-        if (proj->isActive()) {
-            App.draw((*proj).drawable());
-            ++proj;
-        } else {
-            proj = activeProjectiles.erase(proj);
-        }
-    }
+    //for (auto proj = activeProjectiles.begin(); proj != activeProjectiles.end(); ) {
+    //    if (proj->isActive()) {
+    //        App.draw((*proj).drawable());
+    //        ++proj;
+    //    } else {
+    //        proj = activeProjectiles.erase(proj);
+    //    }
+    //}
     
-    if (mouseMode == MouseMode2::shoot) {
+    //if (mouseMode == MouseMode2::shoot) {
         //"animate" rayline
-        if (rayLine[0].color.r == 255 || rayLine[0].color.r == 0) rayIncr *= -1;
-        rayLine[0].color.r += rayIncr;
-        rayLine[0].color.b += rayIncr * -1;
-        rayLine[1].color.r += rayIncr * -1;
-        rayLine[1].color.b += rayIncr;
-        App.draw(rayLine);
-    }
+    //    if (rayLine[0].color.r == 255 || rayLine[0].color.r == 0) rayIncr *= -1;
+    //    rayLine[0].color.r += rayIncr;
+    //    rayLine[0].color.b += rayIncr * -1;
+    //    rayLine[1].color.r += rayIncr * -1;
+    //    rayLine[1].color.b += rayIncr;
+    //    App.draw(rayLine);
+    //}
     // Draw visible area for the selected game character
-    DrawVisibleArea(App, visibleTiles);
-}
-
-// Draw visible area for the selected game character
-void MapEditor::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles) {
-    // Highlight own team characters
-    for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
-        if (it->getTeam() == game.getCurrentPlayer()) {
-            visibleTiles.push_back(it->getPosition());
-        }
-    }
-    renderTexture_visibleTiles->clear(sf::Color(0, 0, 0, 0));
-    for (auto it = visibleTiles.begin(); it != visibleTiles.end(); ++it) {
-        visibleTileShape.setPosition(it->x * TILESIZE, it->y * TILESIZE);
-        renderTexture_visibleTiles->draw(visibleTileShape); // or any other drawable
-    }
-    renderTexture_visibleTiles->display();
-    
-    // get the target texture (where the stuff has been drawn)
-    const sf::Texture& texture = renderTexture_visibleTiles->getTexture();
-    
-    // Draw visible tiles
-    sf::Sprite sprite(texture);
-    App.draw(sprite, shader);
+    //DrawVisibleArea(App, visibleTiles);
 }
 
 void MapEditor::DrawUI(sf::RenderWindow &App) {
