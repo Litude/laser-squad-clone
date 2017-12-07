@@ -12,6 +12,7 @@
 #define AP_COST_PICK_ITEM 1
 #define AP_COST_DROP_ITEM 1
 #define AP_COST_EQUIP 1
+#define AP_COST_RELOAD 1
 
 enum direction {
 	left,
@@ -34,6 +35,7 @@ public:
 	unsigned int	getActionPoints() const { return actionPoints; }
 	unsigned int	getMaxActionPoints() const { return maxActionPoints; }
 	unsigned int	getHitpoints() const { return health; }
+	unsigned int	getMaxHitpoints() const {return maxHealth; }
 	unsigned int	getTeam() const { return team; }
 	sf::Vector2u	getPosition() const { return currentPosition; }
 	sf::Vector2u	getRenderPosition() const;
@@ -59,6 +61,7 @@ public:
 	void			setAnimationManager(AnimationManager animationManager) { this->animationManager = animationManager; }
 	AnimationManager getAnimationManager() const { return animationManager;  }
 	unsigned int	getAmmoAmount(AmmoType ammotype, unsigned int neededAmount=0);
+	void			reloadWeapon();
 
 private:
 	void			moveLeft();
@@ -77,7 +80,8 @@ private:
 
 	unsigned int actionPoints = maxActionPoints;
 	Inventory inventory;
-	unsigned int health = 5;
+	unsigned int health = 10;
+	unsigned int maxHealth = 10;
 	std::shared_ptr<Weapon> equippedWeapon = std::make_shared<Hands>(Hands());
 	unsigned int team;
     unsigned int lengthofSight=9;

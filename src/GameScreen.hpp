@@ -64,6 +64,8 @@ private:
 	sf::Text textAPLabel;
 	sf::Text textAPValue;
 	sf::Text textMouseMode;
+	sf::RectangleShape healthbarBkg;
+	sf::RectangleShape healthbar;
 
 	int rayIncr = 1;
 	sf::VertexArray rayLine{ sf::Lines, 2 };

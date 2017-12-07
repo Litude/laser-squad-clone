@@ -21,6 +21,7 @@ public:
 	unsigned	apCost() const;
 	unsigned	getLoadedAmmo() const { return loadedAmmo; };
 	AmmoType	getAmmoType() const { return ammoType; };
+	unsigned	getReloadAmount() const { return maxAmmo - loadedAmmo; };
 	virtual void testInheritance() { std::cout << "Testing failed" << std::endl;  };
 
 private:

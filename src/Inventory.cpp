@@ -50,12 +50,12 @@ std::shared_ptr<Item>& Inventory::operator[](unsigned n) {
 	return items[n];
 }
 
-std::shared_ptr<Ammo> Inventory::findAmmo(AmmoType ammo) {
+std::shared_ptr<Item> Inventory::findAmmo(AmmoType ammo) {
 	auto curItem = items.begin();
 	while (curItem != items.end()) {
 		if ((*curItem)->getType() == Type_Ammo) {
 			if ((std::dynamic_pointer_cast<Ammo>(*curItem)->getAmmoType()) == ammo) {
-				return std::dynamic_pointer_cast<Ammo>(*curItem);
+				return *curItem;
 			};
 		}
 		++curItem;

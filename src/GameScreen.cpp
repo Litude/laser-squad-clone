@@ -207,6 +207,13 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	}
 	updateLayout(App);
 
+	healthbarBkg.setFillColor(sf::Color::Red);
+	healthbarBkg.setSize(sf::Vector2f(TILESIZE, 4));
+	healthbarBkg.setOutlineColor(sf::Color::Black);
+	healthbarBkg.setOutlineThickness(1.0f);
+
+	healthbar.setFillColor(sf::Color::Green);
+
 	// Center gameview
 	zoomViewAt(sf::Vector2i(gameView.getCenter().x, gameView.getCenter().y), App, gameView, 3.f);
 	gameView.setCenter(sf::Vector2f(game.getGrid().getWidth() / 2 * TILESIZE, game.getGrid().getHeight() / 2 * TILESIZE));
@@ -220,7 +227,6 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 		std::cout << "Could not load tilemap\n";
 	}
 	sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
-
 	while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
 		sf::Event event;
 		while (App.pollEvent(event)) {
@@ -272,6 +278,8 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 						}
 					}
 					break;
+                        
+
 
 				case sf::Keyboard::A:
 					if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);
@@ -424,13 +432,19 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 		}
 		characterShape.setTextureRect(it->getAnimationManager().getFrame());
 
+		healthbarBkg.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
+		healthbar.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
+		healthbar.setSize(sf::Vector2f((static_cast<float>(it->getHitpoints()) / it->getMaxHitpoints()) * TILESIZE, 4));
+
 		App.draw(characterShape);
+		App.draw(healthbarBkg);
+		App.draw(healthbar);
 	}
 
 	//Draw projectiles
 	for (auto proj = activeProjectiles.begin(); proj != activeProjectiles.end(); ) {
 		if (proj->isActive()) {
-			App.draw(*proj);
+			App.draw((*proj).drawable());
 		}
 		if (proj->reachedDestination()) {
 			proj = activeProjectiles.erase(proj);
