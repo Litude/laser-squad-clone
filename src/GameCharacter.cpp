@@ -162,7 +162,8 @@ bool GameCharacter::useSelected()
 		case Type_Health:
 			if (getHitpoints() == getMaxHitpoints()) return false;
 			health = std::min(getMaxHitpoints(), getHitpoints() + std::dynamic_pointer_cast<Health>(inventory[selectedItemIdx])->getHealingAmount());
-			*inventory[selectedItemIdx] = Item(); //Remove ammo from inventory
+			*inventory[selectedItemIdx] = Item(); //Remove item from inventory
+			actionPoints -= AP_COST_USE;
 			return true;
 
 		default:
