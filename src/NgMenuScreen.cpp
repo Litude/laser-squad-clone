@@ -5,7 +5,7 @@ NgMenuScreen::NgMenuScreen(void)
 {
 }
 
-ScreenResult NgMenuScreen::Run(sf::RenderWindow & App) 
+ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 {
 	initComponents(App);
 	m_screenResult = ScreenResult::NewGameScene;
@@ -112,11 +112,15 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 		return ScreenResult::Exit;
 	}
 
-	Button launchgame("Launch game", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f));
+	sf::RectangleShape rs;
+	rs.setFillColor(sf::Color::White);
+	rs.setSize(sf::Vector2f(170,40));
+
+	Button launchgame("Launch game", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f), rs);
 	launchgame.setCallback([&] {this->openScreen(ScreenResult::GameScene); });
 	buttons.push_back(launchgame);
 
-	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f));
+	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
 	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
 	buttons.push_back(back);
 

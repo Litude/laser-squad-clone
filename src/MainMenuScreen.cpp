@@ -121,7 +121,7 @@ bool MainMenuScreen::initComponents(sf::RenderWindow & App)
 
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
-	rs.setSize(sf::Vector2f(140, 40));
+	rs.setSize(sf::Vector2f(170, 40));
 
 	Button newgame("New game", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f), rs);
 	newgame.setCallback([&] {this->openScreen(ScreenResult::NewGameScene); });
