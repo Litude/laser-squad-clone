@@ -90,13 +90,20 @@ void TextField::update(sf::Event e, sf::RenderWindow& window)
         case sf::Keyboard::Return:
           break;
         default:
-          t_str += static_cast<char>(e.text.unicode);
+          if(t_str.length() < 11){ // text input limited to 10 characters
+            t_str += static_cast<char>(e.text.unicode);
+          };
           break;
       }
       t_text.setString(t_str);
     }
   }
 
+}
+
+const sf::FloatRect  TextField::getGlobalBounds()
+{
+  return t_Rshape.getGlobalBounds();
 }
 
 void TextField::draw(sf::RenderTarget& target,sf::RenderStates states) const

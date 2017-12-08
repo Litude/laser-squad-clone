@@ -24,6 +24,7 @@ public:
   std::string getString() {return t_str;};
   sf::Vector2f getPos() {return t_pos;};
   bool getFocus() {return t_isFocused;};
+  const sf::FloatRect  TextField::getGlobalBounds();
 
 private:
     virtual void draw(sf::RenderTarget& target,sf::RenderStates states) const;

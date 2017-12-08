@@ -88,7 +88,8 @@ void NgMenuScreen::updateLayout(sf::RenderWindow & App)
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
 	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, App.getView().getSize().y * 0.5f - logoSprite.getGlobalBounds().height * 1.f });
-	unsigned int i = 0;
+	tField.setPosition({ App.getView().getSize().x * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f});
+	unsigned int i = 1;
 	for (auto &button : buttons) {
 		button.setPosition({ App.getView().getSize().x * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + button.getGlobalBounds().height * 1.5f * i });
 		i++;
@@ -128,15 +129,17 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	launchgame.setCallback([&] {this->openScreen(ScreenResult::GameScene); });
 	buttons.push_back(launchgame);
 
-	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
-	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
-	buttons.push_back(back);
-
 	TextField loadmap(25, rs, *font);
 	loadmap.setPosition(sf::Vector2f(300.f,450.f));
 	loadmap.setFont(*font);
 	loadmap.setSize(170, 40);
 	tField = loadmap;
+
+	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
+	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
+	                buttons.push_back(back);
+
+
 
 
 	updateLayout(App);
