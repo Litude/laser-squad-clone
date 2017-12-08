@@ -16,6 +16,7 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 	{
 		while (App.pollEvent(Event))
 		{
+			tField.update(Event, App);
 			if (Event.type == sf::Event::Resized)
 			{
 				updateLayout(App);
@@ -26,7 +27,7 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 				return ScreenResult::Exit;
 			}
 
-			if (Event.type == sf::Event::KeyPressed)
+			if (Event.type == sf::Event::KeyPressed && !tField.getFocus())
 			{
 				switch (Event.key.code)
 				{
@@ -44,7 +45,6 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 				}
 			}
 		}
-
 		for (auto it = buttons.begin(); it != buttons.end(); ++it) {
 			it->setState(state::normal);
 			it->update(Event, App);
@@ -52,7 +52,6 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 				selectedButtonItem = it;
 			}
 		}
-
 		selectedButtonItem->setState(state::hovered);
 		drawUI(App);
 	}
@@ -73,6 +72,7 @@ void NgMenuScreen::drawUI(sf::RenderWindow &App)
 	for (auto button : buttons) {
 		App.draw(button);
 	}
+	App.draw(tField);
 	App.display();
 }
 
@@ -126,6 +126,13 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
 	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
 	buttons.push_back(back);
+
+	TextField loadmap(25, rs, *font);
+	loadmap.setPosition(sf::Vector2f(300.f,450.f));
+	loadmap.setFont(*font);
+	loadmap.setSize(170, 40);
+	tField = loadmap;
+
 
 	updateLayout(App);
 }

@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Screen.hpp"
 #include "Button.hpp"
+#include "TextField.hpp"
 #include <SFML/Graphics.hpp>
 #include <memory>
 
@@ -27,6 +28,8 @@ private:
 	sf::Sprite logoSprite;
 	std::shared_ptr<sf::Font> font;
 	std::vector<Button> buttons;
+	TextField tField;
+	bool status;
 };
 
 #endif
