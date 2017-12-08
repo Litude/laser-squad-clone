@@ -12,6 +12,7 @@ class Screen
 {
 public:
 	Screen(void);
+	virtual ~Screen();
 	virtual ScreenResult Run(sf::RenderWindow &App);
 private:
 };

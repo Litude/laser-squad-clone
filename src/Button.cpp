@@ -96,6 +96,9 @@ const sf::FloatRect  Button::getGlobalBounds()
 		return b_Rshape.getGlobalBounds();
 	}
 	break;
+	default:
+		return b_text.getGlobalBounds();
+	break;
 	}
 }
 

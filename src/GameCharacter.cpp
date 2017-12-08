@@ -97,13 +97,15 @@ int GameCharacter::shoot() {
 	}
 }
 
-void GameCharacter::sufferDamage(int damage) {
+bool GameCharacter::sufferDamage(int damage) {
 	int armor = 0;//placeholder
 	int dmg = (damage - armor > 0 ? damage - armor : 0);
 	health = ((int) health - dmg > 0 ? health - dmg : 0);
 	if (health == 0) {
 		animationManager.changeAnim(animations::die);
+		return true;
 	}
+	return false;
 }
 
 sf::Vector2u GameCharacter::getRenderPosition() const
@@ -145,20 +147,29 @@ bool GameCharacter::removeSelectedItem()
 	return false;
 }
 
-bool GameCharacter::equipSelected()
+bool GameCharacter::useSelected()
 {
-	if (actionPoints >= AP_COST_EQUIP) {
+	if (actionPoints >= AP_COST_USE) {
 		if (selectedItemIdx == -1) return false;
 		if (selectedItemIdx == selectedWeaponIdx) {
 			unequipCharacter();
 			return true;
 		}
-
-		if (inventory[selectedItemIdx]->getType() == Type_Weapon) {
+		switch (inventory[selectedItemIdx]->getType()) {
+		case Type_Weapon:
 			selectedWeaponIdx = selectedItemIdx;
 			equippedWeapon = std::dynamic_pointer_cast<Weapon>(inventory[selectedItemIdx]);
-			actionPoints -= AP_COST_EQUIP;
+			actionPoints -= AP_COST_USE;
 			return true;
+		case Type_Health:
+			if (getHitpoints() == getMaxHitpoints()) return false;
+			health = std::min(getMaxHitpoints(), getHitpoints() + std::dynamic_pointer_cast<Health>(inventory[selectedItemIdx])->getHealingAmount());
+			*inventory[selectedItemIdx] = Item(); //Remove item from inventory
+			actionPoints -= AP_COST_USE;
+			return true;
+
+		default:
+			return false;
 		}
 	}
 	return false;

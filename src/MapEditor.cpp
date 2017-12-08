@@ -641,7 +641,7 @@ void MapEditor::dropItem() {
 
 void MapEditor::equipItem() {
     if (game.getSelectedCharacter() != game.getCharacters().end()) {
-        game.getSelectedCharacter()->equipSelected();
+        game.getSelectedCharacter()->useSelected();
     }
 }
 

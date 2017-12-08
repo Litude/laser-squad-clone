@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <memory>
+#include <list>
 #include "Screen.hpp"
 #include "Game.hpp"
 #include "TileMap.hpp"
@@ -75,14 +76,15 @@ private:
 	sf::Clock clock;
 	float lastTime = 0;
 	float currentTime = 0;
-	double timeStep = 16000;
-	double timeAccumulator = 0;
+	int timeStep = 16000;
+	int timeAccumulator = 0;
 	std::shared_ptr<sf::RenderTexture> renderTexture_visibleTiles;
 	sf::RectangleShape visibleTileShape;
 	sf::Shader* shader;
 	std::vector<sf::Sprite> inventoryItems;
 	std::vector<sf::Text> inventoryItemTexts;
 	std::vector<Projectile> activeProjectiles;
+	std::list<sf::Vector2u> visibleTiles;
 
 	MouseMode::Mode mouseMode = MouseMode::select;
 };
