@@ -84,6 +84,11 @@ void GameCharacter::update(int delta_ms) {
 int GameCharacter::shoot() {
 	getEquipped()->testInheritance();
 	if (isDead()) return 0;
+	if (!getEquipped()->canFire()) {
+		reloadWeapon();
+		return 0;
+	}
+
 	if (actionPoints >= getEquipped()->apCost() && getEquipped()->canFire()) {
 		actionPoints -= getEquipped()->apCost();
 		return getEquipped()->fire();
@@ -92,13 +97,15 @@ int GameCharacter::shoot() {
 	}
 }
 
-void GameCharacter::sufferDamage(int damage) {
+bool GameCharacter::sufferDamage(int damage) {
 	int armor = 0;//placeholder
 	int dmg = (damage - armor > 0 ? damage - armor : 0);
 	health = ((int) health - dmg > 0 ? health - dmg : 0);
 	if (health == 0) {
 		animationManager.changeAnim(animations::die);
+		return true;
 	}
+	return false;
 }
 
 sf::Vector2u GameCharacter::getRenderPosition() const
@@ -131,8 +138,7 @@ bool GameCharacter::removeSelectedItem()
 		inventory[selectedItemIdx] = std::make_shared<Item>(Item());
 		if (selectedItemIdx == selectedWeaponIdx)
 		{
-			selectedWeaponIdx = -1;
-			equippedWeapon = std::make_shared<Hands>(Hands());
+			unequipCharacter();
 		}
 		selectedItemIdx = -1;
 		actionPoints -= AP_COST_DROP_ITEM;
@@ -141,16 +147,68 @@ bool GameCharacter::removeSelectedItem()
 	return false;
 }
 
-bool GameCharacter::equipSelected()
+bool GameCharacter::useSelected()
 {
-	if (actionPoints >= AP_COST_EQUIP) {
+	if (actionPoints >= AP_COST_USE) {
 		if (selectedItemIdx == -1) return false;
-		if (inventory[selectedItemIdx]->getType() == Type_Weapon) {
+		if (selectedItemIdx == selectedWeaponIdx) {
+			unequipCharacter();
+			return true;
+		}
+		switch (inventory[selectedItemIdx]->getType()) {
+		case Type_Weapon:
 			selectedWeaponIdx = selectedItemIdx;
 			equippedWeapon = std::dynamic_pointer_cast<Weapon>(inventory[selectedItemIdx]);
-			actionPoints -= AP_COST_EQUIP;
+			actionPoints -= AP_COST_USE;
 			return true;
+		case Type_Health:
+			if (getHitpoints() == getMaxHitpoints()) return false;
+			health = std::min(getMaxHitpoints(), getHitpoints() + std::dynamic_pointer_cast<Health>(inventory[selectedItemIdx])->getHealingAmount());
+			*inventory[selectedItemIdx] = Item(); //Remove item from inventory
+			actionPoints -= AP_COST_USE;
+			return true;
+
+		default:
+			return false;
 		}
 	}
 	return false;
+}
+
+void GameCharacter::unequipCharacter()
+{
+	selectedWeaponIdx = -1;
+	equippedWeapon = std::make_shared<Hands>(Hands());
+}
+
+unsigned int GameCharacter::getAmmoAmount(AmmoType ammotype, unsigned int neededAmount)
+{
+	std::shared_ptr<Item> foundAmmo = getInventory().findAmmo(ammotype);
+	unsigned int availableAmmo = foundAmmo->getAmount();
+	if (availableAmmo == 0) return 0;
+
+	if (neededAmount != 0) {
+		if (availableAmmo >= neededAmount) {
+			foundAmmo->removeAmount(neededAmount);
+			if (foundAmmo->getAmount() == 0) {
+				*foundAmmo = Item(); //Remove ammo from inventory if amount reaches zero
+			}
+			return neededAmount;
+		} else {
+			*foundAmmo = Item(); //Remove ammo from inventory
+			return availableAmmo;
+		}
+	}
+	return availableAmmo;
+}
+
+void GameCharacter::reloadWeapon()
+{
+	if (getEquipped()->getAmmoType() == Ammo_None) return;
+
+	if (actionPoints >= AP_COST_RELOAD) {
+		unsigned int availableAmmo = getAmmoAmount(getEquipped()->getAmmoType(), getEquipped()->getReloadAmount());
+		getEquipped()->reload(availableAmmo);
+		actionPoints -= AP_COST_RELOAD;
+	}
 }

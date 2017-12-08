@@ -10,6 +10,7 @@
 #include "NgMenuScreen.hpp"
 #include <memory>
 #include "constants.hpp"
+#include "MapEditor.hpp"
 
 int main(int argc, char* argv[]) {
 
@@ -37,6 +38,11 @@ int main(int argc, char* argv[]) {
 			screen.reset(new GameScreen(App));
 			result = screen->Run(App);
 			break;
+        case EditorScene:
+            // TODO: Pass NewGameScreen parameters to GameScreen here
+            screen.reset(new MapEditor(App));
+            result = screen->Run(App);
+            break;
 		case Exit:
 			exit(0);
 			break;

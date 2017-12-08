@@ -25,7 +25,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # Define sources and executable
 set(EXECUTABLE_NAME "LaserSquad")
-set(GAME_SOURCES Game.cpp Game.hpp GameCharacter.cpp GameCharacter.hpp Health.hpp Inventory.cpp Inventory.hpp Item.hpp Grid.cpp Grid.hpp Tile.cpp Tile.hpp TileMap.cpp TileMap.hpp Weapon.cpp Weapon.hpp Screen.cpp Screen.hpp GameScreen.cpp GameScreen.hpp MainMenuScreen.cpp MainMenuScreen.hpp NgMenuScreen.cpp NgMenuScreen.hpp AnimationManager.cpp AnimationManager.hpp Animation.hpp Button.cpp Button.hpp Projectile.cpp Projectile.hpp TextField.cpp TextField.hpp)
+set(GAME_SOURCES Ammo.hpp Game.cpp Game.hpp GameCharacter.cpp GameCharacter.hpp Health.hpp Inventory.cpp Inventory.hpp Item.hpp Grid.cpp Grid.hpp Tile.cpp Tile.hpp TileMap.cpp TileMap.hpp Weapon.cpp Weapon.hpp Screen.cpp Screen.hpp GameScreen.cpp GameScreen.hpp MainMenuScreen.cpp MainMenuScreen.hpp MapEditor.cpp MapEditor.hpp NgMenuScreen.cpp NgMenuScreen.hpp AnimationManager.cpp AnimationManager.hpp Animation.hpp Button.cpp Button.hpp Projectile.cpp Projectile.hpp TextField.cpp TextField.hpp)
 add_executable(${EXECUTABLE_NAME} main.cpp ${GAME_SOURCES})
 
 
@@ -97,7 +97,7 @@ if (test)
   ##############
   # Unit Tests
   ##############
-  add_executable(${UNITTESTS_EXECUTABLE_NAME} test/test_Grid.cpp test/test_Game.cpp ${GAME_SOURCES})
+  add_executable(${UNITTESTS_EXECUTABLE_NAME} test/test_Grid.cpp test/test_Game.cpp test/test_Inventory.cpp test/test_Button.cpp ${GAME_SOURCES})
 
   # Standard linking to gtest stuff.
   target_link_libraries(${UNITTESTS_EXECUTABLE_NAME} gtest gtest_main)

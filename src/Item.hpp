@@ -32,16 +32,24 @@ enum ItemIcon {
 //Should only be possible to construct "none"-type items, i.e. empty inventory slots
 class Item {
 public:
-	Item() : m_ItemType(Type_None), m_ItemIcon(Icon_None) {};
+	Item() : m_itemType(Type_None), m_itemIcon(Icon_None), m_stackable(false), m_amount(1) {};
 	virtual ~Item() {};
-	Item(ItemType type, ItemIcon icon, std::string name) : m_ItemType(type), m_ItemIcon(icon), m_ItemName(name) {};
-	ItemType getType() const { return m_ItemType;} ;
-	ItemIcon getIcon() const { return m_ItemIcon; };
-	std::string getName() const {return m_ItemName; };
+	Item(ItemType type, ItemIcon icon, std::string name) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_stackable(false), m_amount(1) {};
+	Item(ItemType type, ItemIcon icon, std::string name, bool stackable, unsigned int amount) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_stackable(stackable), m_amount(amount) {};
+	ItemType getType() const { return m_itemType; };
+	ItemIcon getIcon() const { return m_itemIcon; };
+	std::string getName() const {return m_itemName; };
+	bool isStackable() const { return m_stackable; };
+	unsigned int getAmount() { return m_amount; };
+	void addAmount(unsigned int amount) { m_amount += amount; }
+	void removeAmount(unsigned int amount) { m_amount -= amount; }
+	void setAmount(unsigned int amount) { m_amount = amount;}
 private:
-	ItemType m_ItemType;
-	ItemIcon m_ItemIcon;
-	std::string m_ItemName;
+	ItemType m_itemType;
+	ItemIcon m_itemIcon;
+	std::string m_itemName;
+	bool m_stackable;
+	unsigned int m_amount;
 };
 
 #endif

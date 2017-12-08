@@ -22,6 +22,7 @@ public:
 	Grid&									getGrid() { return grid; }
 	void									endTurn();
 	bool									addCharacter(sf::Vector2u position, unsigned int team);
+    bool                                    removeCharacter(sf::Vector2u position);
 	void									setSelectedCharacter(std::vector<GameCharacter>::iterator it) { selectedCharacter = it; }
 	void									initializeGrid(unsigned int xSize, unsigned int ySize) {grid = Grid(xSize*ySize, xSize);}
 	std::vector<GameCharacter>&				getCharacters() { return characters; }
@@ -37,8 +38,11 @@ public:
 	const sf::Vector2u                      getEndTile(coord_iterator coord_begin, coord_iterator coord_end, bool ignoreCharacters, int maxRange=12);
     std::vector<sf::Vector2u>               seenCoordinates(std::vector<GameCharacter>::iterator it);
     bool                                    lineofSight(int x1,int y1,int x2,int y2);
+	bool									calculateLineofSight() {return recalculateLOS;}
+	void									lineofSightCalculated() { recalculateLOS = false; }
 private:
 	unsigned int							playerTurnIdx;
+	bool									recalculateLOS = true;
 	std::vector<GameCharacter>::iterator	selectedCharacter;
 	Grid									grid;
 	std::vector<GameCharacter>				characters;

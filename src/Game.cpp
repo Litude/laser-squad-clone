@@ -2,6 +2,7 @@
 
 void Game::endTurn() {
 	(playerTurnIdx == 1) ? playerTurnIdx = 2 : playerTurnIdx = 1;
+	recalculateLOS = true;
 	selectedCharacter = characters.end();
 	for (auto &character: characters) {
 		character.resetActionPoints();
@@ -18,11 +19,22 @@ bool Game::addCharacter(sf::Vector2u position, unsigned int team) {
 	}
 }
 
+bool Game::removeCharacter(sf::Vector2u position) {
+for(auto it = getCharacters().begin();it!=getCharacters().end();it++){
+    if(it->getPosition() == position){
+        getCharacters().erase(it);
+        return true;
+       }
+    }
+    return false;
+}
+
 bool Game::characterMove(gc_iterator it, sf::Vector2i direction) {
 	sf::Vector2i target_pos = (sf::Vector2i) it->getPosition() + direction;
 	if (!getGrid()(target_pos).isSolid() && std::all_of(characters.begin(), characters.end(),
 			[target_pos](GameCharacter gc){ return (sf::Vector2i) gc.getPosition() != target_pos; })) {
 		it->moveTo(direction);
+		recalculateLOS = true;
 		return true;
 	} else {
 		return false;
@@ -106,7 +118,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 		for (auto &gc : characters) {
 			if (gc.getPosition() == endTile) {
 				int dmg = weapon->getDamage();
-				gc.sufferDamage(dmg);
+				if (gc.sufferDamage(dmg)) recalculateLOS = true;
 				std::cout << "character suffered " << dmg << " damage" << std::endl;
 				break;
 			}

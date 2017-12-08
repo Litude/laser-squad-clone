@@ -49,16 +49,19 @@ TEST(GridChangeTiles, HasChangedTileItemsCorrectly) {
 	int xSize = 15;
 	int ySize = 15;
 	Grid grid = Grid(xSize*ySize, xSize);
-	grid.getTile(0, 0).addItem(HealthPackLarge());
-	grid.getTile(0, 0).addItem(HealthPackLarge());
-	grid.getTile(0, 0).addItem(HealthPackLarge());
-	EXPECT_EQ(grid.getTile(0, 0).getItems().size(), 3);
+	auto item1 = std::make_shared<HealthPackLarge>(HealthPackLarge());
+	auto item2 = std::make_shared<HealthPackLarge>(HealthPackLarge());
+	auto item3 = std::make_shared<HealthPackLarge>(HealthPackLarge());
+	grid.getTile(0, 0).addItem(item1);
+	grid.getTile(0, 0).addItem(item2);
+	grid.getTile(0, 0).addItem(item3);
+	EXPECT_EQ(grid.getTile(0, 0).getTopItem(), item3);
 	grid.getTile(0, 0).popItem();
-	EXPECT_EQ(grid.getTile(0, 0).getItems().size(), 2);
+	EXPECT_EQ(grid.getTile(0, 0).getTopItem(), item2);
 	grid.getTile(0, 0).popItem();
-	EXPECT_EQ(grid.getTile(0, 0).getItems().size(), 1);
+	EXPECT_EQ(grid.getTile(0, 0).getTopItem(), item1);
 	grid.getTile(0, 0).popItem();
-	EXPECT_EQ(grid.getTile(0, 0).getItems().size(), 0);
+	EXPECT_EQ(grid.getTile(0, 0).getTopItem()->getType(), ItemType::Type_None);
 	grid.getTile(0, 0).popItem();
-	EXPECT_EQ(grid.getTile(0, 0).getItems().size(), 0);
+	EXPECT_EQ(grid.getTile(0, 0).getTopItem()->getType(), ItemType::Type_None);
 }

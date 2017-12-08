@@ -6,20 +6,21 @@
 
 class Health : public Item {
 public:
-	Health(unsigned int healingAmount, ItemIcon icon, std::string name) : Item(Type_Health, icon, name), m_HealingAmount(healingAmount) {};
+	Health(unsigned int healingAmount, ItemIcon icon, std::string name) : Item(Type_Health, icon, name), m_healingAmount(healingAmount) {};
+	unsigned int getHealingAmount() const { return m_healingAmount; }
 private:
-	unsigned int m_HealingAmount;
+	unsigned int m_healingAmount;
 };
 
 class HealthPackSmall : public Health {
 public:
-	HealthPackSmall() : Health(25, Icon_Health_Small, "Small Health Pack") {};
+	HealthPackSmall() : Health(2, Icon_Health_Small, "Small Health Pack") {};
 };
 
 
 class HealthPackLarge : public Health {
 public:
-	HealthPackLarge() : Health(50, Icon_Health_Large, "Large Health Pack") {};
+	HealthPackLarge() : Health(5, Icon_Health_Large, "Large Health Pack") {};
 };
 
 #endif
