@@ -79,21 +79,17 @@ void TextField::update(sf::Event e, sf::RenderWindow& window)
 
   if(getFocus()) {
     if(e.type == sf::Event::TextEntered) {
-      switch (e.key.code)
-      {
-        case sf::Keyboard::BackSpace: // NOT WORKING
-          t_str = t_str.substr(0, t_str.length() - 1);
-          break;
-        case sf::Keyboard::Escape:
-          t_isFocused = false;
-          break;
-        case sf::Keyboard::Return:
-          break;
-        default:
-          if(t_str.length() < 11){ // text input limited to 10 characters
-            t_str += static_cast<char>(e.text.unicode);
-          };
-          break;
+      if(e.text.unicode == 8){ // Backspace pressed
+        t_str = t_str.substr(0, t_str.length() - 1);
+      }else if(e.text.unicode == 27){ // Escape pressed
+        t_str = t_str.substr(0, 0);
+        setFocus(false);
+      }else if(e.text.unicode == '\r'){ // Return pressed
+        setFocus(false);
+      }else{
+        if(t_str.length() < 11){
+          t_str += static_cast<char>(e.text.unicode); // Writing
+        }
       }
       t_text.setString(t_str);
     }
