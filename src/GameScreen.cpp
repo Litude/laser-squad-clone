@@ -299,7 +299,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 
 			}
 			//Handle mouse input
-			if (event.type == sf::Event::MouseButtonReleased) {
+			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
 				unsigned int menuSize = App.getSize().x / 4;
 				if (event.mouseButton.x >= static_cast<int>(App.getSize().x - menuSize)) {
 					//Clicked on the menubar
