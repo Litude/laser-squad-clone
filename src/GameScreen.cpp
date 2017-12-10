@@ -257,30 +257,22 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 	switch (event.key.code) {
 	case sf::Keyboard::Left:
 		if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-			if (game.characterMoveLeft(game.getSelectedCharacter())) {
-				//gameView.move(sf::Vector2f(-TILESIZE, 0));
-			}
+			game.characterMoveLeft(game.getSelectedCharacter());
 		}
 		break;
 	case sf::Keyboard::Right:
 		if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-			if (game.characterMoveRight(game.getSelectedCharacter())) {
-				//gameView.move(sf::Vector2f(TILESIZE, 0));
-			}
+			game.characterMoveRight(game.getSelectedCharacter());
 		}
 		break;
 	case sf::Keyboard::Down:
 		if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-			if (game.characterMoveDown(game.getSelectedCharacter())) {
-				//gameView.move(sf::Vector2f(0, TILESIZE));
-			}
+			game.characterMoveDown(game.getSelectedCharacter());
 		}
 		break;
 	case sf::Keyboard::Up:
 		if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-			if (game.characterMoveUp(game.getSelectedCharacter())) {
-				//gameView.move(sf::Vector2f(0, -TILESIZE));
-			}
+			game.characterMoveUp(game.getSelectedCharacter());
 		}
 		break;
 
