@@ -42,8 +42,6 @@ private:
 	sf::Text textAPLabel;
 	sf::Text textAPValue;
 	sf::Text textMouseMode;
-	sf::RectangleShape healthbarBkg;
-	sf::RectangleShape healthbar;
 
 	sf::Clock fpsclock;
 	sf::Clock clock;

@@ -72,13 +72,6 @@ SidePanel::SidePanel(sf::RenderWindow &App, GameScreen &parent)
 		inventoryItemTexts[i].setCharacterSize(10);
 	}
 	updateLayout(App);
-
-	healthbarBkg.setFillColor(sf::Color::Red);
-	healthbarBkg.setSize(sf::Vector2f(TILESIZE, 4));
-	healthbarBkg.setOutlineColor(sf::Color::Black);
-	healthbarBkg.setOutlineThickness(1.0f);
-
-	healthbar.setFillColor(sf::Color::Green);
 }
 
 void SidePanel::update(sf::Event& event, sf::RenderWindow& App, Game &game)
