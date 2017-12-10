@@ -5,10 +5,11 @@
 #include <algorithm>
 #include <iterator>
 #include <utility>
-#include "GameCharacter.hpp"
 #include <SFML/System/Vector2.hpp>
 #include "Grid.hpp"
 #include "Util.hpp"
+#include "GameCharacter.hpp"
+#include "StatusMessage.hpp"
 
 enum GameState { active, match_ended };
 
@@ -35,6 +36,7 @@ public:
 	const std::vector<sf::Vector2u>         characterShoot(gc_iterator gc, sf::Vector2u target);
 	bool									characterPickUpItem(gc_iterator it);
 	bool									characterDropItem(gc_iterator it);
+	void									characterUseItem(gc_iterator it);
 	const sf::Vector2u                      traceFromCharacter(gc_iterator gc, sf::Vector2u target, bool ignoreCharacters=false);
 	const sf::Vector2u                      getEndTile(coord_iterator coord_begin, coord_iterator coord_end, bool ignoreCharacters, int maxRange=12);
     std::vector<sf::Vector2u>               seenCoordinates(gc_iterator it);
@@ -44,6 +46,7 @@ public:
 	bool									matchEnded();
 	bool									isWinner(unsigned int playerIdx);
 	GameState								getGameState() { return gameState; }
+	StatusMessage&							getStatusMessage() {return statusMessage; }
 private:
 	unsigned int							playerTurnIdx;
 	bool									recalculateLOS = true;
@@ -52,6 +55,7 @@ private:
 	std::vector<GameCharacter>				characters;
 	GameState								gameState;
 	void									updateGameState();
+	StatusMessage							statusMessage;
 };
 
 #endif

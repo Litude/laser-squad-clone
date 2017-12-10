@@ -158,6 +158,11 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 
 	healthbar.setFillColor(sf::Color::Green);
 
+	//Status message stuff
+	screenStatusMessage.setFont(*font);
+	screenStatusMessage.setCharacterSize(20);
+	screenStatusMessage.setOutlineThickness(2);
+
 	// Create graphical tilemap presentation from the Map
 	tileMap = std::make_shared<TileMap>(TileMap(game.getGrid()));
 	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", "img/tileset_items.png", sf::Vector2u(TILESIZE, TILESIZE))) {
@@ -243,11 +248,13 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 		for (auto &character : game.getCharacters()) {
 			character.update(delta);
 		}
+		game.getStatusMessage().updateStatusMessage(delta);
 
 		App.clear();
 
 		drawUI(App);
 		drawGame(App);
+		drawGameUI(App);
 
 		App.display();
 	}
@@ -419,6 +426,29 @@ void GameScreen::drawUI(sf::RenderWindow &App) {
 	}
 }
 
+void GameScreen::drawGameUI(sf::RenderWindow &App) {
+
+	App.setView(interfaceView);
+
+	screenStatusMessage.setString(game.getStatusMessage().getMessage());
+
+	//Position must be updated every time since not all messages have the same height
+	screenStatusMessage.setPosition(sf::Vector2f(-screenStatusMessage.getLocalBounds().left, App.getSize().y - (screenStatusMessage.getLocalBounds().top + screenStatusMessage.getLocalBounds().height)));
+
+	switch (game.getStatusMessage().getSeverity()) {
+	case SEVERITY_INFORMATION:
+		screenStatusMessage.setFillColor(sf::Color::White);
+		break;
+	case SEVERITY_CRITICAL:
+		screenStatusMessage.setFillColor(sf::Color::Red);
+		break;
+	default:
+		screenStatusMessage.setFillColor(sf::Color::White);
+	}
+
+	App.draw(screenStatusMessage);
+}
+
 void GameScreen::updateLayout(sf::RenderWindow & App)
 {
 	unsigned int menuSize = App.getSize().x / 4;
@@ -478,8 +508,7 @@ void GameScreen::pickupItem() {
 
 void GameScreen::dropItem() {
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		if (game.getSelectedCharacter()->getSelectedItemIndex() != -1) {
-			game.characterDropItem(game.getSelectedCharacter());
+		if (game.characterDropItem(game.getSelectedCharacter())) {;
 			tileMap->updateTile(game.getSelectedCharacter()->getPosition());
 		}
 	}
@@ -487,7 +516,7 @@ void GameScreen::dropItem() {
 
 void GameScreen::equipItem() {
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		game.getSelectedCharacter()->useSelected();
+		game.characterUseItem(game.getSelectedCharacter());
 	}
 }
 

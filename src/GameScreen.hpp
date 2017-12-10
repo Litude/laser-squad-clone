@@ -37,6 +37,7 @@ private:
 	void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom);
 	void drawGame(sf::RenderWindow &App);
 	void drawUI(sf::RenderWindow &App);
+	void drawGameUI(sf::RenderWindow &App);
 	void updateLayout(sf::RenderWindow & App);
 	void updateUIComponents(sf::RenderWindow & App);
 	void handleKeyPress(sf::Event& event, sf::RenderWindow& App);
@@ -78,6 +79,8 @@ private:
 	std::vector<sf::Text> inventoryItemTexts;
 	std::vector<Projectile> activeProjectiles;
 	std::list<sf::Vector2u> visibleTiles;
+
+	sf::Text screenStatusMessage;
 
 	MouseMode::Mode mouseMode = MouseMode::select;
 };

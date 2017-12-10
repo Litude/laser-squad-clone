@@ -6,6 +6,7 @@
 #include <cmath>
 #include <SFML/System/Vector2.hpp>
 #include <stdlib.h>
+#include "constants.hpp"
 
 namespace Util {
 
