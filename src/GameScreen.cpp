@@ -157,15 +157,16 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	healthbarBkg.setOutlineThickness(1.0f);
 
 	healthbar.setFillColor(sf::Color::Green);
-}
 
-ScreenResult GameScreen::Run(sf::RenderWindow & App)
-{
 	// Create graphical tilemap presentation from the Map
 	tileMap = std::make_shared<TileMap>(TileMap(game.getGrid()));
 	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", "img/tileset_items.png", sf::Vector2u(TILESIZE, TILESIZE))) {
 		std::cout << "Could not load tilemap\n";
 	}
+}
+
+ScreenResult GameScreen::Run(sf::RenderWindow & App)
+{
 	sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
 	while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
 		sf::Event event;
