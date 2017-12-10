@@ -1,6 +1,7 @@
 #include "Game.hpp"
 
 void Game::endTurn() {
+	if (playerTurnIdx == 2) ++turnNo;
 	(playerTurnIdx == 1) ? playerTurnIdx = 2 : playerTurnIdx = 1;
 	recalculateLOS = true;
 	selectedCharacter = characters.end();
@@ -320,6 +321,10 @@ bool Game::matchEnded()
 
 bool Game::isWinner(unsigned int playerIdx)
 {
+	//check if number of turns has been exceeded
+	if (playerIdx == 2) return (turnNo > maxTurns);
+
+	//check for characters alive
 	unsigned int numCharacters = 0;
 	unsigned int numDeadCharacters = 0;
 	for (auto &character : getCharacters()) {

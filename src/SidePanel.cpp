@@ -21,6 +21,11 @@ SidePanel::SidePanel(sf::RenderWindow &App, GameScreen &parent)
 	textCurTurnLabel.setString("Player");
 	textCurTurnValue.setFont(*font);
 	textCurTurnValue.setCharacterSize(24);
+	textTurnNoLabel.setFont(*font);
+	textTurnNoLabel.setCharacterSize(24);
+	textTurnNoLabel.setString("Turn");
+	textTurnNoValue.setFont(*font);
+	textTurnNoValue.setCharacterSize(24);
 	textAPLabel.setFont(*font);
 	textAPLabel.setCharacterSize(24);
 	textAPLabel.setString("APs");
@@ -114,6 +119,7 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 	updateUIComponents(App);
 
 	//Interface elements that always need to be updated
+	textTurnNoValue.setString(std::to_string(game.getTurnNumber()) + '/' + std::to_string(game.getMaxTurns()));
 	textCurTurnValue.setString(std::to_string(game.getCurrentPlayer()));
 
 	std::string mm = (gameScreen.getMouseMode() == MouseMode::shoot) ? "SHOOT MODE" : "SELECT MODE";
@@ -169,6 +175,8 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 	App.draw(textMouseMode);
 	App.draw(buttonExit);
 	App.draw(buttonEndTurn);
+	App.draw(textTurnNoLabel);
+	App.draw(textTurnNoValue);
 	App.draw(textCurTurnLabel);
 	App.draw(textCurTurnValue);
 }
@@ -243,6 +251,10 @@ void SidePanel::updateUIComponents(sf::RenderWindow & App)
 	// AP text
 	textAPLabel.setPosition(menuCenterX - menuSize / 2 + margin, 100);
 	textAPValue.setPosition(menuCenterX + menuSize / 2 - margin - textAPValue.getGlobalBounds().width, 100);
+
+	// Turn number text
+	textTurnNoLabel.setPosition(menuCenterX - menuSize / 2 + margin, 25);
+	textTurnNoValue.setPosition(menuCenterX + menuSize / 2 - margin - textTurnNoValue.getLocalBounds().left - textTurnNoValue.getLocalBounds().width, 25);
 
 	// Current turn text
 	textCurTurnLabel.setPosition(menuCenterX - menuSize / 2 + margin, 50);

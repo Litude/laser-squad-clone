@@ -38,6 +38,8 @@ private:
 	sf::RectangleShape equippedItem;
 	sf::Text textCurTurnLabel;
 	sf::Text textCurTurnValue;
+	sf::Text textTurnNoLabel;
+	sf::Text textTurnNoValue;
 	sf::Text textFPS;
 	sf::Text textAPLabel;
 	sf::Text textAPValue;

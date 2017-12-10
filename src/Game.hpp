@@ -20,6 +20,8 @@ public:
 	Game()									{ playerTurnIdx = 1; gameState = GameState::active; }
 	unsigned int							getCurrentPlayer() { return playerTurnIdx; }
 	std::vector<GameCharacter>::iterator	getSelectedCharacter() { return selectedCharacter; }
+	unsigned int							getTurnNumber() { return turnNo; }
+	unsigned int							getMaxTurns() { return maxTurns; }
 	const Grid&								getGrid() const { return grid; }
 	Grid&									getGrid() { return grid; }
 	void									endTurn();
@@ -45,6 +47,7 @@ public:
 	void									lineofSightCalculated() { recalculateLOS = false; }
 	bool									matchEnded();
 	bool									isWinner(unsigned int playerIdx);
+	void									setMaxTurns(unsigned int turns) { maxTurns = turns; }
 	GameState								getGameState() { return gameState; }
 	StatusMessage&							getStatusMessage() {return statusMessage; }
 private:
@@ -56,6 +59,8 @@ private:
 	GameState								gameState;
 	void									updateGameState();
 	StatusMessage							statusMessage;
+	unsigned int							turnNo = 1;
+	unsigned int							maxTurns = 20;
 };
 
 #endif
