@@ -202,6 +202,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 						auto tiles = game.characterShoot(gc, getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView));
 						for (auto dest : tiles) {
 							addProjectile(gc->getEquipped(), gc->getPosition(), dest);
+							tileMap->updateTile(dest);
 						}
 						
 						std::cout << "PROJS:" << std::endl;

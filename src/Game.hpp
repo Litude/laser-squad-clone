@@ -39,6 +39,7 @@ public:
 	bool									characterPickUpItem(gc_iterator it);
 	bool									characterDropItem(gc_iterator it);
 	void									characterUseItem(gc_iterator it);
+	void									characterKilled(GameCharacter& gc);
 	const sf::Vector2u                      traceFromCharacter(gc_iterator gc, sf::Vector2u target, bool ignoreCharacters=false);
 	const sf::Vector2u                      getEndTile(coord_iterator coord_begin, coord_iterator coord_end, bool ignoreCharacters, int maxRange=12);
     std::vector<sf::Vector2u>               seenCoordinates(gc_iterator it);

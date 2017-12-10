@@ -128,6 +128,15 @@ void Game::characterUseItem(gc_iterator it) {
 	}
 }
 
+void Game::characterKilled(GameCharacter& gc) {
+	//When a character is killed, drop its inventory contents and remove it from the map
+	for (auto &item : gc.getInventory()) {
+		if (item->getType() == Type_None) continue;
+		getGrid().getTile(gc.getPosition().x, gc.getPosition().y).addItem(item);
+	}
+
+}
+
 // Trace line from gamecharacter location to target, returning
 // first tile that blocks tracing
 const sf::Vector2u Game::traceFromCharacter(gc_iterator gc, sf::Vector2u target, bool ignoreCharacters) {
@@ -170,7 +179,6 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 		break;
 	}
 
-	//int numberOfShots = it->shoot();
 	auto weapon = it->getEquipped();
 	
 	for (int i = 0; i < numberOfShots; ++i) {
@@ -180,7 +188,10 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 		for (auto &gc : characters) {
 			if (gc.getPosition() == endTile) {
 				int dmg = weapon->getDamage();
-				if (gc.sufferDamage(dmg)) recalculateLOS = true;
+				if (gc.sufferDamage(dmg)) {
+					characterKilled(gc);
+					recalculateLOS = true;
+				}
 				std::cout << "character suffered " << dmg << " damage" << std::endl;
 				break;
 			}

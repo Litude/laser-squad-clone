@@ -98,6 +98,8 @@ statuscode GameCharacter::shoot(int &numberOfShots) {
 }
 
 bool GameCharacter::sufferDamage(int damage) {
+	//Returns true if the target character was killed, false otherwise
+
 	int armor = 0;//placeholder
 	int dmg = (damage - armor > 0 ? damage - armor : 0);
 	health = ((int) health - dmg > 0 ? health - dmg : 0);
