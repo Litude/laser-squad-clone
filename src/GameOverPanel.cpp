@@ -37,15 +37,13 @@ void GameOverPanel::update(sf::Event& event, sf::RenderWindow& App, Game &game)
 }
 
 void GameOverPanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) {
-	unsigned int menuSize = App.getSize().x / 4;
-
-	updateUIComponents(App);
-
 	if (game.isWinner(1)) {
 		textGameOverLabel.setString("Player 1 wins!");
 	} else {
 		textGameOverLabel.setString("Player 2 wins!");
 	}
+
+	updateUIComponents(App);
 
 	//Draw elements
 	App.setView(interfaceView);
@@ -87,6 +85,6 @@ void GameOverPanel::updateUIComponents(sf::RenderWindow & App)
 	float menuCenterX = static_cast<float>(App.getSize().x - menuSize / 2);
 	float margin = 10.f;
 
-	// FPS counter text
-	textGameOverLabel.setPosition(menuCenterX - menuSize / 2 + margin, 0);
+	// Game over text
+	textGameOverLabel.setPosition(menuCenterX - textGameOverLabel.getGlobalBounds().width / 2, 0);
 }
