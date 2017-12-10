@@ -169,6 +169,10 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 	sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
 	while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
 		sf::Event event;
+		bool matchEnded = game.matchEnded();
+		if (matchEnded) {
+			game.setSelectedCharacter(game.getCharacters().end());
+		}
 		while (App.pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
 				App.close();
@@ -182,11 +186,11 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 					zoomViewAt({ event.mouseWheelScroll.x, event.mouseWheelScroll.y }, App, gameView, 1.1f);
 			}
 			// Handle keyboard input
-			if (event.type == sf::Event::KeyPressed) {
+			if (event.type == sf::Event::KeyPressed && !matchEnded) {
 				handleKeyPress(event, App);
 			}
 			// Handle mouse input
-			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left && !matchEnded) {
 				unsigned int menuSize = App.getSize().x / 4;
 				if (event.mouseButton.x < static_cast<int>(App.getSize().x - menuSize)) {
 					//Clicked on gamescreen
@@ -220,7 +224,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 			if (event.type == sf::Event::Resized) {
 				updateLayout(App);
 			}
-			if (event.type == sf::Event::MouseMoved && mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end()) {
+			if (event.type == sf::Event::MouseMoved && mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end() && !matchEnded) {
 				auto gc = game.getSelectedCharacter();
 				auto target = getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView);
 				auto origin = gc->getPosition();
