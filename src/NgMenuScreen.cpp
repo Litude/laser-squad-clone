@@ -133,6 +133,7 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	loadmap.setPosition(sf::Vector2f(300.f,450.f));
 	loadmap.setFont(*font);
 	loadmap.setSize(170, 40);
+	loadmap.setDefaultStr("Load map..");
 	tField = loadmap;
 
 	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);

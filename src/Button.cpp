@@ -72,7 +72,7 @@ Button::~Button()
 {
 }
 
-void Button::setRectangleShape(sf::RectangleShape Rshape) 
+void Button::setRectangleShape(sf::RectangleShape Rshape)
 {
 	b_Rshape = Rshape;
 	setPosition(getPos());
@@ -128,7 +128,7 @@ void Button::setPosition(sf::Vector2f pos)
   b_pos = pos;
   switch(b_type) {
     case text: {
-		b_text.setOrigin(b_text.getGlobalBounds().width / 2, b_text.getGlobalBounds().height / 2);
+  		b_text.setOrigin(b_text.getGlobalBounds().width / 2, b_text.getGlobalBounds().height / 2);
       b_text.setPosition(b_pos);
     }
     break;
@@ -163,20 +163,20 @@ void Button::update(sf::Event& e, sf::RenderWindow& window)
 	sf::FloatRect objGlobalBounds;
 
 	switch (b_type) {
-	case text: 
+	case text:
 		{
 			objPos = b_text.getPosition();
 			objGlobalBounds = b_text.getGlobalBounds();
 			objPos.y += b_text.getGlobalBounds().height * 0.5f;
 		}
 		break;
-	case sprite: 
+	case sprite:
 		{
 			objPos = b_sprite.getPosition();
 			objGlobalBounds = b_sprite.getGlobalBounds();
 		}
 		break;
-	case rectangle: 
+	case rectangle:
 		{
 			objPos = b_Rshape.getPosition();
 			objGlobalBounds = b_Rshape.getGlobalBounds();

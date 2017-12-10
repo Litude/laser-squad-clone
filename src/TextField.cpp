@@ -9,9 +9,18 @@ TextField::TextField(int size, sf::RectangleShape Rshape, sf::Font& font)
   t_text.setFillColor(sf::Color::Black);
   t_text.setCharacterSize(size);
   t_text.setFont(font);
+  t_defText.setFillColor(sf::Color::Black);
+  t_defText.setCharacterSize(size);
+  t_defText.setFont(font);
+  t_Cursor.setString("|");
+  t_cursorPos = 0;
+  t_strMaxLength = 10;
   setFocus(false);
+  setStatus(false);
   t_Rshape = Rshape;
   t_Rshape.setFillColor(sf::Color::White);
+  t_Rshape.setOutlineColor(sf::Color::Black);
+  //t_Rshape.setOutlineThickness(3.f);
 }
 
 TextField::~TextField()
@@ -37,15 +46,27 @@ void TextField::setPosition(sf::Vector2f v)
 
   t_Rshape.setOrigin(t_Rshape.getGlobalBounds().width/2, t_Rshape.getGlobalBounds().height/2);
   t_Rshape.setPosition(t_pos);
-  sf::Vector2f textPosition = sf::Vector2f(t_pos.x, t_pos.y);
-  t_text.setOrigin(t_Rshape.getLocalBounds().width / 2 * 0.9, t_Rshape.getLocalBounds().height / 2);
+
+  sf::Vector2f textPosition = sf::Vector2f(t_Rshape.getPosition().x, t_Rshape.getPosition().y + t_Rshape.getGlobalBounds().height / 8);
+  t_text.setOrigin(t_Rshape.getGlobalBounds().width / 2.3, t_Rshape.getGlobalBounds().height / 2);
   t_text.setPosition(textPosition);
+
+  sf::Vector2f defTextPosition = sf::Vector2f(t_Rshape.getPosition().x, t_Rshape.getPosition().y - t_Rshape.getGlobalBounds().height / 8);
+  t_defText.setOrigin(t_defText.getGlobalBounds().width / 2, t_defText.getGlobalBounds().height / 2);
+  t_defText.setPosition(defTextPosition);
+  t_Cursor.setOrigin(t_Cursor.getGlobalBounds().width / 2, t_Cursor.getGlobalBounds().height / 2);
+  t_Cursor.setPosition(defTextPosition);
 }
 
 void TextField::setString(std::string s)
 {
   t_str = s;
   t_text.setString(t_str);
+}
+
+void TextField::setDefaultStr(std:: string defS)
+{
+  t_defText.setString(defS);
 }
 
 void TextField::update(sf::Event e, sf::RenderWindow& window)
@@ -80,18 +101,33 @@ void TextField::update(sf::Event e, sf::RenderWindow& window)
   if(getFocus()) {
     if(e.type == sf::Event::TextEntered) {
       if(e.text.unicode == 8){ // Backspace pressed
-        t_str = t_str.substr(0, t_str.length() - 1);
+        if(t_cursorPos > 0){
+          t_str = t_str.erase(t_cursorPos - 1, 1);
+          setCursor(t_cursorPos - 1);
+        }
       }else if(e.text.unicode == 27){ // Escape pressed
-        t_str = t_str.substr(0, 0);
+        t_str.clear();
+        t_text.setString(t_str);
+        t_cursorPos = 0;
+        setStatus(false);
         setFocus(false);
       }else if(e.text.unicode == '\r'){ // Return pressed
-        setFocus(false);
+        if(!t_text.getString().isEmpty()){
+          setStatus(true);
+          setFocus(false);
+        }
       }else{
-        if(t_str.length() < 11){
-          t_str += static_cast<char>(e.text.unicode); // Writing
+        if(t_str.length() < t_strMaxLength){  // Writing text
+          t_inputChar = static_cast<char>(e.text.unicode);
+          t_str.insert(t_cursorPos, 1, t_inputChar);
+          setCursor(t_cursorPos + 1);
         }
       }
       t_text.setString(t_str);
+    }else if(e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Left && t_cursorPos > 0){ // Left arrow
+      setCursor(t_cursorPos - 1);
+    }else if(e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Right && t_cursorPos < t_str.size()){ // Right arrow
+      setCursor(t_cursorPos + 1);
     }
   }
 
@@ -105,7 +141,12 @@ const sf::FloatRect  TextField::getGlobalBounds()
 void TextField::draw(sf::RenderTarget& target,sf::RenderStates states) const
 {
   target.draw(t_Rshape, states);
-  target.draw(t_text, states);
+  if(getStatus() || getFocus()){
+    target.draw(t_text, states);
+    target.draw(t_Cursor, states);
+  }else{
+    target.draw(t_defText, states);
+  }
 }
 
 void TextField::setCallback(std::function<void()> callback)
@@ -118,4 +159,13 @@ void TextField::click()
 	if (t_callback != nullptr) {
 		t_callback();
 	}
+}
+
+void TextField::setCursor(size_t i)
+{
+  if(i <= t_str.size())
+  {
+    t_cursorPos = i;
+    t_Cursor.setPosition(t_text.findCharacterPos(i));
+  }
 }
