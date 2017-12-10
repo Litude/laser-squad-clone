@@ -456,12 +456,13 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 	interfaceView.setCenter(static_cast<float>(App.getSize().x / 2), static_cast<float>(App.getSize().y / 2));
 
 	sidePanel.updateLayout(App);
-	sidePanel.updateUIComponents(App);
+	gameOverPanel.updateLayout(App);
 }
 
 void GameScreen::updateUIComponents(sf::RenderWindow & App)
 {
 	sidePanel.updateUIComponents(App);
+	gameOverPanel.updateUIComponents(App);
 }
 
 void GameScreen::endTurn(sf::RenderWindow &App) {
