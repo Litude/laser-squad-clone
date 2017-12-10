@@ -61,7 +61,7 @@ bool Game::characterMoveDown(gc_iterator it) {
 	return characterMove(it, dir);
 }
 
-bool Game::characterPickUpItem(std::vector<GameCharacter>::iterator it) {
+bool Game::characterPickUpItem(gc_iterator it) {
 	if (getSelectedCharacter()->addItem(getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).getTopItem())) {
 		getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).popItem();
 		return true;
@@ -69,7 +69,7 @@ bool Game::characterPickUpItem(std::vector<GameCharacter>::iterator it) {
 	return false;
 }
 
-bool Game::characterDropItem(std::vector<GameCharacter>::iterator it) {
+bool Game::characterDropItem(gc_iterator it) {
 	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItemIndex()]);
 	if (getSelectedCharacter()->removeSelectedItem()) {
 		return true;
@@ -145,7 +145,7 @@ const sf::Vector2u Game::getEndTile(coord_iterator coords_begin, coord_iterator 
 	return *(--coords_end);
 }
 
-std::vector<sf::Vector2u> Game::seenCoordinates(std::vector<GameCharacter>::iterator it){
+std::vector<sf::Vector2u> Game::seenCoordinates(gc_iterator it){
     int positionX=it->getPosition().x;
     int positionY=it->getPosition().y;
     int length=it->getLengthofSight();

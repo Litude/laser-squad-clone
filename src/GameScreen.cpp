@@ -114,7 +114,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	buttonExit.setCallback([&] { this->exitToMainMenu(); });
 
 	buttonEndTurn = Button("End turn", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
-	buttonEndTurn.setCallback([&] { this->endTurn(); });
+	buttonEndTurn.setCallback([&] { this->endTurn(App); });
 
 	rs.setSize(sf::Vector2f(50, 20));
 
@@ -299,7 +299,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 
 			}
 			//Handle mouse input
-			if (event.type == sf::Event::MouseButtonReleased) {
+			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
 				unsigned int menuSize = App.getSize().x / 4;
 				if (event.mouseButton.x >= static_cast<int>(App.getSize().x - menuSize)) {
 					//Clicked on the menubar
@@ -644,11 +644,13 @@ void GameScreen::updateUIComponents(sf::RenderWindow & App)
 	textMouseMode.setPosition(menuCenterX - textMouseMode.getGlobalBounds().width / 2, 150);
 }
 
-void GameScreen::endTurn() {
+void GameScreen::endTurn(sf::RenderWindow &App) {
 	mouseMode = MouseMode::select;
 	rayLine[0].position = sf::Vector2f(0, 0);
 	rayLine[1].position = sf::Vector2f(0, 0);
 	game.endTurn();
+	// Reset view for the next player
+	updateLayout(App);
 }
 
 void GameScreen::pickupItem() {

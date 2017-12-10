@@ -23,20 +23,20 @@ public:
 	void									endTurn();
 	bool									addCharacter(sf::Vector2u position, unsigned int team);
     bool                                    removeCharacter(sf::Vector2u position);
-	void									setSelectedCharacter(std::vector<GameCharacter>::iterator it) { selectedCharacter = it; }
+	void									setSelectedCharacter(gc_iterator it) { selectedCharacter = it; }
 	void									initializeGrid(unsigned int xSize, unsigned int ySize) {grid = Grid(xSize*ySize, xSize);}
 	std::vector<GameCharacter>&				getCharacters() { return characters; }
-	bool                                    characterMoveLeft(std::vector<GameCharacter>::iterator it);
-	bool                                    characterMoveRight(std::vector<GameCharacter>::iterator it);
-	bool                                    characterMoveUp(std::vector<GameCharacter>::iterator it);
-	bool                                    characterMoveDown(std::vector<GameCharacter>::iterator it);
-	bool                                    characterMove(std::vector<GameCharacter>::iterator it, sf::Vector2i direction);
+	bool                                    characterMoveLeft(gc_iterator it);
+	bool                                    characterMoveRight(gc_iterator it);
+	bool                                    characterMoveUp(gc_iterator it);
+	bool                                    characterMoveDown(gc_iterator it);
+	bool                                    characterMove(gc_iterator it, sf::Vector2i direction);
 	const std::vector<sf::Vector2u>         characterShoot(gc_iterator gc, sf::Vector2u target);
-	bool									characterPickUpItem(std::vector<GameCharacter>::iterator it);
-	bool									characterDropItem(std::vector<GameCharacter>::iterator it);
+	bool									characterPickUpItem(gc_iterator it);
+	bool									characterDropItem(gc_iterator it);
 	const sf::Vector2u                      traceFromCharacter(gc_iterator gc, sf::Vector2u target, bool ignoreCharacters=false);
 	const sf::Vector2u                      getEndTile(coord_iterator coord_begin, coord_iterator coord_end, bool ignoreCharacters, int maxRange=12);
-    std::vector<sf::Vector2u>               seenCoordinates(std::vector<GameCharacter>::iterator it);
+    std::vector<sf::Vector2u>               seenCoordinates(gc_iterator it);
     bool                                    lineofSight(int x1,int y1,int x2,int y2);
 	bool									calculateLineofSight() {return recalculateLOS;}
 	void									lineofSightCalculated() { recalculateLOS = false; }
