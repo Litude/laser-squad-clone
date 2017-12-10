@@ -250,7 +250,7 @@ void SidePanel::updateUIComponents(sf::RenderWindow & App)
 
 	// AP text
 	textAPLabel.setPosition(menuCenterX - menuSize / 2 + margin, 100);
-	textAPValue.setPosition(menuCenterX + menuSize / 2 - margin - textAPValue.getGlobalBounds().width, 100);
+	textAPValue.setPosition(menuCenterX + menuSize / 2 - margin - textAPValue.getLocalBounds().left - textAPValue.getLocalBounds().width, 100);
 
 	// Turn number text
 	textTurnNoLabel.setPosition(menuCenterX - menuSize / 2 + margin, 25);
