@@ -10,12 +10,13 @@
 #include "Grid.hpp"
 #include "Util.hpp"
 
+enum GameState { active, match_ended };
 
 class Game {
 public:
 	typedef std::vector<GameCharacter>::iterator gc_iterator;
 	typedef std::vector<sf::Vector2u>::const_iterator coord_iterator; 
-	Game()									{ playerTurnIdx = 1; }
+	Game()									{ playerTurnIdx = 1; gameState = GameState::active; }
 	unsigned int							getCurrentPlayer() { return playerTurnIdx; }
 	std::vector<GameCharacter>::iterator	getSelectedCharacter() { return selectedCharacter; }
 	const Grid&								getGrid() const { return grid; }
@@ -42,12 +43,15 @@ public:
 	void									lineofSightCalculated() { recalculateLOS = false; }
 	bool									matchEnded();
 	bool									isWinner(unsigned int playerIdx);
+	GameState								getGameState() { return gameState; }
 private:
 	unsigned int							playerTurnIdx;
 	bool									recalculateLOS = true;
 	std::vector<GameCharacter>::iterator	selectedCharacter;
 	Grid									grid;
 	std::vector<GameCharacter>				characters;
+	GameState								gameState;
+	void									updateGameState();
 };
 
 #endif

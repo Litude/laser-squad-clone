@@ -7,6 +7,7 @@ void Game::endTurn() {
 	for (auto &character: characters) {
 		character.resetActionPoints();
 	}
+	updateGameState();
 }
 
 bool Game::addCharacter(sf::Vector2u position, unsigned int team) {
@@ -35,6 +36,7 @@ bool Game::characterMove(gc_iterator it, sf::Vector2i direction) {
 			[target_pos](GameCharacter gc){ return (sf::Vector2i) gc.getPosition() != target_pos; })) {
 		it->moveTo(direction);
 		recalculateLOS = true;
+		updateGameState();
 		return true;
 	} else {
 		return false;
@@ -64,6 +66,7 @@ bool Game::characterMoveDown(gc_iterator it) {
 bool Game::characterPickUpItem(gc_iterator it) {
 	if (getSelectedCharacter()->addItem(getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).getTopItem())) {
 		getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).popItem();
+		updateGameState();
 		return true;
 	}
 	return false;
@@ -72,6 +75,7 @@ bool Game::characterPickUpItem(gc_iterator it) {
 bool Game::characterDropItem(gc_iterator it) {
 	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItemIndex()]);
 	if (getSelectedCharacter()->removeSelectedItem()) {
+		updateGameState();
 		return true;
 	}
 	else {
@@ -127,6 +131,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 	}
 
 	std::cout << "Number of shots fired: " << numberOfShots << std::endl;
+	updateGameState();
 	return endTiles;
 }
 
@@ -241,6 +246,14 @@ bool Game::lineofSight(int x1,int y1,int x2,int y2)  {
         }
     }
     return true;
+}
+
+void Game::updateGameState()
+{
+	if (matchEnded()) {
+		gameState = GameState::match_ended;
+		setSelectedCharacter(getCharacters().end());
+	}
 }
 
 bool Game::matchEnded()

@@ -169,10 +169,6 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 	sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
 	while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
 		sf::Event event;
-		bool matchEnded = game.matchEnded();
-		if (matchEnded) {
-			game.setSelectedCharacter(game.getCharacters().end());
-		}
 		while (App.pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
 				App.close();
@@ -186,11 +182,11 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 					zoomViewAt({ event.mouseWheelScroll.x, event.mouseWheelScroll.y }, App, gameView, 1.1f);
 			}
 			// Handle keyboard input
-			if (event.type == sf::Event::KeyPressed && !matchEnded) {
+			if (event.type == sf::Event::KeyPressed && game.getGameState() == GameState::active) {
 				handleKeyPress(event, App);
 			}
 			// Handle mouse input
-			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left && !matchEnded) {
+			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left && game.getGameState() == GameState::active) {
 				unsigned int menuSize = App.getSize().x / 4;
 				if (event.mouseButton.x < static_cast<int>(App.getSize().x - menuSize)) {
 					//Clicked on gamescreen
@@ -224,14 +220,14 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 			if (event.type == sf::Event::Resized) {
 				updateLayout(App);
 			}
-			if (event.type == sf::Event::MouseMoved && mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end() && !matchEnded) {
+			if (event.type == sf::Event::MouseMoved && mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end() && game.getGameState() == GameState::active) {
 				auto gc = game.getSelectedCharacter();
 				auto target = getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView);
 				auto origin = gc->getPosition();
 				rayLine[0].position = Util::mapToPixels(origin);
 				rayLine[1].position = Util::mapToPixels(game.traceFromCharacter(gc, target, true));
 			}
-			if (game.matchEnded()) {
+			if (game.getGameState() == GameState::match_ended) {
 				gameOverPanel.update(event, App, game);
 			} else {
 				sidePanel.update(event, App, game);
@@ -384,7 +380,7 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 		}
 	}
 
-	if (mouseMode == MouseMode::shoot) {
+	if (mouseMode == MouseMode::shoot && game.getGameState() == GameState::active) {
 		//"animate" rayline
 		if (rayLine[0].color.r == 255 || rayLine[0].color.r == 0) rayIncr *= -1;
 		rayLine[0].color.r += rayIncr;
@@ -424,7 +420,7 @@ void GameScreen::drawUI(sf::RenderWindow &App) {
 	App.setView(interfaceView);
 	App.draw(backgroundSprite);
 
-	if (game.matchEnded()) {
+	if (game.getGameState() == GameState::match_ended) {
 		gameOverPanel.draw(App, game, *this);
 	}
 	else {
