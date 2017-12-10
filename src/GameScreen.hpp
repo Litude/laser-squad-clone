@@ -12,6 +12,7 @@
 #include "Util.hpp"
 #include "Weapon.hpp"
 #include "Projectile.hpp"
+#include "SidePanel.hpp"
 
 namespace MouseMode {
 	enum Mode { shoot, select };
@@ -22,15 +23,17 @@ class GameScreen : public Screen
 public:
 	GameScreen(sf::RenderWindow &App);
 	virtual ScreenResult Run(sf::RenderWindow &App);
-private:
-	ScreenResult m_screenResult;
-private:
+public:
 	void exitToMainMenu();
-	void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom);
 	void endTurn(sf::RenderWindow &App);
 	void pickupItem();
 	void dropItem();
 	void equipItem();
+	MouseMode::Mode getMouseMode() { return mouseMode; }
+private:
+	ScreenResult m_screenResult;
+private:
+	void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom);
 	void DrawGame(sf::RenderWindow &App);
 	void DrawUI(sf::RenderWindow &App);
 	void updateLayout(sf::RenderWindow & App);
@@ -50,6 +53,7 @@ private:
 	sf::View gameView;
 	sf::View interfaceView;
 	
+	std::shared_ptr<SidePanel> sidePanel;
 	sf::RectangleShape interfaceBkg;
 	Button buttonEndTurn;
 	Button buttonPickupItem;
