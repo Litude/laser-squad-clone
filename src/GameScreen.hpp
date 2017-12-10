@@ -27,7 +27,7 @@ private:
 private:
 	void exitToMainMenu();
 	void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom);
-	void endTurn();
+	void endTurn(sf::RenderWindow &App);
 	void pickupItem();
 	void dropItem();
 	void equipItem();
