@@ -220,13 +220,6 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 			if (event.type == sf::Event::Resized) {
 				updateLayout(App);
 			}
-			if (event.type == sf::Event::MouseMoved && mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end() && game.getGameState() == GameState::active) {
-				auto gc = game.getSelectedCharacter();
-				auto target = getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView);
-				auto origin = gc->getPosition();
-				rayLine[0].position = Util::mapToPixels(origin);
-				rayLine[1].position = Util::mapToPixels(game.traceFromCharacter(gc, target, true));
-			}
 			if (game.getGameState() == GameState::match_ended) {
 				gameOverPanel.update(event, App, game);
 			} else {
@@ -380,7 +373,12 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 		}
 	}
 
-	if (mouseMode == MouseMode::shoot && game.getGameState() == GameState::active) {
+	if (mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end() && game.getGameState() == GameState::active) {
+		auto gc = game.getSelectedCharacter();
+		auto target = getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView);
+		auto origin = gc->getRenderPosition();
+		rayLine[0].position = sf::Vector2f(static_cast<float>(origin.x + TILESIZE / 2), static_cast<float>(origin.y + TILESIZE / 2));
+		rayLine[1].position = Util::mapToPixels(game.traceFromCharacter(gc, target, true));
 		//"animate" rayline
 		if (rayLine[0].color.r == 255 || rayLine[0].color.r == 0) rayIncr *= -1;
 		rayLine[0].color.r += rayIncr;
