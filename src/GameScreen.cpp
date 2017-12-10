@@ -181,63 +181,11 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				else if (event.mouseWheelScroll.delta < 0)
 					zoomViewAt({ event.mouseWheelScroll.x, event.mouseWheelScroll.y }, App, gameView, 1.1f);
 			}
-			//Handle keyboard input
+			// Handle keyboard input
 			if (event.type == sf::Event::KeyPressed) {
-				switch (event.key.code) {
-				case sf::Keyboard::Left:
-					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						if (game.characterMoveLeft(game.getSelectedCharacter())) {
-							//gameView.move(sf::Vector2f(-TILESIZE, 0));
-						}
-					}
-					break;
-				case sf::Keyboard::Right:
-					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						if (game.characterMoveRight(game.getSelectedCharacter())) {
-							//gameView.move(sf::Vector2f(TILESIZE, 0));
-						}
-					}
-					break;
-				case sf::Keyboard::Down:
-					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						if (game.characterMoveDown(game.getSelectedCharacter())) {
-							//gameView.move(sf::Vector2f(0, TILESIZE));
-						}
-					}
-					break;
-				case sf::Keyboard::Up:
-					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						if (game.characterMoveUp(game.getSelectedCharacter())) {
-							//gameView.move(sf::Vector2f(0, -TILESIZE));
-						}
-					}
-					break;
-                        
-
-
-				case sf::Keyboard::A:
-					if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);
-					break;
-				case sf::Keyboard::D:
-					if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game.getGrid().getWidth() * TILESIZE) gameView.move(TILESIZE, 0);
-					break;
-				case sf::Keyboard::S:
-					if (gameView.getCenter().y + App.getSize().y / 2 < game.getGrid().getHeight() * TILESIZE) gameView.move(0, TILESIZE);
-					break;
-				case sf::Keyboard::W:
-					if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
-					break;
-				//enter shooting mode
-				case sf::Keyboard::Q:
-					mouseMode = (mouseMode == MouseMode::shoot) ? MouseMode::select : MouseMode::shoot;
-					std::cout << "mousemode changed to " << mouseMode << std::endl;
-					break;
-				default:
-					break;
-				}
-
+				handleKeyPress(event, App);
 			}
-			//Handle mouse input
+			// Handle mouse input
 			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
 				unsigned int menuSize = App.getSize().x / 4;
 				if (event.mouseButton.x < static_cast<int>(App.getSize().x - menuSize)) {
@@ -304,15 +252,70 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 
 		App.clear();
 
-		DrawUI(App);
-		DrawGame(App);
+		drawUI(App);
+		drawGame(App);
 
 		App.display();
 	}
 	return m_screenResult;
 }
 
-void GameScreen::DrawGame(sf::RenderWindow &App) {
+void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
+	switch (event.key.code) {
+	case sf::Keyboard::Left:
+		if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
+			if (game.characterMoveLeft(game.getSelectedCharacter())) {
+				//gameView.move(sf::Vector2f(-TILESIZE, 0));
+			}
+		}
+		break;
+	case sf::Keyboard::Right:
+		if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
+			if (game.characterMoveRight(game.getSelectedCharacter())) {
+				//gameView.move(sf::Vector2f(TILESIZE, 0));
+			}
+		}
+		break;
+	case sf::Keyboard::Down:
+		if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
+			if (game.characterMoveDown(game.getSelectedCharacter())) {
+				//gameView.move(sf::Vector2f(0, TILESIZE));
+			}
+		}
+		break;
+	case sf::Keyboard::Up:
+		if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
+			if (game.characterMoveUp(game.getSelectedCharacter())) {
+				//gameView.move(sf::Vector2f(0, -TILESIZE));
+			}
+		}
+		break;
+
+
+
+	case sf::Keyboard::A:
+		if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);
+		break;
+	case sf::Keyboard::D:
+		if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game.getGrid().getWidth() * TILESIZE) gameView.move(TILESIZE, 0);
+		break;
+	case sf::Keyboard::S:
+		if (gameView.getCenter().y + App.getSize().y / 2 < game.getGrid().getHeight() * TILESIZE) gameView.move(0, TILESIZE);
+		break;
+	case sf::Keyboard::W:
+		if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
+		break;
+		//enter shooting mode
+	case sf::Keyboard::Q:
+		mouseMode = (mouseMode == MouseMode::shoot) ? MouseMode::select : MouseMode::shoot;
+		std::cout << "mousemode changed to " << mouseMode << std::endl;
+		break;
+	default:
+		break;
+	}
+}
+
+void GameScreen::drawGame(sf::RenderWindow &App) {
 
 	App.setView(gameView);
 	// Center the camera on the selected player (linear interpolation)
@@ -408,7 +411,7 @@ void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::list<sf::Vector2u> 
 	App.draw(sprite, shader);
 }
 
-void GameScreen::DrawUI(sf::RenderWindow &App) {
+void GameScreen::drawUI(sf::RenderWindow &App) {
 	unsigned int menuSize = App.getSize().x / 4;
 
 	updateUIComponents(App);

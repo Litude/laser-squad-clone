@@ -35,10 +35,11 @@ private:
 	ScreenResult m_screenResult;
 private:
 	void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom);
-	void DrawGame(sf::RenderWindow &App);
-	void DrawUI(sf::RenderWindow &App);
+	void drawGame(sf::RenderWindow &App);
+	void drawUI(sf::RenderWindow &App);
 	void updateLayout(sf::RenderWindow & App);
 	void updateUIComponents(sf::RenderWindow & App);
+	void handleKeyPress(sf::Event& event, sf::RenderWindow& App);
 	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
 	void DrawVisibleArea(sf::RenderWindow &App, std::list<sf::Vector2u> visibleTiles);
 	void addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination);
