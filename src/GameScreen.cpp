@@ -146,7 +146,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 		std::cout << "Could not load 'img/lineofsight_shader.frag'\n";
 	}
 
-	sidePanel = std::make_shared<SidePanel>(SidePanel(App, *this));
+	sidePanel = SidePanel(App, *this);
 	gameOverPanel = GameOverPanel(App, *this);
 
 	updateLayout(App);
@@ -282,7 +282,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 			if (game.matchEnded()) {
 				gameOverPanel.update(event, App, game);
 			} else {
-				sidePanel->update(event, App, game);
+				sidePanel.update(event, App, game);
 			}
 		}
 
@@ -421,7 +421,7 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 		gameOverPanel.draw(App, game, *this);
 	}
 	else {
-		sidePanel->draw(App, game, *this);
+		sidePanel.draw(App, game, *this);
 	}
 }
 
@@ -455,13 +455,13 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 	interfaceView.setSize(static_cast<float>(App.getSize().x), static_cast<float>(App.getSize().y));
 	interfaceView.setCenter(static_cast<float>(App.getSize().x / 2), static_cast<float>(App.getSize().y / 2));
 
-	sidePanel->updateLayout(App);
-	sidePanel->updateUIComponents(App);
+	sidePanel.updateLayout(App);
+	sidePanel.updateUIComponents(App);
 }
 
 void GameScreen::updateUIComponents(sf::RenderWindow & App)
 {
-	sidePanel->updateUIComponents(App);
+	sidePanel.updateUIComponents(App);
 }
 
 void GameScreen::endTurn(sf::RenderWindow &App) {

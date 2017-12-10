@@ -55,22 +55,8 @@ private:
 	sf::View interfaceView;
 	
 	GameOverPanel gameOverPanel;
-	std::shared_ptr<SidePanel> sidePanel;
-	sf::RectangleShape interfaceBkg;
-	Button buttonEndTurn;
-	Button buttonPickupItem;
-	Button buttonDropItem;
-	Button buttonEquipItem;
-	Button buttonExit;
+	SidePanel sidePanel;
 	sf::RectangleShape selectedCharacter;
-	sf::RectangleShape selectedItem;
-	sf::RectangleShape equippedItem;
-	sf::Text textCurTurnLabel;
-	sf::Text textCurTurnValue;
-	sf::Text textFPS;
-	sf::Text textAPLabel;
-	sf::Text textAPValue;
-	sf::Text textMouseMode;
 	sf::RectangleShape healthbarBkg;
 	sf::RectangleShape healthbar;
 
