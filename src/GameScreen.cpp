@@ -147,6 +147,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	}
 
 	sidePanel = std::make_shared<SidePanel>(SidePanel(App, *this));
+	gameOverPanel = GameOverPanel(App, *this);
 
 	updateLayout(App);
 
@@ -278,7 +279,11 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				rayLine[0].position = Util::mapToPixels(origin);
 				rayLine[1].position = Util::mapToPixels(game.traceFromCharacter(gc, target, true));
 			}
-			sidePanel->update(event, App, game);
+			if (game.matchEnded()) {
+				gameOverPanel.update(event, App, game);
+			} else {
+				sidePanel->update(event, App, game);
+			}
 		}
 
 		sf::Vector2i mousePos = sf::Mouse::getPosition(App);
@@ -412,7 +417,12 @@ void GameScreen::DrawUI(sf::RenderWindow &App) {
 	App.setView(interfaceView);
 	App.draw(backgroundSprite);
 
-	sidePanel->draw(App, game, *this);
+	if (game.matchEnded()) {
+		gameOverPanel.draw(App, game, *this);
+	}
+	else {
+		sidePanel->draw(App, game, *this);
+	}
 }
 
 void GameScreen::updateLayout(sf::RenderWindow & App)

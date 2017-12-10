@@ -13,6 +13,7 @@
 #include "Weapon.hpp"
 #include "Projectile.hpp"
 #include "SidePanel.hpp"
+#include "GameOverPanel.hpp"
 
 namespace MouseMode {
 	enum Mode { shoot, select };
@@ -53,6 +54,7 @@ private:
 	sf::View gameView;
 	sf::View interfaceView;
 	
+	GameOverPanel gameOverPanel;
 	std::shared_ptr<SidePanel> sidePanel;
 	sf::RectangleShape interfaceBkg;
 	Button buttonEndTurn;

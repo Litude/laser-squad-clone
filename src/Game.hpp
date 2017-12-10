@@ -40,6 +40,8 @@ public:
     bool                                    lineofSight(int x1,int y1,int x2,int y2);
 	bool									calculateLineofSight() {return recalculateLOS;}
 	void									lineofSightCalculated() { recalculateLOS = false; }
+	bool									matchEnded();
+	bool									isWinner(unsigned int playerIdx);
 private:
 	unsigned int							playerTurnIdx;
 	bool									recalculateLOS = true;

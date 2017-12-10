@@ -242,3 +242,23 @@ bool Game::lineofSight(int x1,int y1,int x2,int y2)  {
     }
     return true;
 }
+
+bool Game::matchEnded()
+{
+	return isWinner(1) || isWinner(2);
+}
+
+bool Game::isWinner(unsigned int playerIdx)
+{
+	unsigned int numCharacters = 0;
+	unsigned int numDeadCharacters = 0;
+	for (auto &character : getCharacters()) {
+		if (character.getTeam() != playerIdx) {
+			numCharacters++;
+			if (character.isDead()) {
+				numDeadCharacters++;
+			}
+		}
+	}
+	return numCharacters == numDeadCharacters;
+}
