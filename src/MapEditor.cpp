@@ -653,7 +653,7 @@ sf::Vector2u MapEditor::getClickedTilePosition(const sf::RenderWindow& App, cons
 }
 
 void MapEditor::addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination) {
-    ItemIcon wt = weapon->getIcon();
+    AmmoType wt = weapon->getAmmoType();
     Projectile p(wt, Util::mapToPixels(world_origin), Util::mapToPixels(world_destination));
     activeProjectiles.push_back(p);
 }

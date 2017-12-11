@@ -550,7 +550,7 @@ sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, con
 }
 
 void GameScreen::addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination) {
-	ItemIcon wt = weapon->getIcon();
+	AmmoType wt = weapon->getAmmoType();
 	Projectile p(wt, Util::mapToPixels(world_origin), Util::mapToPixels(world_destination));
 	activeProjectiles.push_back(p);
 }
