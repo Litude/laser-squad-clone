@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-#include "animationManager.hpp"
+#include "AnimationManager.hpp"
 
 AnimationManager::AnimationManager()
 {
