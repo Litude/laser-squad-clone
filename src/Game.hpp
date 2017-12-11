@@ -26,6 +26,7 @@ public:
 	Grid&									getGrid() { return grid; }
 	void									setGrid(Grid& g) { grid = g; }
 	void									endTurn();
+	bool									addCharacter(GameCharacter gc);
 	bool									addCharacter(sf::Vector2u position, unsigned int team);
     bool                                    removeCharacter(sf::Vector2u position);
 	void									setSelectedCharacter(gc_iterator it) { selectedCharacter = it; }

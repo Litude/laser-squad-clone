@@ -12,6 +12,11 @@ void Game::endTurn() {
 	updateGameState();
 }
 
+bool Game::addCharacter(GameCharacter gc) {
+    characters.push_back(gc);
+    return true;
+}
+
 bool Game::addCharacter(sf::Vector2u position, unsigned int team) {
 	if (team == 1 || team == 2) {
 		characters.push_back(GameCharacter(position, team));
