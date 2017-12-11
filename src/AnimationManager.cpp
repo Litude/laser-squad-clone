@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-#include "animationManager.hpp"
+#include "AnimationManager.hpp"
 
 AnimationManager::AnimationManager()
 {
@@ -78,5 +78,12 @@ void AnimationManager::changeAnim(unsigned int animID)
 
 bool AnimationManager::isFinished()
 {
-	return (animations[currentAnim].duration < t) ? true : false;
+	int duration = this->animations[currentAnim].duration;
+	unsigned int frame = static_cast<int>(t / duration);
+
+	if (frame == (this->animations[currentAnim].getLength() - 1) && animations[currentAnim].duration < t) {
+		return true;
+	}
+	return false;
+
 }

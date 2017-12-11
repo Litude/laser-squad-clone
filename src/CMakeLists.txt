@@ -1,10 +1,10 @@
 #Change this if you need to target a specific CMake version
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.1)
 
 # Options. Turn on with 'cmake -Dmyvarname=ON'.
 option(test "Build all tests." OFF) # Makes boolean 'test' available.
 
-
+set (CMAKE_CXX_STANDARD 11)
 # Enable debug symbols by default
 # must be done before project() statement
 if(NOT CMAKE_BUILD_TYPE)
@@ -25,7 +25,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # Define sources and executable
 set(EXECUTABLE_NAME "LaserSquad")
-set(GAME_SOURCES Ammo.hpp Game.cpp Game.hpp GameCharacter.cpp GameCharacter.hpp Health.hpp Inventory.cpp Inventory.hpp Item.hpp Grid.cpp Grid.hpp Tile.cpp Tile.hpp TileMap.cpp TileMap.hpp Weapon.cpp Weapon.hpp Screen.cpp Screen.hpp GameScreen.cpp GameScreen.hpp MainMenuScreen.cpp MainMenuScreen.hpp MapEditor.cpp MapEditor.hpp NgMenuScreen.cpp NgMenuScreen.hpp AnimationManager.cpp AnimationManager.hpp Animation.hpp Button.cpp Button.hpp Projectile.cpp Projectile.hpp SidePanel.cpp SidePanel.hpp GameOverPanel.cpp GameOverPanel.hpp StatusMessage.cpp StatusMessage.hpp Line.cpp Line.hpp ControlsScreen.cpp ControlsScreen.hpp)
+set(GAME_SOURCES Ammo.hpp Game.cpp Game.hpp GameCharacter.cpp GameCharacter.hpp Health.hpp Inventory.cpp Inventory.hpp Item.hpp Grid.cpp Grid.hpp Tile.cpp Tile.hpp TileMap.cpp TileMap.hpp Weapon.cpp Weapon.hpp Screen.cpp Screen.hpp GameScreen.cpp GameScreen.hpp MainMenuScreen.cpp MainMenuScreen.hpp MapEditor.cpp MapEditor.hpp NgMenuScreen.cpp NgMenuScreen.hpp AnimationManager.cpp AnimationManager.hpp Animation.hpp Button.cpp Button.hpp Projectile.cpp Projectile.hpp SidePanel.cpp SidePanel.hpp GameOverPanel.cpp GameOverPanel.hpp StatusMessage.cpp StatusMessage.hpp Line.cpp Line.hpp ControlsScreen.cpp ControlsScreen.hpp TextField.cpp TextField.hpp NewMapMenuScreen.cpp NewMapMenuScreen.hpp SidePanelMapEditor.cpp SidePanelMapEditor.hpp)
 add_executable(${EXECUTABLE_NAME} main.cpp ${GAME_SOURCES})
 
 

@@ -56,7 +56,7 @@ public:
 	unsigned int	getTeam() const { return team; }
 	sf::Vector2u	getPosition() const { return currentPosition; }
 	sf::Vector2u	getRenderPosition() const;
-	unsigned int	getDirection() const { return direction; }
+	unsigned int	getDirection() const { return char_dir; }
 	int				getSelectedItemIndex() const { return selectedItemIdx; }
 	int				getSelectedWeaponIndex() const { return selectedWeaponIdx; }
 	bool			isDead() const { return (health == 0); }
@@ -92,7 +92,7 @@ private:
 
 	AnimationManager animationManager;
 	float moveFactor = 0;
-	direction direction = down;
+	direction char_dir = down;
 	bool moving = false;
 	unsigned int maxActionPoints = 20;
 
