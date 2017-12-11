@@ -241,3 +241,9 @@ void Button::click()
 		b_callback();
 	}
 }
+
+void Button::setText(std::string s) {
+	str = s;
+	b_text.setString(str);
+	b_text.setOrigin(b_text.getGlobalBounds().width / 2, b_text.getGlobalBounds().height / 2);
+}

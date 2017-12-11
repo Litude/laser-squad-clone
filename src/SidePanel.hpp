@@ -34,6 +34,7 @@ private:
 	Button buttonDropItem;
 	Button buttonEquipItem;
 	Button buttonExit;
+	Button buttonAttackMode;
 	sf::RectangleShape selectedItem;
 	sf::RectangleShape equippedItem;
 	sf::Text textCurTurnLabel;

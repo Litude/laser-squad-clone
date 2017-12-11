@@ -31,6 +31,7 @@ public:
 	void pickupItem();
 	void dropItem();
 	void equipItem();
+	void toggleAttackMode();
 	MouseMode::Mode getMouseMode() { return mouseMode; }
 private:
 	ScreenResult m_screenResult;
