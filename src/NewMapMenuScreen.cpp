@@ -1,24 +1,24 @@
-#include "NgMenuScreen.hpp"
+#include "NewMapMenuScreen.hpp"
 
-NgMenuScreen::NgMenuScreen(void)
+NewMapMenuScreen::NewMapMenuScreen(void)
 {
 }
 
-ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
+ScreenResult NewMapMenuScreen::Run(sf::RenderWindow & App)
 {
 	if (!initComponents(App)) {
 		return ScreenResult::Exit;
 	}
-	m_screenResult = ScreenResult::NewGameScene;
+	m_screenResult = ScreenResult::NewMapMenuScene;
 	sf::Event Event;
 
-	auto selectedButtonItem = buttons.begin();
-
-	while (m_screenResult == ScreenResult::NewGameScene)
+	while (m_screenResult == ScreenResult::NewMapMenuScene)
 	{
 		while (App.pollEvent(Event))
 		{
-			tField.update(Event, App);
+			mapSizeXField.update(Event, App);
+			mapSizeYField.update(Event, App);
+			mapNameField.update(Event, App);
 			if (Event.type == sf::Event::Resized)
 			{
 				updateLayout(App);
@@ -28,35 +28,10 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 			{
 				return ScreenResult::Exit;
 			}
-
-			if (Event.type == sf::Event::KeyPressed && !tField.getFocus())
-			{
-				switch (Event.key.code)
-				{
-				case sf::Keyboard::Up:
-					if (selectedButtonItem > buttons.begin()) { selectedButtonItem--; }
-					break;
-				case sf::Keyboard::Down:
-					if (selectedButtonItem < buttons.end() - 1) { selectedButtonItem++; }
-					break;
-				case sf::Keyboard::Return:
-					selectedButtonItem->click();
-					break;
-				default:
-					break;
-				}
-			}
 		}
 		for (auto it = buttons.begin(); it != buttons.end(); ++it) {
 			it->setState(state::normal);
 			it->update(Event, App);
-			if (it->getState() == state::hovered){
-				selectedButtonItem = it;
-			}
-		}
-
-		if (selectedButtonItem->getState() != state::clicked) {
-			selectedButtonItem->setState(state::hovered);
 		}
 		drawUI(App);
 	}
@@ -64,12 +39,12 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 	return m_screenResult;
 }
 
-void NgMenuScreen::openScreen(ScreenResult res)
+void NewMapMenuScreen::openScreen(ScreenResult res)
 {
 	m_screenResult = res;
 }
 
-void NgMenuScreen::drawUI(sf::RenderWindow &App)
+void NewMapMenuScreen::drawUI(sf::RenderWindow &App)
 {
 	App.clear();
 	App.draw(backgroundSprite);
@@ -77,18 +52,20 @@ void NgMenuScreen::drawUI(sf::RenderWindow &App)
 	for (auto button : buttons) {
 		App.draw(button);
 	}
-	App.draw(tField);
+	App.draw(mapSizeXField);
+	App.draw(mapSizeYField);
+	App.draw(mapNameField);
 	App.display();
 }
 
-void NgMenuScreen::updateLayout(sf::RenderWindow & App)
+void NewMapMenuScreen::updateLayout(sf::RenderWindow & App)
 {
 	App.setView(sf::View(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x), static_cast<float>(App.getSize().y))));
 	backgroundSprite.setScale(
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
 	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, App.getView().getSize().y * 0.5f - logoSprite.getGlobalBounds().height * 1.f });
-	tField.setPosition({ App.getView().getSize().x * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f});
+	//tField.setPosition({ App.getView().getSize().x * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f});
 	unsigned int i = 1;
 	for (auto &button : buttons) {
 		button.setPosition({ App.getView().getSize().x * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + button.getGlobalBounds().height * 1.5f * i });
@@ -96,7 +73,7 @@ void NgMenuScreen::updateLayout(sf::RenderWindow & App)
 	}
 }
 
-bool NgMenuScreen::initComponents(sf::RenderWindow & App)
+bool NewMapMenuScreen::initComponents(sf::RenderWindow & App)
 {
 	backgroundTexture = std::make_shared<sf::Texture>(sf::Texture());
 	if (!backgroundTexture->loadFromFile("img/background.png"))
@@ -123,27 +100,46 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
-	rs.setSize(sf::Vector2f(170,40));
+	rs.setSize(sf::Vector2f(140, 40));
 
-	Button launchgame("Launch game", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f), rs);
-	launchgame.setCallback([&] {this->openScreen(ScreenResult::GameScene); });
-	buttons.push_back(launchgame);
+	mapSizeXField = TextField(25, rs, *font);
+	mapSizeXField.setPosition(sf::Vector2f(100.f, 450.f));
+	mapSizeXField.setSize(170, 40);
+	mapSizeXField.setDefaultStr("7");
 
-	TextField loadmap(25, rs, *font);
-	loadmap.setPosition(sf::Vector2f(300.f,450.f));
-	loadmap.setFont(*font);
-	loadmap.setSize(170, 40);
-	loadmap.setDefaultStr("Load map..");
-	tField = loadmap;
+	mapSizeYField = TextField(25, rs, *font);
+	mapSizeYField.setPosition(sf::Vector2f(300.f, 450.f));
+	mapSizeYField.setSize(170, 40);
+	mapSizeYField.setDefaultStr("3");
+
+	buttonCreateMap = Button("Create New Map", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
+	buttonCreateMap.setCallback([&] { this->mapInitType = MapInitType::new_map; this->openScreen(ScreenResult::EditorScene); });
+	buttons.push_back(buttonCreateMap);
+
+	mapNameField = TextField(25, rs, *font);
+	mapNameField.setPosition(sf::Vector2f(300.f, 550.f));
+	mapNameField.setSize(170, 40);
+	mapNameField.setDefaultStr("map name...");
+
+	buttonLoadMap = Button("Load Map", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
+	buttonLoadMap.setCallback([&] { this->mapInitType = MapInitType::load_map; this->openScreen(ScreenResult::EditorScene); });
+	buttons.push_back(buttonLoadMap);
 
 	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
 	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
-	                buttons.push_back(back);
-
-
-
+	buttons.push_back(back);
 
 	updateLayout(App);
 
 	return true;
+}
+
+unsigned int NewMapMenuScreen::getMapSizeX() {
+	return std::stoul(mapSizeXField.getString(), nullptr, 0);
+}
+unsigned int NewMapMenuScreen::getMapSizeY() {
+	return std::stoul(mapSizeYField.getString(), nullptr, 0);
+}
+std::string NewMapMenuScreen::getMapName() {
+	return mapNameField.getString();
 }

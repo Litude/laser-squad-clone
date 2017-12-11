@@ -29,68 +29,50 @@ namespace MouseMode2 {
 class MapEditor : public Screen
 {
 public:
-    MapEditor(sf::RenderWindow &App);
+    MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int height);
     virtual ScreenResult Run(sf::RenderWindow &App);
 private:
     ScreenResult m_screenResult;
 private:
     void exitToMainMenu();
     void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom);
-    void endTurn();
-    void pickupItem();
-    void dropItem();
-    void equipItem();
     void DrawGame(sf::RenderWindow &App);
     void DrawUI(sf::RenderWindow &App);
     void updateLayout(sf::RenderWindow & App);
     void updateUIComponents(sf::RenderWindow & App);
+	void handleKeyPress(sf::Event& event, sf::RenderWindow& App);
     sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
-    void DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles);
-    void addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination);
+	sf::Vector2u selectToolCoord;
+
+	Button createGroundTileButton(TileGround tileGround);
+	void setGroundTile(TileGround tileGround);
     
     Game game;
     std::shared_ptr<TileMap> tileMap;
     std::shared_ptr<sf::Font> font;
     std::shared_ptr<sf::Texture> texPlayer1;
     std::shared_ptr<sf::Texture> texPlayer2;
+	std::shared_ptr<sf::Texture> texGrounds;
+	std::shared_ptr<sf::Texture> texBlocks;
     std::shared_ptr<sf::Texture> texItems;
     std::shared_ptr<sf::Texture> backgroundTexture;
     sf::Sprite backgroundSprite;
     sf::View gameView;
     sf::View interfaceView;
+
+	std::vector<Button> buttons;
     
     sf::RectangleShape interfaceBkg;
-    Button buttonEndTurn;
-    Button buttonPickupItem;
-    Button buttonDropItem;
-    Button buttonEquipItem;
     Button buttonExit;
-    sf::RectangleShape selectedCharacter;
     sf::RectangleShape selectedTile;
-    sf::RectangleShape selectedItem;
-    sf::RectangleShape equippedItem;
-    sf::Text textCurTurnLabel;
-    sf::Text textCurTurnValue;
     sf::Text textFPS;
-    sf::Text textAPLabel;
-    sf::Text textAPValue;
-    sf::Text textMouseMode;
     
-    int rayIncr = 1;
-    sf::VertexArray rayLine{ sf::Lines, 2 };
-    
-    std::vector<sf::Sprite> mapTiles;
     sf::Clock fpsclock;
     sf::Clock clock;
     float lastTime = 0;
     float currentTime = 0;
     double timeStep = 16000;
     double timeAccumulator = 0;
-    std::shared_ptr<sf::RenderTexture> renderTexture_visibleTiles;
-    sf::RectangleShape visibleTileShape;
-    sf::Shader* shader;
-    std::vector<sf::Sprite> inventoryItems;
-    std::vector<Projectile> activeProjectiles;
     
     MouseMode2::Mode2 mouseMode = MouseMode2::select;
 };
