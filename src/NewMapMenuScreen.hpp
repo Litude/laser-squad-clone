@@ -1,5 +1,5 @@
-#ifndef LASER_NGMENUSCREEN_HPP
-#define LASER_NGMENUSCREEN_HPP
+#ifndef LASER_NEWMAPMENUSCREEN_HPP
+#define LASER_NEWMAPMENUSCREEN_HPP
 
 #include <iostream>
 #include "Screen.hpp"
@@ -8,12 +8,18 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-class NgMenuScreen : public Screen
+enum MapInitType { new_map, load_map };
+
+class NewMapMenuScreen : public Screen
 {
 public:
-	NgMenuScreen(void);
+	NewMapMenuScreen(void);
 	virtual ScreenResult Run(sf::RenderWindow &App);
 	void openScreen(ScreenResult res);
+	unsigned int getMapSizeX();
+	unsigned int getMapSizeY();
+	std::string getMapName();
+	MapInitType getMapInitType() { return mapInitType; }
 private:
 	ScreenResult m_screenResult;
 private:
@@ -28,8 +34,15 @@ private:
 	sf::Sprite logoSprite;
 	std::shared_ptr<sf::Font> font;
 	std::vector<Button> buttons;
-	TextField tField;
-	bool status;
+
+	TextField mapSizeXField;
+	TextField mapSizeYField;
+	TextField mapNameField;
+
+	Button buttonCreateMap;
+	Button buttonLoadMap;
+
+	MapInitType mapInitType;
 };
 
 #endif
