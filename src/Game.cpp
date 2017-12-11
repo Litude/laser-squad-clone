@@ -370,18 +370,14 @@ bool Game::matchEnded()
 bool Game::isWinner(unsigned int playerIdx)
 {
 	//check if number of turns has been exceeded
-	if (playerIdx == 2) return (turnNo > maxTurns);
+	if (playerIdx == 2 && turnNo > maxTurns) return true;
 
 	//check for characters alive
 	unsigned int numCharacters = 0;
-	unsigned int numDeadCharacters = 0;
 	for (auto &character : getCharacters()) {
-		if (character.getTeam() != playerIdx) {
+		if (character.getTeam() != playerIdx && !(character.isDead())) {
 			numCharacters++;
-			if (character.isDead()) {
-				numDeadCharacters++;
-			}
 		}
 	}
-	return numCharacters == numDeadCharacters;
+	return numCharacters == 0;
 }
