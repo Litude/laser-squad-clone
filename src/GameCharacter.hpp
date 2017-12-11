@@ -31,6 +31,21 @@ enum animations {
 	die
 };
 
+enum statuscode {
+	nothing,
+	not_enough_ap,
+	item_weapon_equipped,
+	item_weapon_unequipped,
+	item_healed,
+	item_max_health,
+	item_unusable,
+	item_none_selected,
+	shoot_reload,
+	shoot_no_ammo,
+	shoot_success,
+	inventory_full,
+};
+
 class GameCharacter {
 public:
 	GameCharacter (sf::Vector2u position, unsigned int team) : currentPosition(position), previousPosition(position), team(team) { }
@@ -49,21 +64,22 @@ public:
 	std::shared_ptr<Weapon>			getEquipped() { return equippedWeapon; }
 	bool			moveTo(sf::Vector2i target_dir);
 	void			update(int delta_ms);
-	int 			shoot();
+	statuscode 		shoot(int &numberOfShots);
 	void			resetActionPoints() { actionPoints = maxActionPoints; }
 	bool 			sufferDamage(int dmg);
     unsigned int    getLengthofSight() const {return lengthofSight;}
-	bool			addItem(std::shared_ptr<Item> obj);
+	statuscode		addItem(std::shared_ptr<Item> obj);
 	bool			removeSelectedItem();
 	Inventory&		getInventory() { return inventory; }
 	void			setSelectedItemIndex(int idx) { selectedItemIdx = idx; }
 	void			setSelectedWeaponIndex(int idx) {selectedWeaponIdx = idx; }
-	bool			useSelected();
+	statuscode		useSelected();
 	void			unequipCharacter();
 	void			setAnimationManager(AnimationManager animationManager) { this->animationManager = animationManager; }
 	AnimationManager getAnimationManager() const { return animationManager;  }
 	unsigned int	getAmmoAmount(AmmoType ammotype, unsigned int neededAmount=0);
-	void			reloadWeapon();
+	statuscode		reloadWeapon();
+	bool			shouldBeRemoved() { return remove; };
 
 private:
 	void			moveLeft();
@@ -86,9 +102,10 @@ private:
 	unsigned int maxHealth = 10;
 	std::shared_ptr<Weapon> equippedWeapon = std::make_shared<Hands>(Hands());
 	unsigned int team;
-    unsigned int lengthofSight=9;
+    unsigned int lengthofSight = 9;
 	int selectedItemIdx = -1;
 	int selectedWeaponIdx = -1;
+	bool remove = false;
 };
 
 #endif

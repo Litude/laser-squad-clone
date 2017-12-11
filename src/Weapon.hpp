@@ -13,7 +13,7 @@ public:
 	Weapon(ItemIcon icon, std::string name, unsigned ap, unsigned loadedAmmo, unsigned damage, unsigned shots, unsigned deviation, int accuracy, unsigned range, AmmoType ammoType, unsigned shot_delay=100) : Item(Type_Weapon, icon, name), ap(ap), loadedAmmo(loadedAmmo), maxAmmo(loadedAmmo), damage(damage), shots(shots), deviation(deviation), accuracy(accuracy), range(range), ammoType(ammoType), shot_delay(shot_delay) {};
 	bool 		reload(unsigned numberOfAmmo);
 	bool		canFire() const;
-	int			fire();
+	virtual int	fire();
 	const sf::Vector2u deviate(sf::Vector2u target) const;
 	unsigned	getDamage() const;
 	unsigned 	getDelay() const;
@@ -22,7 +22,6 @@ public:
 	unsigned	getLoadedAmmo() const { return loadedAmmo; };
 	AmmoType	getAmmoType() const { return ammoType; };
 	unsigned	getReloadAmount() const { return maxAmmo - loadedAmmo; };
-	virtual void testInheritance() { std::cout << "Testing failed" << std::endl;  };
 
 private:
 	//WeaponType wt
@@ -42,27 +41,23 @@ private:
 
 class Hands : public Weapon {
 public:
-	Hands() : Weapon(Icon_None, "Hands", 1, UINT32_MAX, 3, 1, 1, 100, 1, Ammo_None) {};
-	virtual void testInheritance() { std::cout << "Testing hands" << std::endl; };
+	Hands() : Weapon(Icon_None, "Hands", 1, 1, 3, 1, 1, 100, 1, Ammo_None) {};
+	virtual int fire() { return 1; };
 };
 
 class Pistol : public Weapon {
 public:
 	Pistol() : Weapon(Icon_Weapon_Pistol, "Pistol", 5, 3, 5, 2, 1, 70, 10, Ammo_9mm_Bullets) {};
-	virtual void testInheritance() override { std::cout << "Testing pistol" << std::endl; };
 };
 
 class Shotgun : public Weapon {
 public:
-	Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 0, 10000, 5, 5, 2, 0, 10, Ammo_Shotgun_Shells, 0) {};
-	//Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 5, 3, 5, 2, 1, 70, 10, Ammo_Shotgun_Shells) {};
-	virtual void testInheritance() override { std::cout << "Testing shotgun" << std::endl; };
+	Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 0, 10000, 5, 5, 2, 0, 10, Ammo_Shotgun_Shells) {};
 };
 
 class Uzi : public Weapon {
 public:
 	Uzi() : Weapon(Icon_Weapon_Uzi, "Uzi", 0, 500, 3, 10, 1, 50, 10, Ammo_9mm_Bullets, 50) {}
-	virtual void testInheritance() override {std::cout << "Testing uzi" << std::endl; }
 };
 
 #endif

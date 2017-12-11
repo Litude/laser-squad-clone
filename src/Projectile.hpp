@@ -8,6 +8,7 @@
 #include "constants.hpp"
 #include "Item.hpp"
 #include "Util.hpp"
+#include "Ammo.hpp"
 
 class Projectile {
 public:
@@ -17,22 +18,23 @@ public:
 		sf::Vector2i defSize(32, 32);
 		sf::IntRect rect(sf::Vector2i(0, 0), defSize);
 		switch (weaponType) {
-			case Icon_Weapon_Pistol:
+			case Ammo_None:
 				proj.setTextureRect(rect);
 				break;
-			case Icon_Weapon_Shotgun:
-				rect.left = 64;
-				proj.setTextureRect(rect);
-				break;
-			case Icon_Weapon_Uzi:
-				proj.setTextureRect(rect);
-				break;
-			case Icon_Weapon_Rifle:
+			case Ammo_9mm_Bullets:
 				rect.left = 32;
 				proj.setTextureRect(rect);
 				break;
-			case Icon_Weapon_Launcher:
+			case Ammo_12mm_Bullets:
+				rect.left = 64;
+				proj.setTextureRect(rect);
+				break;
+			case Ammo_Shotgun_Shells:
 				rect.left = 96;
+				proj.setTextureRect(rect);
+				break;
+			case Ammo_Rockets:
+				rect.left = 128;
 				proj.setTextureRect(rect);
 				break;
 			default:

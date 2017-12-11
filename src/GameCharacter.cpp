@@ -69,10 +69,12 @@ bool GameCharacter::moveTo(sf::Vector2i target_dir) {
 }
 
 void GameCharacter::update(int delta_ms) {
-	if (moving || isDead()) {
+	if (isDead()) {
 		animationManager.update(delta_ms);
+		if (animationManager.isFinished()) remove = true;
 	}
 	if (moving) {
+		animationManager.update(delta_ms);
 		moveFactor += static_cast<float>(delta_ms) / static_cast<float>(moveSpeed);
 		if (moveFactor >= 1.f) {
 			moving = false;
@@ -81,23 +83,24 @@ void GameCharacter::update(int delta_ms) {
 	}
 }
 
-int GameCharacter::shoot() {
-	getEquipped()->testInheritance();
-	if (isDead()) return 0;
+statuscode GameCharacter::shoot(int &numberOfShots) {
+	if (isDead()) return nothing;
 	if (!getEquipped()->canFire()) {
-		reloadWeapon();
-		return 0;
+		return reloadWeapon();
 	}
 
 	if (actionPoints >= getEquipped()->apCost() && getEquipped()->canFire()) {
 		actionPoints -= getEquipped()->apCost();
-		return getEquipped()->fire();
+		numberOfShots = getEquipped()->fire();
+		return shoot_success;
 	} else {
-		return 0;
+		return not_enough_ap;
 	}
 }
 
 bool GameCharacter::sufferDamage(int damage) {
+	//Returns true if the target character was killed, false otherwise
+
 	int armor = 0;//placeholder
 	int dmg = (damage - armor > 0 ? damage - armor : 0);
 	health = ((int) health - dmg > 0 ? health - dmg : 0);
@@ -121,15 +124,15 @@ sf::Vector2u GameCharacter::getRenderPosition() const
 	return renderPosition;
 }
 
-bool GameCharacter::addItem(std::shared_ptr<Item> obj)
+statuscode GameCharacter::addItem(std::shared_ptr<Item> obj)
 {
 	if (actionPoints >= AP_COST_PICK_ITEM) {
 		if (inventory.add(obj)) {
 			actionPoints -= AP_COST_PICK_ITEM;
-			return true;
-		}
+			return nothing;
+		} else return inventory_full;
 	}
-	return false;
+	return not_enough_ap;
 }
 
 bool GameCharacter::removeSelectedItem()
@@ -147,32 +150,41 @@ bool GameCharacter::removeSelectedItem()
 	return false;
 }
 
-bool GameCharacter::useSelected()
+statuscode GameCharacter::useSelected()
 {
 	if (actionPoints >= AP_COST_USE) {
-		if (selectedItemIdx == -1) return false;
+		if (selectedItemIdx == -1) return item_none_selected;
 		if (selectedItemIdx == selectedWeaponIdx) {
 			unequipCharacter();
-			return true;
+			return item_weapon_unequipped;
 		}
+		statuscode status = nothing;
+
 		switch (inventory[selectedItemIdx]->getType()) {
 		case Type_Weapon:
 			selectedWeaponIdx = selectedItemIdx;
 			equippedWeapon = std::dynamic_pointer_cast<Weapon>(inventory[selectedItemIdx]);
 			actionPoints -= AP_COST_USE;
-			return true;
+			status = item_weapon_equipped;
+			break;
 		case Type_Health:
-			if (getHitpoints() == getMaxHitpoints()) return false;
+			if (getHitpoints() == getMaxHitpoints()) return item_max_health;
 			health = std::min(getMaxHitpoints(), getHitpoints() + std::dynamic_pointer_cast<Health>(inventory[selectedItemIdx])->getHealingAmount());
-			*inventory[selectedItemIdx] = Item(); //Remove item from inventory
 			actionPoints -= AP_COST_USE;
-			return true;
-
+			status = item_healed;
+			break;
 		default:
-			return false;
+			status = item_unusable;
+			break;
+
 		}
+		if (inventory[selectedItemIdx]->isConsumeable()) inventory[selectedItemIdx]->removeAmount(1);
+		if (inventory[selectedItemIdx]->getAmount() == 0) {
+			inventory.remove(selectedItemIdx);
+		}
+		return status;
 	}
-	return false;
+	return not_enough_ap;
 }
 
 void GameCharacter::unequipCharacter()
@@ -191,24 +203,28 @@ unsigned int GameCharacter::getAmmoAmount(AmmoType ammotype, unsigned int needed
 		if (availableAmmo >= neededAmount) {
 			foundAmmo->removeAmount(neededAmount);
 			if (foundAmmo->getAmount() == 0) {
-				*foundAmmo = Item(); //Remove ammo from inventory if amount reaches zero
+				inventory.remove(foundAmmo);
 			}
 			return neededAmount;
 		} else {
-			*foundAmmo = Item(); //Remove ammo from inventory
+			inventory.remove(foundAmmo);
 			return availableAmmo;
 		}
 	}
 	return availableAmmo;
 }
 
-void GameCharacter::reloadWeapon()
+statuscode GameCharacter::reloadWeapon()
 {
-	if (getEquipped()->getAmmoType() == Ammo_None) return;
+	if (getEquipped()->getAmmoType() == Ammo_None) return nothing;
 
 	if (actionPoints >= AP_COST_RELOAD) {
 		unsigned int availableAmmo = getAmmoAmount(getEquipped()->getAmmoType(), getEquipped()->getReloadAmount());
-		getEquipped()->reload(availableAmmo);
-		actionPoints -= AP_COST_RELOAD;
+		if (availableAmmo > 0) {
+			getEquipped()->reload(availableAmmo);
+			actionPoints -= AP_COST_RELOAD;
+			return shoot_reload;
+		} else return shoot_no_ammo;
 	}
+	return not_enough_ap;
 }

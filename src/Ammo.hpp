@@ -13,7 +13,7 @@ enum AmmoType {
 
 class Ammo : public Item {
 public:
-	Ammo(ItemIcon icon, std::string name, bool stackable, unsigned int amount, AmmoType ammotype) : Item(Type_Ammo, icon, name, stackable, amount), m_ammoType(ammotype) {};
+	Ammo(ItemIcon icon, std::string name, bool stackable, unsigned int amount, AmmoType ammotype) : Item(Type_Ammo, icon, name, stackable, false, amount), m_ammoType(ammotype) {};
 	AmmoType getAmmoType() const { return m_ammoType; }
 private:
 	AmmoType m_ammoType;

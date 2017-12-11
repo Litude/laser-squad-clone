@@ -34,12 +34,13 @@ class Item {
 public:
 	Item() : m_itemType(Type_None), m_itemIcon(Icon_None), m_stackable(false), m_amount(1) {};
 	virtual ~Item() {};
-	Item(ItemType type, ItemIcon icon, std::string name) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_stackable(false), m_amount(1) {};
-	Item(ItemType type, ItemIcon icon, std::string name, bool stackable, unsigned int amount) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_stackable(stackable), m_amount(amount) {};
+	Item(ItemType type, ItemIcon icon, std::string name) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_consumable(false), m_stackable(false), m_amount(1) {};
+	Item(ItemType type, ItemIcon icon, std::string name, bool stackable, bool consumable, unsigned int amount) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_consumable(consumable), m_stackable(stackable), m_amount(amount) {};
 	ItemType getType() const { return m_itemType; };
 	ItemIcon getIcon() const { return m_itemIcon; };
 	std::string getName() const {return m_itemName; };
 	bool isStackable() const { return m_stackable; };
+	bool isConsumeable() const { return m_consumable; };
 	unsigned int getAmount() { return m_amount; };
 	void addAmount(unsigned int amount) { m_amount += amount; }
 	void removeAmount(unsigned int amount) { m_amount -= amount; }
@@ -49,6 +50,7 @@ private:
 	ItemIcon m_itemIcon;
 	std::string m_itemName;
 	bool m_stackable;
+	bool m_consumable; //Items that should be "consumed" when used from inventory
 	unsigned int m_amount;
 };
 

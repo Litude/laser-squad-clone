@@ -1,12 +1,15 @@
 #include "Game.hpp"
 
 void Game::endTurn() {
+	if (playerTurnIdx == 2) ++turnNo;
 	(playerTurnIdx == 1) ? playerTurnIdx = 2 : playerTurnIdx = 1;
 	recalculateLOS = true;
 	selectedCharacter = characters.end();
 	for (auto &character: characters) {
 		character.resetActionPoints();
 	}
+	statusMessage.clearStatusMessage();
+	updateGameState();
 }
 
 bool Game::addCharacter(sf::Vector2u position, unsigned int team) {
@@ -33,8 +36,9 @@ bool Game::characterMove(gc_iterator it, sf::Vector2i direction) {
 	sf::Vector2i target_pos = (sf::Vector2i) it->getPosition() + direction;
 	if (!getGrid()(target_pos).isSolid() && std::all_of(characters.begin(), characters.end(),
 			[target_pos](GameCharacter gc){ return (sf::Vector2i) gc.getPosition() != target_pos; })) {
-		it->moveTo(direction);
+		if (!it->moveTo(direction)) statusMessage.setStatusMessage(MSG_NOT_ENOUGH_AP, SEVERITY_CRITICAL);
 		recalculateLOS = true;
+		updateGameState();
 		return true;
 	} else {
 		return false;
@@ -57,28 +61,86 @@ bool Game::characterMoveUp(gc_iterator it) {
 }
 
 bool Game::characterMoveDown(gc_iterator it) {
+	//std::cout << "Moved\n";
 	sf::Vector2i dir(0, 1);
 	return characterMove(it, dir);
 }
 
 bool Game::characterPickUpItem(gc_iterator it) {
-	if (getSelectedCharacter()->addItem(getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).getTopItem())) {
+	if (getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).getTopItem()->getType() == Type_None) {
+		statusMessage.setStatusMessage(MSG_NOTHING_TO_PICK, SEVERITY_INFORMATION);
+		return false;
+	}
+	switch (getSelectedCharacter()->addItem(getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).getTopItem())) {
+	case not_enough_ap:
+		statusMessage.setStatusMessage(MSG_NOT_ENOUGH_AP, SEVERITY_CRITICAL);
+		return false;
+	case inventory_full:
+		statusMessage.setStatusMessage(MSG_INVENTORY_FULL, SEVERITY_CRITICAL);
+		return false;
+	default:
 		getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).popItem();
+		updateGameState();
 		return true;
 	}
 	return false;
 }
 
 bool Game::characterDropItem(gc_iterator it) {
+	if (getSelectedCharacter()->getSelectedItemIndex() == -1) {
+		statusMessage.setStatusMessage(MSG_ITEM_NONE_SELECTED, SEVERITY_INFORMATION);
+		return false;
+	}
+
 	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItemIndex()]);
 	if (getSelectedCharacter()->removeSelectedItem()) {
+		updateGameState();
 		return true;
 	}
 	else {
 		// Could not drop the item, probably not enough AP so we need to pop the item we just added to the map
+		statusMessage.setStatusMessage(MSG_NOT_ENOUGH_AP, SEVERITY_CRITICAL);
 		getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).popItem();
 		return false;
 	}
+}
+
+void Game::characterUseItem(gc_iterator it) {
+	//Pass-through function to enable status listening...
+	switch (it->useSelected()) {
+	case not_enough_ap:
+		statusMessage.setStatusMessage(MSG_NOT_ENOUGH_AP, SEVERITY_CRITICAL);
+		break;
+	case item_weapon_equipped:
+		statusMessage.setStatusMessage(MSG_WEAPON_EQUIPPED, SEVERITY_INFORMATION);
+		break;
+	case item_weapon_unequipped:
+		statusMessage.setStatusMessage(MSG_WEAPON_UNEQUIPPED, SEVERITY_INFORMATION);
+		break;
+	case item_unusable:
+		statusMessage.setStatusMessage(MSG_ITEM_UNUSABLE, SEVERITY_INFORMATION);
+		break;
+	case item_healed:
+		statusMessage.setStatusMessage(MSG_ITEM_HEALED, SEVERITY_INFORMATION);
+		break;
+	case item_max_health:
+		statusMessage.setStatusMessage(MSG_ITEM_MAX_HEALTH, SEVERITY_INFORMATION);
+		break;
+	case item_none_selected:
+		statusMessage.setStatusMessage(MSG_ITEM_NONE_SELECTED, SEVERITY_INFORMATION);
+		break;
+	default:
+		break;
+	}
+}
+
+void Game::characterDropAllItems(GameCharacter& gc) {
+	//Called when a character is killed to drop its inventory contents
+	for (auto &item : gc.getInventory()) {
+		if (item->getType() == Type_None) continue;
+		getGrid().getTile(gc.getPosition().x, gc.getPosition().y).addItem(item);
+	}
+
 }
 
 // Trace line from gamecharacter location to target, returning
@@ -108,7 +170,21 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 	// get weapon behavior from equipped weapon, ie. simple, explosive, several shots
 	// get error on target tile from weapon behavior, ie how much actual target tile deviates from selected tile
 	std::vector<sf::Vector2u> endTiles;
-	int numberOfShots = it->shoot();
+	int numberOfShots = 0;
+	switch (it->shoot(numberOfShots)) {
+	case not_enough_ap:
+		statusMessage.setStatusMessage(MSG_NOT_ENOUGH_AP, SEVERITY_CRITICAL);
+		break;
+	case shoot_reload:
+		statusMessage.setStatusMessage(MSG_RELOADING, SEVERITY_INFORMATION);
+		break;
+	case shoot_no_ammo:
+		statusMessage.setStatusMessage(MSG_NOT_ENOUGH_AMMO, SEVERITY_CRITICAL);
+		break;
+	default:
+		break;
+	}
+
 	auto weapon = it->getEquipped();
 	
 	for (int i = 0; i < numberOfShots; ++i) {
@@ -118,7 +194,10 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 		for (auto &gc : characters) {
 			if (gc.getPosition() == endTile) {
 				int dmg = weapon->getDamage();
-				if (gc.sufferDamage(dmg)) recalculateLOS = true;
+				if (gc.sufferDamage(dmg)) {
+					characterDropAllItems(gc);
+					recalculateLOS = true;
+				}
 				std::cout << "character suffered " << dmg << " damage" << std::endl;
 				break;
 			}
@@ -127,6 +206,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 	}
 
 	std::cout << "Number of shots fired: " << numberOfShots << std::endl;
+	updateGameState();
 	return endTiles;
 }
 
@@ -241,4 +321,63 @@ bool Game::lineofSight(int x1,int y1,int x2,int y2)  {
         }
     }
     return true;
+}
+
+void Game::updateGameState()
+{
+	if (matchEnded()) {
+		gameState = GameState::match_ended;
+		setSelectedCharacter(getCharacters().end());
+	}
+}
+
+void Game::removeDeadCharacters()
+{
+	//Find out selected character index
+	int selectedCharIndex = -1;
+
+	for (int i = 0; i < getCharacters().size(); ++i) {
+		if (characters.begin() + i == getSelectedCharacter()) {
+			selectedCharIndex = static_cast<int>(i);
+			break;
+		}
+	}
+
+	int i = 0;
+	for (auto it = characters.begin(); it != characters.end(); ++i) {
+		if (it->shouldBeRemoved()) {
+			it = characters.erase(it);
+			if (selectedCharIndex == -1) {
+				setSelectedCharacter(characters.end());
+			} else if (i == selectedCharIndex) {
+				setSelectedCharacter(characters.end());
+			} else if (i < selectedCharIndex) {
+				setSelectedCharacter(characters.begin() + (selectedCharIndex - 1));
+			} else {
+				setSelectedCharacter(characters.begin() + (selectedCharIndex));
+			}
+		} else {
+			++it;
+		}
+	}
+}
+
+bool Game::matchEnded()
+{
+	return isWinner(1) || isWinner(2);
+}
+
+bool Game::isWinner(unsigned int playerIdx)
+{
+	//check if number of turns has been exceeded
+	if (playerIdx == 2 && turnNo > maxTurns) return true;
+
+	//check for characters alive
+	unsigned int numCharacters = 0;
+	for (auto &character : getCharacters()) {
+		if (character.getTeam() != playerIdx && !(character.isDead())) {
+			numCharacters++;
+		}
+	}
+	return numCharacters == 0;
 }

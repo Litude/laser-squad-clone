@@ -5,15 +5,14 @@
 #include <SFML/Graphics.hpp>
 
 enum ScreenResult {
-	MainMenuScene, NewGameScene, GameScene, EditorScene, Exit
+	MainMenuScene, NewGameScene, GameScene, EditorScene, ControlsScene, Exit
 };
 
 class Screen
 {
 public:
-	Screen(void);
-	virtual ~Screen();
-	virtual ScreenResult Run(sf::RenderWindow &App);
+	virtual ~Screen() = 0;
+	virtual ScreenResult Run(sf::RenderWindow &App) = 0;
 private:
 };
 
