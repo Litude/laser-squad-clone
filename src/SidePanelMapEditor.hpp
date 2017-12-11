@@ -30,9 +30,12 @@ private:
 	std::shared_ptr<sf::Texture> texItems;
 	sf::View interfaceView;
 
-	std::vector<Button> buttons;
+	//std::vector<Button> buttons;
+	std::vector<Button> buttons_grounds;
+	std::vector<Button> buttons_blocks;
 
 	Button createGroundTileButton(TileGround tileGround, MapEditor &editor);
+	Button createBlockTileButton(TileBlock tileBlock, MapEditor &editor);
 	
 	sf::RectangleShape interfaceBkg;
 	Button buttonExit;

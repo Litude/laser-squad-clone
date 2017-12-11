@@ -362,3 +362,9 @@ void MapEditor::setGroundTile(TileGround tileGround) {
 	currentTile.setTile(tileGround, currentTile.getBlock());
 	tileMap->updateTile(selectToolCoord);
 }
+
+void MapEditor::setBlockTile(TileBlock tileBlock) {
+	auto& currentTile = game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
+	currentTile.setTile(currentTile.getGround(), tileBlock);
+	tileMap->updateTile(selectToolCoord);
+}

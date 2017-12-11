@@ -33,6 +33,7 @@ public:
     virtual ScreenResult Run(sf::RenderWindow &App);
 	void exitToMainMenu();
 	void setGroundTile(TileGround tileGround);
+	void setBlockTile(TileBlock tileBlock);
 private:
     ScreenResult m_screenResult;
 private:
@@ -52,15 +53,10 @@ private:
     std::shared_ptr<sf::Font> font;
     std::shared_ptr<sf::Texture> texPlayer1;
     std::shared_ptr<sf::Texture> texPlayer2;
-	//std::shared_ptr<sf::Texture> texGrounds;
-	//std::shared_ptr<sf::Texture> texBlocks;
-    //std::shared_ptr<sf::Texture> texItems;
     std::shared_ptr<sf::Texture> backgroundTexture;
     sf::Sprite backgroundSprite;
     sf::View gameView;
     sf::View interfaceView;
-
-	//std::vector<Button> buttons;
     
     sf::RectangleShape interfaceBkg;
     Button buttonExit;
