@@ -11,9 +11,8 @@ enum ScreenResult {
 class Screen
 {
 public:
-	Screen(void);
-	virtual ~Screen();
-	virtual ScreenResult Run(sf::RenderWindow &App);
+	virtual ~Screen() = 0;
+	virtual ScreenResult Run(sf::RenderWindow &App) = 0;
 private:
 };
 

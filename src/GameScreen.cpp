@@ -89,6 +89,14 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	}
 	backgroundSprite.setTexture(*backgroundTexture);
 
+	crosshairTexture = std::make_shared<sf::Texture>(sf::Texture());
+	if (!crosshairTexture->loadFromFile("img/crosshair.png"))
+	{
+		std::cerr << "Error loading crosshair.png" << std::endl;
+	}
+	crossHairSprite.setTexture(*crosshairTexture);
+	crossHairSprite.setOrigin(crossHairSprite.getGlobalBounds().width / 2, crossHairSprite.getGlobalBounds().height / 2);
+
 	//Game drawing initialization
 	selectedCharacter = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
 	selectedCharacter.setOutlineColor(sf::Color::Yellow);
@@ -123,8 +131,8 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	}
 
 	//Ray tracing line for shooting
-	rayLine[0].color = sf::Color::Red;
-	rayLine[1].color = sf::Color::Blue;
+	rayLine.setColorPoint1(sf::Color(255, 0, 0, 155));
+	rayLine.setColorPoint2(sf::Color(0, 0, 255, 155));
 
 	// Create a render-texture to draw visible tiles based on line of sight
 	renderTexture_visibleTiles = std::make_shared<sf::RenderTexture>();
@@ -378,15 +386,22 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 		auto gc = game.getSelectedCharacter();
 		auto target = getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView);
 		auto origin = gc->getRenderPosition();
-		rayLine[0].position = sf::Vector2f(static_cast<float>(origin.x + TILESIZE / 2), static_cast<float>(origin.y + TILESIZE / 2));
-		rayLine[1].position = Util::mapToPixels(game.traceFromCharacter(gc, target, true));
+		rayLine.setPositionPoint1(sf::Vector2f(static_cast<float>(origin.x + TILESIZE / 2), static_cast<float>(origin.y + TILESIZE / 2)));
+		rayLine.setPositionPoint2(Util::mapToPixels(game.traceFromCharacter(gc, target, true)));
 		//"animate" rayline
-		if (rayLine[0].color.r == 255 || rayLine[0].color.r == 0) rayIncr *= -1;
-		rayLine[0].color.r += rayIncr;
-		rayLine[0].color.b += rayIncr * -1;
-		rayLine[1].color.r += rayIncr * -1;
-		rayLine[1].color.b += rayIncr;
+		if (rayLine.getColorPoint1().r == 255 || rayLine.getColorPoint1().r == 0) rayIncr *= -1;
+		sf::Color color1 = rayLine.getColorPoint1();
+		color1.r += rayIncr;
+		color1.b += rayIncr * -1;
+		rayLine.setColorPoint1(color1);
+		sf::Color color2 = rayLine.getColorPoint2();
+		color2.r += rayIncr * -1;
+		color2.b += rayIncr;
+		rayLine.setColorPoint2(color2);
 		App.draw(rayLine);
+		crossHairSprite.setPosition(rayLine.getPositionPoint2());
+		crossHairSprite.setColor(color2);
+		App.draw(crossHairSprite);
 	}
 	// Draw visible area for the selected game character
 	DrawVisibleArea(App, visibleTiles);
@@ -492,8 +507,8 @@ void GameScreen::updateUIComponents(sf::RenderWindow & App)
 
 void GameScreen::endTurn(sf::RenderWindow &App) {
 	mouseMode = MouseMode::select;
-	rayLine[0].position = sf::Vector2f(0, 0);
-	rayLine[1].position = sf::Vector2f(0, 0);
+	rayLine.setPositionPoint1(sf::Vector2f(0, 0));
+	rayLine.setPositionPoint2(sf::Vector2f(0, 0));
 	game.endTurn();
 	// Reset view for the next player
 	updateLayout(App);

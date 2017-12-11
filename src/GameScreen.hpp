@@ -14,6 +14,7 @@
 #include "Projectile.hpp"
 #include "SidePanel.hpp"
 #include "GameOverPanel.hpp"
+#include "Line.hpp"
 
 namespace MouseMode {
 	enum Mode { shoot, select };
@@ -50,8 +51,9 @@ private:
 	std::shared_ptr<sf::Font> font;
 	std::shared_ptr<sf::Texture> texPlayer1;
 	std::shared_ptr<sf::Texture> texPlayer2;
-	std::shared_ptr<sf::Texture> texItems;
 	std::shared_ptr<sf::Texture> backgroundTexture;
+	std::shared_ptr<sf::Texture> crosshairTexture;
+	sf::Sprite crossHairSprite;
 	sf::Sprite backgroundSprite;
 	sf::View gameView;
 	sf::View interfaceView;
@@ -63,7 +65,7 @@ private:
 	sf::RectangleShape healthbar;
 
 	int rayIncr = 1;
-	sf::VertexArray rayLine{ sf::Lines, 2 };
+	sf::Line rayLine;
 
 	std::vector<sf::Sprite> mapTiles;
 	sf::Clock fpsclock;
