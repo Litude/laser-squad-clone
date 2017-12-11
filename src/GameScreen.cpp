@@ -221,7 +221,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 					//In select mode
 					else {
 						for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
-							if (it->getTeam() == game.getCurrentPlayer() && it->getPosition() == getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView)) {
+							if (it->getTeam() == game.getCurrentPlayer() && !(it->isDead()) && it->getPosition() == getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView)) {
 								game.setSelectedCharacter(it); //Select clicked character
 								break;
 							}

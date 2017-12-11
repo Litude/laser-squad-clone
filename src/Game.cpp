@@ -349,6 +349,8 @@ void Game::removeDeadCharacters()
 			it = characters.erase(it);
 			if (selectedCharIndex == -1) {
 				setSelectedCharacter(characters.end());
+			} else if (i == selectedCharIndex) {
+				setSelectedCharacter(characters.end());
 			} else if (i < selectedCharIndex) {
 				setSelectedCharacter(characters.begin() + (selectedCharIndex - 1));
 			} else {
