@@ -47,7 +47,7 @@ private:
 	void DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles);
 	void addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination, int delay=0);
 
-	Game game;
+	std::shared_ptr<Game> game;
 	std::shared_ptr<TileMap> tileMap;
 	std::shared_ptr<sf::Font> font;
 	std::shared_ptr<sf::Texture> texPlayer1;
