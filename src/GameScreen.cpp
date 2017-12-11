@@ -526,6 +526,9 @@ void GameScreen::endTurn(sf::RenderWindow &App) {
 	rayLine.setPositionPoint1(sf::Vector2f(0, 0));
 	rayLine.setPositionPoint2(sf::Vector2f(0, 0));
 	game.endTurn();
+	EndTurnScreen endTurnScr;
+	endTurnScr.setTurn(game.getCurrentPlayer());
+	m_screenResult = endTurnScr.Run(App);
 	// Reset view for the next player
 	updateLayout(App);
 }

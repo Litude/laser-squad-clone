@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 enum ScreenResult {
-	MainMenuScene, NewGameScene, GameScene, EditorScene, ControlsScene, NewMapMenuScene, Exit
+	MainMenuScene, NewGameScene, GameScene, EditorScene, ControlsScene, NewMapMenuScene, EndTurnScene, Exit
 };
 
 class Screen
