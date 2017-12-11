@@ -76,9 +76,11 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.addCharacter(sf::Vector2u(8, 8), 2);
 	game.addCharacter(sf::Vector2u(10, 10), 2);
 
-	jreader::writeJSON(game, "test_level");
-
 	game.setSelectedCharacter(game.getCharacters().end());
+
+	game.getCharacters()[0].addItem(std::make_shared<DoubleBarrel>(DoubleBarrel()));
+
+	jreader::writeJSON(game, "test_level");
 
 	//Interface drawing initialization
 	font = std::make_shared<sf::Font>(sf::Font());
