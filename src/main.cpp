@@ -23,8 +23,6 @@ int main(int argc, char* argv[]) {
 
 	std::unique_ptr<Screen> screen;
 
-  auto g = jreader::loadJSON("test_level");
-
 	//Main loop
 	while (result != ScreenResult::Exit)
 	{
@@ -54,7 +52,7 @@ int main(int argc, char* argv[]) {
 			if (mapScreen->getMapInitType() == MapInitType::new_map) {
 				screen.reset(new MapEditor(App, mapScreen->getMapSizeX(), mapScreen->getMapSizeY()));
 			} else {
-				screen.reset(new MapEditor(App, mapScreen->getMapSizeX(), mapScreen->getMapSizeY()));
+				screen.reset(new MapEditor(App, mapScreen->getMapName()));
 			}
 			result = screen->Run(App);
 		}

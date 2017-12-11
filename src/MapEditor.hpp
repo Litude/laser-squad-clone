@@ -30,13 +30,16 @@ class MapEditor : public Screen
 {
 public:
     MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int height);
+	MapEditor(sf::RenderWindow &App, std::string mapName);
     virtual ScreenResult Run(sf::RenderWindow &App);
 	void exitToMainMenu();
 	void setGroundTile(TileGround tileGround);
 	void setBlockTile(TileBlock tileBlock);
+	bool saveMap(std::string name);
 private:
     ScreenResult m_screenResult;
 private:
+	bool initComponents(sf::RenderWindow & App);
     void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom);
     void DrawGame(sf::RenderWindow &App);
     void DrawUI(sf::RenderWindow &App);
