@@ -78,5 +78,17 @@ void AnimationManager::changeAnim(unsigned int animID)
 
 bool AnimationManager::isFinished()
 {
-	return (animations[currentAnim].duration < t) ? true : false;
+	int duration = this->animations[currentAnim].duration;
+	unsigned int frame = static_cast<int>(t / duration);
+
+	if (frame == (this->animations[currentAnim].getLength() - 1) && animations[currentAnim].duration < t) {
+		return true;
+	} else {
+		return false;
+	}
+
+	//if (frame >= this->animations[currentAnim].getLength()) {
+	//	return true;
+	//}
+	//return (animations[currentAnim].duration < t) ? true : false;
 }
