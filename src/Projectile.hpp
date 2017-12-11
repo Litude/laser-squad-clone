@@ -13,7 +13,7 @@
 class Projectile {
 public:
 	//origin and destination in pixels
-	Projectile(ItemIcon weaponType, sf::Vector2f origin, sf::Vector2f destination, int delay=0) : m_origin(origin), m_destination(destination), delay(delay) {
+	Projectile(AmmoType weaponType, sf::Vector2f origin, sf::Vector2f destination, int delay=0) : m_origin(origin), m_destination(destination), delay(delay) {
 		proj.setTexture(*PROJ_TEXTURES);
 		sf::Vector2i defSize(32, 32);
 		sf::IntRect rect(sf::Vector2i(0, 0), defSize);
