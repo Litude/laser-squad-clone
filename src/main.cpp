@@ -12,6 +12,7 @@
 #include "constants.hpp"
 #include "MapEditor.hpp"
 #include "ControlsScreen.hpp"
+#include "GridLoader.hpp"
 
 int main(int argc, char* argv[]) {
 
@@ -20,6 +21,8 @@ int main(int argc, char* argv[]) {
 	ScreenResult result = ScreenResult::MainMenuScene;
 
 	std::unique_ptr<Screen> screen;
+
+  auto g = jreader::loadJSON("test_level");
 
 	//Main loop
 	while (result != ScreenResult::Exit)
