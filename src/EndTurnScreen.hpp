@@ -1,25 +1,19 @@
-#ifndef LASER_NEWMAPMENUSCREEN_HPP
-#define LASER_NEWMAPMENUSCREEN_HPP
+#ifndef LASER_ENDTURNSCREEN_HPP
+#define LASER_ENDTURNSCREEN_HPP
 
 #include <iostream>
 #include "Screen.hpp"
 #include "Button.hpp"
-#include "TextField.hpp"
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-enum MapInitType { new_map, load_map };
-
-class NewMapMenuScreen : public Screen
+class EndTurnScreen : public Screen
 {
 public:
-	NewMapMenuScreen(void);
+	EndTurnScreen(void);
 	virtual ScreenResult Run(sf::RenderWindow &App);
 	void openScreen(ScreenResult res);
-	unsigned int getMapSizeX();
-	unsigned int getMapSizeY();
-	std::string getMapName();
-	MapInitType getMapInitType() { return mapInitType; }
+	void setTurn(unsigned int turn) { playerTurn = turn; };
 private:
 	ScreenResult m_screenResult;
 private:
@@ -28,22 +22,14 @@ private:
 	bool initComponents(sf::RenderWindow & App);
 	void updateLayout(sf::RenderWindow & App);
 
+	unsigned int playerTurn = 1;
 	std::shared_ptr<sf::Texture> backgroundTexture;
 	sf::Sprite backgroundSprite;
 	std::shared_ptr<sf::Texture> logoTexture;
 	sf::Sprite logoSprite;
 	std::shared_ptr<sf::Font> font;
 	std::vector<Button> buttons;
-
-	TextField mapSizeXField;
-	TextField mapSizeYField;
-	TextField mapNameField;
-
-	Button buttonCreateMap;
-	Button buttonLoadMap;
-	Button buttonBack;
-
-	MapInitType mapInitType;
+	sf::Text turnText;
 };
 
 #endif

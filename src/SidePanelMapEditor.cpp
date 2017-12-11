@@ -24,6 +24,16 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	buttonExit = Button("Exit to Main Menu", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
 	buttonExit.setCallback([&] { editor.exitToMainMenu(); });
 
+	texPlayer1 = std::make_shared<sf::Texture>(sf::Texture());
+	if (!texPlayer1->loadFromFile("img/character1_sheet.png")) {
+		std::cout << "Could not load 'img/character1_sheet.png'\n";
+	}
+
+	texPlayer2 = std::make_shared<sf::Texture>(sf::Texture());
+	if (!texPlayer2->loadFromFile("img/character2_sheet.png")) {
+		std::cout << "Could not load 'img/character2_sheet.png'\n";
+	}
+
 	texGrounds = std::make_shared<sf::Texture>(sf::Texture());
 	if (!texGrounds->loadFromFile("img/tileset_grounds.png")) {
 		std::cout << "Could not load 'img/tileset_grounds.png'\n";
@@ -33,6 +43,19 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	if (!texBlocks->loadFromFile("img/tileset_blocks.png")) {
 		std::cout << "Could not load 'img/tileset_blocks.png'\n";
 	}
+
+	texItems = std::make_shared<sf::Texture>(sf::Texture());
+	if (!texItems->loadFromFile("img/tileset_items.png")) {
+		std::cout << "Could not load 'img/tileset_items.png'\n";
+	}
+
+	mapNameField = TextField(25, rs, *font);
+	mapNameField.setPosition(sf::Vector2f(300.f, 450.f));
+	mapNameField.setSize(170, 40);
+	mapNameField.setDefaultStr("Map name...");
+
+	buttonSaveMap = Button("Save", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
+	buttonSaveMap.setCallback([&] { this->saveMap(editor); });
 
 	// Map edit buttons
 
@@ -58,16 +81,28 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	button = createBlockTileButton(TileBlock::wall, editor);
 	buttons_blocks.push_back(button);
 
+	// Item buttons
+	button = createItemButton(Item(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(HealthPackLarge(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(HealthPackSmall(), editor);
+	buttons_items.push_back(button);
+
+	// Character buttons
+	button = createRemoveCharacterButton(editor);
+	buttons_characters.push_back(button);
+	button = createCharacterButton(1, editor);
+	buttons_characters.push_back(button);
+	button = createCharacterButton(2, editor);
+	buttons_characters.push_back(button);
+
 	//Game drawing initialization
 	selectedItem = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
 	selectedItem.setOutlineColor(sf::Color::Yellow);
 	selectedItem.setOutlineThickness(2.0f);
 	selectedItem.setFillColor(sf::Color::Transparent);
 
-	texItems = std::make_shared<sf::Texture>(sf::Texture());
-	if (!texItems->loadFromFile("img/tileset_items.png")) {
-		std::cout << "Could not load 'img/tileset_items.png'\n";
-	}
 	updateLayout(App);
 }
 
@@ -75,11 +110,21 @@ void SidePanelMapEditor::update(sf::Event& event, sf::RenderWindow& App, Game &g
 {
 	// Update buttons
 	buttonExit.update(event, App);
+	buttonSaveMap.update(event, App);
+	mapNameField.update(event, App);
 	for (auto it = buttons_grounds.begin(); it != buttons_grounds.end(); ++it) {
 		it->setState(state::normal);
 		it->update(event, App);
 	}
 	for (auto it = buttons_blocks.begin(); it != buttons_blocks.end(); ++it) {
+		it->setState(state::normal);
+		it->update(event, App);
+	}
+	for (auto it = buttons_items.begin(); it != buttons_items.end(); ++it) {
+		it->setState(state::normal);
+		it->update(event, App);
+	}
+	for (auto it = buttons_characters.begin(); it != buttons_characters.end(); ++it) {
 		it->setState(state::normal);
 		it->update(event, App);
 	}
@@ -104,10 +149,18 @@ void SidePanelMapEditor::draw(sf::RenderWindow &App, Game &game, MapEditor& edit
 
 	App.draw(textFPS);
 	App.draw(buttonExit);
+	App.draw(mapNameField);
+	App.draw(buttonSaveMap);
 	for (auto button : buttons_grounds) {
 		App.draw(button);
 	}
 	for (auto button : buttons_blocks) {
+		App.draw(button);
+	}
+	for (auto button : buttons_items) {
+		App.draw(button);
+	}
+	for (auto button : buttons_characters) {
 		App.draw(button);
 	}
 }
@@ -134,6 +187,9 @@ void SidePanelMapEditor::updateLayout(sf::RenderWindow & App)
 	rs.setSize(sf::Vector2f(static_cast<float>(menuSize - margin), 40));
 	buttonExit.setRectangleShape(rs);
 
+	buttonSaveMap.setPosition(sf::Vector2f(static_cast<float>(menuCenterX), static_cast<float>(buttonExit.getGlobalBounds().top - buttonSaveMap.getGlobalBounds().height / 2 - margin)));
+	mapNameField.setPosition(sf::Vector2f(static_cast<float>(menuCenterX), static_cast<float>(buttonSaveMap.getGlobalBounds().top - mapNameField.getGlobalBounds().height / 2 - margin)));
+
 	// Ground buttons
 	unsigned int groundButtonsGroupY = 40;
 	unsigned int groundButtonsOffset = menuSize / 5;
@@ -143,13 +199,28 @@ void SidePanelMapEditor::updateLayout(sf::RenderWindow & App)
 	}
 
 	// Block buttons
-	unsigned int blockButtonsGroupY = 140;
+	unsigned int blockButtonsGroupY = 40 + 120;
 	unsigned int blockButtonsOffset = menuSize / 5;
 	for (unsigned int i = 0; i < buttons_blocks.size(); i++) {
 		auto bounds = buttons_blocks[i].getGlobalBounds();
 		buttons_blocks[i].setPosition(sf::Vector2f(static_cast<float>(App.getSize().x - menuSize + margin + bounds.width / 2) + ((i % ITEMS_PER_ROW) * blockButtonsOffset + bounds.height / 2), static_cast<float>(blockButtonsGroupY + (i / ITEMS_PER_ROW) * (blockButtonsOffset))));
 	}
 
+	// Item buttons
+	unsigned int itemButtonsGroupY = 40 + 120 * 2;
+	unsigned int itemButtonsOffset = menuSize / 5;
+	for (unsigned int i = 0; i < buttons_items.size(); i++) {
+		auto bounds = buttons_items[i].getGlobalBounds();
+		buttons_items[i].setPosition(sf::Vector2f(static_cast<float>(App.getSize().x - menuSize + margin + bounds.width / 2) + ((i % ITEMS_PER_ROW) * itemButtonsOffset + bounds.height / 2), static_cast<float>(itemButtonsGroupY + (i / ITEMS_PER_ROW) * (itemButtonsOffset))));
+	}
+
+	// Character buttons
+	unsigned int characterButtonsGroupY = 40 + 120 * 3;
+	unsigned int characterButtonsOffset = menuSize / 5;
+	for (unsigned int i = 0; i < buttons_characters.size(); i++) {
+		auto bounds = buttons_characters[i].getGlobalBounds();
+		buttons_characters[i].setPosition(sf::Vector2f(static_cast<float>(App.getSize().x - menuSize + margin + bounds.width / 2) + ((i % ITEMS_PER_ROW) * characterButtonsOffset + bounds.height / 2), static_cast<float>(characterButtonsGroupY + (i / ITEMS_PER_ROW) * (characterButtonsOffset))));
+	}
 
 	updateUIComponents(App);
 }
@@ -198,4 +269,61 @@ Button SidePanelMapEditor::createBlockTileButton(TileBlock tileBlock, MapEditor 
 	Button button = Button("", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), buttonSprite);
 	button.setCallback([&, tileBlock] { editor.setBlockTile(tileBlock); });
 	return button;
+}
+
+Button SidePanelMapEditor::createItemButton(Item item, MapEditor &editor) {
+	sf::Sprite buttonSprite;
+	buttonSprite.setTexture(*texItems);
+	sf::IntRect buttonSpriteRect;
+	buttonSpriteRect.width = TILESIZE;
+	buttonSpriteRect.height = TILESIZE;
+	buttonSpriteRect.top = 0;
+	buttonSpriteRect.left = 0;
+	int tileNumber_x = item.getIcon();
+	int tu = tileNumber_x * TILESIZE;
+	buttonSpriteRect.left = tu;
+	buttonSprite.setTextureRect(buttonSpriteRect);
+
+	Button button = Button("", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), buttonSprite);
+	if (item.getIcon() == ItemIcon::Icon_None) {
+		button.setCallback([&, item] { editor.removeItem(); });
+	}
+	else {
+		button.setCallback([&, item] { editor.addItem(item); });
+	}
+	return button;
+}
+
+Button SidePanelMapEditor::createCharacterButton(unsigned int team, MapEditor &editor) {
+	sf::Sprite buttonSprite;
+	if (team == 1) {
+		buttonSprite.setTexture(*texPlayer1);
+	} else {
+		buttonSprite.setTexture(*texPlayer2);
+	}
+	sf::IntRect buttonSpriteRect;
+	buttonSpriteRect.width = TILESIZE;
+	buttonSpriteRect.height = TILESIZE;
+	buttonSpriteRect.top = 0;
+	buttonSpriteRect.left = 0;
+	buttonSprite.setTextureRect(buttonSpriteRect);
+
+	Button button = Button("", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), buttonSprite);
+	button.setCallback([&, team] { editor.addCharacter(team); });
+	return button;
+}
+
+Button SidePanelMapEditor::createRemoveCharacterButton(MapEditor &editor) {
+	sf::RectangleShape rs;
+	rs.setFillColor(sf::Color::Red);
+	rs.setSize(sf::Vector2f(TILESIZE, TILESIZE));
+	Button button = Button("Exit to Main Menu", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	button.setCallback([&] { editor.removeCharacter(); });
+	return button;
+}
+
+void SidePanelMapEditor::saveMap(MapEditor &editor) {
+	if (!editor.saveMap(mapNameField.getString())) {
+		std::cout << "Could not save map";
+	}
 }

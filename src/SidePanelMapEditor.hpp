@@ -11,6 +11,7 @@
 #include "Util.hpp"
 #include "Weapon.hpp"
 #include "Projectile.hpp"
+#include "TextField.hpp"
 
 class MapEditor;
 
@@ -28,19 +29,30 @@ private:
 	std::shared_ptr<sf::Texture> texGrounds;
 	std::shared_ptr<sf::Texture> texBlocks;
 	std::shared_ptr<sf::Texture> texItems;
+	std::shared_ptr<sf::Texture> texPlayer1;
+	std::shared_ptr<sf::Texture> texPlayer2;
 	sf::View interfaceView;
 
-	//std::vector<Button> buttons;
+	void saveMap(MapEditor &editor);
+
+
 	std::vector<Button> buttons_grounds;
 	std::vector<Button> buttons_blocks;
+	std::vector<Button> buttons_items;
+	std::vector<Button> buttons_characters;
 
 	Button createGroundTileButton(TileGround tileGround, MapEditor &editor);
 	Button createBlockTileButton(TileBlock tileBlock, MapEditor &editor);
+	Button createItemButton(Item item, MapEditor &editor);
+	Button createCharacterButton(unsigned int team, MapEditor &editor);
+	Button createRemoveCharacterButton(MapEditor &editor);
 	
 	sf::RectangleShape interfaceBkg;
 	Button buttonExit;
 	sf::RectangleShape selectedItem;
 	sf::Text textFPS;
+	TextField mapNameField;
+	Button buttonSaveMap;
 
 	sf::Clock fpsclock;
 	sf::Clock clock;

@@ -27,7 +27,7 @@ public:
   Button(std::string str,  sf::Font& font, sf::Uint32 style, int size, sf::Vector2f position, sf::RectangleShape Rshape);
   ~Button();
 
-  void setText(std::string s) {str = s;};
+  void setText(std::string s);
   void setFont(sf::Font& f) {b_font = f;};
   void setStyle(sf::Uint32 s) {b_style = s;}
   void setSize(int size) {b_text.setCharacterSize(size);};

@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
 			if (mapScreen->getMapInitType() == MapInitType::new_map) {
 				screen.reset(new MapEditor(App, mapScreen->getMapSizeX(), mapScreen->getMapSizeY()));
 			} else {
-				screen.reset(new MapEditor(App, mapScreen->getMapSizeX(), mapScreen->getMapSizeY()));
+				screen.reset(new MapEditor(App, mapScreen->getMapName()));
 			}
 			result = screen->Run(App);
 		}

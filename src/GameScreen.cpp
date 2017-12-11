@@ -331,8 +331,7 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 		break;
 		//enter shooting mode
 	case sf::Keyboard::Q:
-		mouseMode = (mouseMode == MouseMode::shoot) ? MouseMode::select : MouseMode::shoot;
-		std::cout << "mousemode changed to " << mouseMode << std::endl;
+		toggleAttackMode();
 		break;
 	default:
 		break;
@@ -536,6 +535,9 @@ void GameScreen::endTurn(sf::RenderWindow &App) {
 	rayLine.setPositionPoint1(sf::Vector2f(0, 0));
 	rayLine.setPositionPoint2(sf::Vector2f(0, 0));
 	game->endTurn();
+	EndTurnScreen endTurnScr;
+	endTurnScr.setTurn(game->getCurrentPlayer());
+	m_screenResult = endTurnScr.Run(App);
 	// Reset view for the next player
 	updateLayout(App);
 }
@@ -560,6 +562,11 @@ void GameScreen::equipItem() {
 	if (game->getSelectedCharacter() != game->getCharacters().end()) {
 		game->characterUseItem(game->getSelectedCharacter());
 	}
+}
+
+void GameScreen::toggleAttackMode() {
+	mouseMode = (mouseMode == MouseMode::shoot) ? MouseMode::select : MouseMode::shoot;
+	std::cout << "mousemode changed to " << mouseMode << std::endl;
 }
 
 sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const {

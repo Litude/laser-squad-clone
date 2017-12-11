@@ -31,8 +31,11 @@ SidePanel::SidePanel(sf::RenderWindow &App, GameScreen &parent)
 	textAPLabel.setString("APs");
 	textAPValue.setFont(*font);
 	textAPValue.setCharacterSize(24);
-	textMouseMode.setFont(*font);
-	textMouseMode.setCharacterSize(24);
+	textHPLabel.setFont(*font);
+	textHPLabel.setCharacterSize(24);
+	textHPLabel.setString("HPs");
+	textHPValue.setFont(*font);
+	textHPValue.setCharacterSize(24);
 
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
@@ -43,6 +46,11 @@ SidePanel::SidePanel(sf::RenderWindow &App, GameScreen &parent)
 
 	buttonEndTurn = Button("End turn", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
 	buttonEndTurn.setCallback([&] { parent.endTurn(App); });
+
+	rs.setSize(sf::Vector2f(140, 20));
+
+	buttonAttackMode = Button("Undefined Mode", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
+	buttonAttackMode.setCallback([&] { parent.toggleAttackMode(); });
 
 	rs.setSize(sf::Vector2f(50, 20));
 
@@ -95,6 +103,7 @@ void SidePanel::update(sf::Event& event, sf::RenderWindow& App, Game &game)
 	buttonPickupItem.update(event, App);
 	buttonDropItem.update(event, App);
 	buttonEquipItem.update(event, App);
+	buttonAttackMode.update(event, App);
 			
 	//Handle mouse input
 	if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
@@ -130,12 +139,14 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 	textTurnNoValue.setString(std::to_string(game.getTurnNumber()) + '/' + std::to_string(game.getMaxTurns()));
 	textCurTurnValue.setString(std::to_string(game.getCurrentPlayer()));
 
-	std::string mm = (gameScreen.getMouseMode() == MouseMode::shoot) ? "SHOOT MODE" : "SELECT MODE";
-	textMouseMode.setString(mm);
+	(gameScreen.getMouseMode() == MouseMode::shoot) ? buttonAttackMode.setText("Select Mode") : buttonAttackMode.setText("Attack Mode");
+
+	//buttonAttackMode.setText("Select Mode");
 
 	//TODO: Process selected character attributes here and draw them on the interface...
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
 		textAPValue.setString(std::to_string(game.getSelectedCharacter()->getActionPoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxActionPoints()));
+		textHPValue.setString(std::to_string(game.getSelectedCharacter()->getHitpoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxHitpoints()));
 
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) {
 			unsigned int margin = 10;
@@ -157,9 +168,12 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
 		App.draw(textAPLabel);
 		App.draw(textAPValue);
+		App.draw(textHPLabel);
+		App.draw(textHPValue);
 		App.draw(buttonPickupItem);
 		App.draw(buttonDropItem);
 		App.draw(buttonEquipItem);
+		App.draw(buttonAttackMode);
 		// Draw items
 		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
 			App.draw(inventoryItemBkg[i]);
@@ -189,7 +203,6 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 	}
 
 	App.draw(textFPS);
-	App.draw(textMouseMode);
 	App.draw(buttonExit);
 	App.draw(buttonEndTurn);
 	App.draw(textTurnNoLabel);
@@ -225,6 +238,11 @@ void SidePanel::updateLayout(sf::RenderWindow & App)
 	rs.setFillColor(sf::Color::White);
 	rs.setSize(sf::Vector2f(static_cast<float>(menuSize - margin), 40));
 	buttonEndTurn.setRectangleShape(rs);
+
+	// Attack mode button
+	rs.setSize(sf::Vector2f(static_cast<float>(menuSize - (margin + 10)), 40));
+	buttonAttackMode.setRectangleShape(rs);
+	buttonAttackMode.setPosition(sf::Vector2f(static_cast<float>(menuCenterX), 254));
 
 	// Pick up item button
 	rs.setSize(sf::Vector2f(static_cast<float>(menuSize / 3 - margin), 40));
@@ -268,8 +286,12 @@ void SidePanel::updateUIComponents(sf::RenderWindow & App)
 	textFPS.setPosition(menuCenterX - menuSize / 2 + margin, 0);
 
 	// AP text
-	textAPLabel.setPosition(menuCenterX - menuSize / 2 + margin, 100);
-	textAPValue.setPosition(menuCenterX + menuSize / 2 - margin - textAPValue.getLocalBounds().left - textAPValue.getLocalBounds().width, 100);
+	textAPLabel.setPosition(menuCenterX - menuSize / 2 + margin, 130);
+	textAPValue.setPosition(menuCenterX + menuSize / 2 - margin - textAPValue.getLocalBounds().left - textAPValue.getLocalBounds().width, 130);
+
+	// HP text
+	textHPLabel.setPosition(menuCenterX - menuSize / 2 + margin, 160);
+	textHPValue.setPosition(menuCenterX + menuSize / 2 - margin - textHPValue.getLocalBounds().left - textHPValue.getLocalBounds().width, 160);
 
 	// Turn number text
 	textTurnNoLabel.setPosition(menuCenterX - menuSize / 2 + margin, 25);
@@ -279,9 +301,6 @@ void SidePanel::updateUIComponents(sf::RenderWindow & App)
 	textCurTurnLabel.setPosition(menuCenterX - menuSize / 2 + margin, 50);
 	textCurTurnValue.setPosition(menuCenterX + menuSize / 2 - margin - textCurTurnValue.getGlobalBounds().width, 50);
 
-	// Mousemode text
-	textMouseMode.setPosition(menuCenterX - textMouseMode.getGlobalBounds().width / 2, 150);
-
-	// Mousemode text
+	// Inventory selected item name text
 	selectedInventoryItemName.setPosition(menuCenterX, 340);
 }

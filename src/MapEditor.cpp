@@ -9,6 +9,7 @@
 #include "MapEditor.hpp"
 #include "constants.hpp"
 #include "Health.hpp"
+#include "GridLoader.hpp"
 
 MapEditor::MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int height)
 {
@@ -20,72 +21,34 @@ MapEditor::MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int hei
 	game.initializeGrid(width, height);
 
 	game.setSelectedCharacter(game.getCharacters().end());
-    
-    //Interface drawing initialization
-    font = std::make_shared<sf::Font>(sf::Font());
-    if (!font->loadFromFile("font/Pixellari.ttf")) {
-        std::cout << "Could not load 'font/Pixellari.ttf'\n";
-    }
-    
-    backgroundTexture = std::make_shared<sf::Texture>(sf::Texture());
-    if (!backgroundTexture->loadFromFile("img/background.png"))
-    {
-        std::cerr << "Error loading background.png" << std::endl;
-    }
-    backgroundSprite.setTexture(*backgroundTexture);
 
-    //Game drawing initialization
-    selectedTile = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
-    selectedTile.setOutlineColor(sf::Color::Yellow);
-    selectedTile.setOutlineThickness(2.0f);
-    selectedTile.setFillColor(sf::Color::Transparent);
-    selectedTile.setPosition(0, 0);
-    
-    texPlayer1 = std::make_shared<sf::Texture>(sf::Texture());
-    if (!texPlayer1->loadFromFile("img/character1_sheet.png")) {
-        std::cout << "Could not load 'img/character1_sheet.png'\n";
-    }
-    
-    texPlayer2 = std::make_shared<sf::Texture>(sf::Texture());
-    if (!texPlayer2->loadFromFile("img/character2_sheet.png")) {
-        std::cout << "Could not load 'img/character2_sheet.png'\n";
-    }
-    
-    // Set up animations
-    Animation animation_walk_left(9, 0, 8, 62000);
-    Animation animation_walk_right(11, 0, 8, 62000);
-    Animation animation_walk_down(10, 0, 8, 62000);
-    Animation animation_walk_up(8, 0, 8, 62000);
-    Animation animation_die(20, 0, 5, 125000, false);
-    AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
-    animManager.addAnim(animation_walk_left);
-    animManager.addAnim(animation_walk_right);
-    animManager.addAnim(animation_walk_down);
-    animManager.addAnim(animation_walk_up);
-    animManager.addAnim(animation_die);
-    animManager.changeAnim(animations::walk_down); // Initial animation
-    for (auto &character : game.getCharacters()) {
-        character.setAnimationManager(animManager);
-    }
+	if (!initComponents(App)) {
+		m_screenResult = ScreenResult::Exit;
+	}
+}
 
-	selectToolCoord = sf::Vector2u(0, 0);
+MapEditor::MapEditor(sf::RenderWindow &App, std::string mapName)
+{
+	m_screenResult = ScreenResult::GameScene;
 
-	sidePanel = SidePanelMapEditor(App, *this);
-   
-    updateLayout(App);
-    
-    // Center gameview
-    zoomViewAt(sf::Vector2i(gameView.getCenter().x, gameView.getCenter().y), App, gameView, 3.f);
-    gameView.setCenter(sf::Vector2f(game.getGrid().getWidth() / 2 * TILESIZE, game.getGrid().getHeight() / 2 * TILESIZE));
+	try {
+		auto game = jreader::loadJSON(mapName);
+
+		//Game logic initialization
+		game->setSelectedCharacter(game->getCharacters().end());
+
+		if (!initComponents(App)) {
+			m_screenResult = ScreenResult::Exit;
+		}
+	} catch (JSONLoadException) {
+		m_screenResult = ScreenResult::NewMapMenuScene;
+	} catch (JSONWriteException) {
+		m_screenResult = ScreenResult::NewMapMenuScene;
+	}
 }
 
 ScreenResult MapEditor::Run(sf::RenderWindow & App)
 {
-    // Create graphical tilemap presentation from the Map
-    tileMap = std::make_shared<TileMap>(TileMap(game.getGrid()));
-    if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", "img/tileset_items.png", sf::Vector2u(TILESIZE, TILESIZE))) {
-        std::cout << "Could not load tilemap\n";
-    }
     sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
     
     AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
@@ -97,6 +60,12 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                 App.close();
                 return ScreenResult::Exit;
             }
+			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+				auto coord = getClickedTilePosition(App, sf::Vector2i(event.mouseButton.x, event.mouseButton.y), gameView);
+				if (coord.x >= 0 && coord.x < game.getGrid().getWidth() && coord.y >= 0 && coord.y < game.getGrid().getHeight()) {
+					selectToolCoord = coord;
+				}
+			}
             if (event.type == sf::Event::MouseWheelScrolled)
             {
                 if (event.mouseWheelScroll.delta > 0)
@@ -266,11 +235,6 @@ void MapEditor::handleKeyPress(sf::Event& event, sf::RenderWindow& App)
 void MapEditor::DrawGame(sf::RenderWindow &App) {
     
     App.setView(gameView);
-    // Center the camera on the selected player (linear interpolation)
-    if (game.getSelectedCharacter() != game.getCharacters().end()) {
-        float factor = 0.01f;
-        gameView.setCenter(sf::Vector2f(gameView.getCenter().x + (game.getSelectedCharacter()->getRenderPosition().x - gameView.getCenter().x) * factor, gameView.getCenter().y + (game.getSelectedCharacter()->getRenderPosition().y - gameView.getCenter().y) * factor));
-    }
     
     //Draw the map
     App.draw(*tileMap);
@@ -312,9 +276,19 @@ void MapEditor::updateLayout(sf::RenderWindow & App)
     
     /** Game View */
     
-    gameView.setSize(App.getSize().x - menuSize, App.getSize().y);
-    gameView.setCenter((App.getSize().x - menuSize) / 2, App.getSize().y / 2); //TODO: This needs to take into account changes to the view
-    gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - menuSize) / App.getSize().x, 1));
+	gameView.setSize(static_cast<float>(App.getSize().x - menuSize), static_cast<float>(App.getSize().y));
+	gameView.setCenter(static_cast<float>(App.getSize().x - menuSize / 2), static_cast<float>(App.getSize().y / 2));
+	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - menuSize) / static_cast<float>(App.getSize().x), 1));
+
+	// Center the camera
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		gameView.setCenter(sf::Vector2f(static_cast<float>(game.getSelectedCharacter()->getRenderPosition().x), static_cast<float>(game.getSelectedCharacter()->getRenderPosition().y)));
+	}
+	else {
+		float zoomFactor = static_cast<float>(game.getGrid().getHeight() * TILESIZE) / gameView.getSize().y;
+		zoomViewAt(sf::Vector2i(static_cast<int>(gameView.getCenter().x), static_cast<int>(gameView.getCenter().y)), App, gameView, zoomFactor);
+		gameView.setCenter(sf::Vector2f(static_cast<float>(game.getGrid().getWidth() / 2 * TILESIZE), static_cast<float>(game.getGrid().getHeight() / 2 * TILESIZE)));
+	}
     
     /** UI View */
     
@@ -357,6 +331,69 @@ void MapEditor::exitToMainMenu() {
     m_screenResult = ScreenResult::MainMenuScene;
 }
 
+bool MapEditor::initComponents(sf::RenderWindow & App) {
+	//Interface drawing initialization
+	font = std::make_shared<sf::Font>(sf::Font());
+	if (!font->loadFromFile("font/Pixellari.ttf")) {
+		std::cout << "Could not load 'font/Pixellari.ttf'\n";
+	}
+
+	backgroundTexture = std::make_shared<sf::Texture>(sf::Texture());
+	if (!backgroundTexture->loadFromFile("img/background.png"))
+	{
+		std::cerr << "Error loading background.png" << std::endl;
+	}
+	backgroundSprite.setTexture(*backgroundTexture);
+
+	//Game drawing initialization
+	selectedTile = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
+	selectedTile.setOutlineColor(sf::Color::Yellow);
+	selectedTile.setOutlineThickness(2.0f);
+	selectedTile.setFillColor(sf::Color::Transparent);
+	selectedTile.setPosition(0, 0);
+
+	texPlayer1 = std::make_shared<sf::Texture>(sf::Texture());
+	if (!texPlayer1->loadFromFile("img/character1_sheet.png")) {
+		std::cout << "Could not load 'img/character1_sheet.png'\n";
+	}
+
+	texPlayer2 = std::make_shared<sf::Texture>(sf::Texture());
+	if (!texPlayer2->loadFromFile("img/character2_sheet.png")) {
+		std::cout << "Could not load 'img/character2_sheet.png'\n";
+	}
+
+	// Set up animations
+	Animation animation_walk_left(9, 0, 8, 62000);
+	Animation animation_walk_right(11, 0, 8, 62000);
+	Animation animation_walk_down(10, 0, 8, 62000);
+	Animation animation_walk_up(8, 0, 8, 62000);
+	Animation animation_die(20, 0, 5, 125000, false);
+	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
+	animManager.addAnim(animation_walk_left);
+	animManager.addAnim(animation_walk_right);
+	animManager.addAnim(animation_walk_down);
+	animManager.addAnim(animation_walk_up);
+	animManager.addAnim(animation_die);
+	animManager.changeAnim(animations::walk_down); // Initial animation
+	for (auto &character : game.getCharacters()) {
+		character.setAnimationManager(animManager);
+	}
+
+	selectToolCoord = sf::Vector2u(0, 0);
+
+	sidePanel = SidePanelMapEditor(App, *this);
+
+	updateLayout(App);
+
+	// Create graphical tilemap presentation from the Map
+	tileMap = std::make_shared<TileMap>(TileMap(game.getGrid()));
+	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", "img/tileset_items.png", sf::Vector2u(TILESIZE, TILESIZE))) {
+		std::cout << "Could not load tilemap\n";
+	}
+
+	return true;
+}
+
 void MapEditor::setGroundTile(TileGround tileGround) {
 	auto& currentTile = game.getGrid()(selectToolCoord.x, selectToolCoord.y);
 	currentTile.setTile(tileGround, currentTile.getBlock());
@@ -379,4 +416,44 @@ void MapEditor::setBlockTile(TileBlock tileBlock) {
 			tileMap->updateTile(coord);
 		}
 	}
+}
+
+void MapEditor::addItem(Item item) {
+	auto& currentTile = game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
+	currentTile.addItem(std::make_shared<Item>(item));
+	tileMap->updateTile(selectToolCoord);
+}
+
+void MapEditor::removeItem() {
+	auto& currentTile = game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
+	currentTile.popItem();
+	tileMap->updateTile(selectToolCoord);
+}
+
+void MapEditor::addCharacter(unsigned int team) {
+	for (auto character : game.getCharacters()) {
+		if (character.getPosition() == selectToolCoord) {
+			return;
+		}
+	}
+	Animation animation_walk_down(10, 0, 8, 62000);
+	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
+	animManager.addAnim(animation_walk_down);
+	animManager.changeAnim(animations::walk_down);
+	if (!game.addCharacter(selectToolCoord, team)) {
+		std::cout << "Error" << std::endl;
+	};
+	for (auto &character : game.getCharacters()) {
+		character.setAnimationManager(animManager);
+	}
+	game.setSelectedCharacter(game.getCharacters().end());
+}
+
+void MapEditor::removeCharacter() {
+	game.removeCharacter(selectToolCoord);
+	game.setSelectedCharacter(game.getCharacters().end());
+}
+
+bool MapEditor::saveMap(std::string name) {
+	return jreader::writeJSON(game, name);
 }

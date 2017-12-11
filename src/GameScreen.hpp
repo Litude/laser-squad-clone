@@ -16,6 +16,7 @@
 #include "GameOverPanel.hpp"
 #include "Line.hpp"
 #include "GridLoader.hpp"
+#include "EndTurnScreen.hpp"
 
 namespace MouseMode {
 	enum Mode { shoot, select };
@@ -32,6 +33,7 @@ public:
 	void pickupItem();
 	void dropItem();
 	void equipItem();
+	void toggleAttackMode();
 	MouseMode::Mode getMouseMode() { return mouseMode; }
 private:
 	ScreenResult m_screenResult;
