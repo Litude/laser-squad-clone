@@ -366,5 +366,17 @@ void MapEditor::setGroundTile(TileGround tileGround) {
 void MapEditor::setBlockTile(TileBlock tileBlock) {
 	auto& currentTile = game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
 	currentTile.setTile(currentTile.getGround(), tileBlock);
-	tileMap->updateTile(selectToolCoord);
+	// Update this tile and adjacent tiles in tilemap
+	for (int dx = -1; dx <= 1; ++dx) {
+		for (int dy = -1; dy <= 1; ++dy) {
+			int coordX = selectToolCoord.x + dx;
+			int coordY = selectToolCoord.y + dy;
+			// Check that within bounds
+			if (coordX < 0 || coordX > game.getGrid().getWidth() - 1 || coordY < 0 || coordY > game.getGrid().getHeight() - 1) {
+				continue;
+			}
+			sf::Vector2u coord(selectToolCoord.x + dx, selectToolCoord.y + dy);
+			tileMap->updateTile(coord);
+		}
+	}
 }
