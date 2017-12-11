@@ -43,6 +43,7 @@ enum statuscode {
 	shoot_reload,
 	shoot_no_ammo,
 	shoot_success,
+	inventory_full,
 };
 
 class GameCharacter {
@@ -67,7 +68,7 @@ public:
 	void			resetActionPoints() { actionPoints = maxActionPoints; }
 	bool 			sufferDamage(int dmg);
     unsigned int    getLengthofSight() const {return lengthofSight;}
-	bool			addItem(std::shared_ptr<Item> obj);
+	statuscode		addItem(std::shared_ptr<Item> obj);
 	bool			removeSelectedItem();
 	Inventory&		getInventory() { return inventory; }
 	void			setSelectedItemIndex(int idx) { selectedItemIdx = idx; }

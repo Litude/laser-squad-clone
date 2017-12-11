@@ -71,12 +71,18 @@ bool Game::characterPickUpItem(gc_iterator it) {
 		statusMessage.setStatusMessage(MSG_NOTHING_TO_PICK, SEVERITY_INFORMATION);
 		return false;
 	}
-	if (getSelectedCharacter()->addItem(getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).getTopItem())) {
+	switch (getSelectedCharacter()->addItem(getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).getTopItem())) {
+	case not_enough_ap:
+		statusMessage.setStatusMessage(MSG_NOT_ENOUGH_AP, SEVERITY_CRITICAL);
+		return false;
+	case inventory_full:
+		statusMessage.setStatusMessage(MSG_INVENTORY_FULL, SEVERITY_CRITICAL);
+		return false;
+	default:
 		getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).popItem();
 		updateGameState();
 		return true;
 	}
-	statusMessage.setStatusMessage(MSG_NOT_ENOUGH_AP, SEVERITY_CRITICAL);
 	return false;
 }
 

@@ -123,15 +123,15 @@ sf::Vector2u GameCharacter::getRenderPosition() const
 	return renderPosition;
 }
 
-bool GameCharacter::addItem(std::shared_ptr<Item> obj)
+statuscode GameCharacter::addItem(std::shared_ptr<Item> obj)
 {
 	if (actionPoints >= AP_COST_PICK_ITEM) {
 		if (inventory.add(obj)) {
 			actionPoints -= AP_COST_PICK_ITEM;
-			return true;
-		}
+			return nothing;
+		} else return inventory_full;
 	}
-	return false;
+	return not_enough_ap;
 }
 
 bool GameCharacter::removeSelectedItem()

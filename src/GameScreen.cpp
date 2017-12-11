@@ -299,6 +299,9 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 	case sf::Keyboard::W:
 		if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
 		break;
+	case sf::Keyboard::Numpad0:
+		gameView.setSize(sf::Vector2f(App.getSize().x - (App.getSize().x / 4), App.getSize().y));
+		break;
 		//enter shooting mode
 	case sf::Keyboard::Q:
 		mouseMode = (mouseMode == MouseMode::shoot) ? MouseMode::select : MouseMode::shoot;

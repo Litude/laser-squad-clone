@@ -24,6 +24,8 @@ std::string StatusMessage::getMessage() {
 		return "Reloading...";
 	case MSG_NOT_ENOUGH_AMMO:
 		return "Out of ammo!";
+	case MSG_INVENTORY_FULL:
+		return "Cannot pick up item, inventory full!";
 	}
 }
 
