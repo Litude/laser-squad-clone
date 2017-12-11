@@ -157,23 +157,31 @@ statuscode GameCharacter::useSelected()
 			unequipCharacter();
 			return item_weapon_unequipped;
 		}
+		statuscode status = nothing;
+
 		switch (inventory[selectedItemIdx]->getType()) {
 		case Type_Weapon:
 			selectedWeaponIdx = selectedItemIdx;
 			equippedWeapon = std::dynamic_pointer_cast<Weapon>(inventory[selectedItemIdx]);
 			actionPoints -= AP_COST_USE;
-			return item_weapon_equipped;
+			status = item_weapon_equipped;
+			break;
 		case Type_Health:
 			if (getHitpoints() == getMaxHitpoints()) return item_max_health;
 			health = std::min(getMaxHitpoints(), getHitpoints() + std::dynamic_pointer_cast<Health>(inventory[selectedItemIdx])->getHealingAmount());
-			*inventory[selectedItemIdx] = Item(); //Remove item from inventory
 			actionPoints -= AP_COST_USE;
-			return item_healed;
-
+			status = item_healed;
+			break;
 		default:
-			return item_unusable;
-			//return false;
+			status = item_unusable;
+			break;
+
 		}
+		if (inventory[selectedItemIdx]->isConsumeable()) inventory[selectedItemIdx]->removeAmount(1);
+		if (inventory[selectedItemIdx]->getAmount() == 0) {
+			inventory.remove(selectedItemIdx);
+		}
+		return status;
 	}
 	return not_enough_ap;
 }
@@ -194,11 +202,11 @@ unsigned int GameCharacter::getAmmoAmount(AmmoType ammotype, unsigned int needed
 		if (availableAmmo >= neededAmount) {
 			foundAmmo->removeAmount(neededAmount);
 			if (foundAmmo->getAmount() == 0) {
-				*foundAmmo = Item(); //Remove ammo from inventory if amount reaches zero
+				inventory.remove(foundAmmo);
 			}
 			return neededAmount;
 		} else {
-			*foundAmmo = Item(); //Remove ammo from inventory
+			inventory.remove(foundAmmo);
 			return availableAmmo;
 		}
 	}
