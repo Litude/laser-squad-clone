@@ -134,6 +134,17 @@ namespace jreader {
 				unsigned y = jchar["position"][1];
 				unsigned team = jchar["team"];
 				std::unique_ptr<GameCharacter> gc_ptr(new GameCharacter(sf::Vector2u(x, y), team));// GameCharacter gc(sf::Vector2u(x, y), team);
+				
+				if (jchar["inventory"].is_array()) {
+					for (auto& jitem : jchar["inventory"]) {
+						auto item_ptr = create_item(jitem);
+						if (item_ptr)
+							gc_ptr->addItem(item_ptr);
+					}
+				}
+				if (jchar["health"].is_number_unsigned())
+					gc_ptr->setHitpoints(jchar["health"]);
+				
 				return gc_ptr;
 			}
 		}
