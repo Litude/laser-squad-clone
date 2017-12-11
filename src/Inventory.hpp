@@ -9,11 +9,18 @@
 
 class Inventory {
 public:
+	typedef std::vector<std::shared_ptr<Item>>::const_iterator const_iterator;
+	typedef std::vector<std::shared_ptr<Item>>::iterator iterator;
+
 	Inventory();
 	bool											add(std::shared_ptr<Item>& newItem);
 	std::vector<std::shared_ptr<Item>>::iterator	remove(std::vector<std::shared_ptr<Item>>::iterator it);
 	std::shared_ptr<Item>&							operator[](unsigned n);
 	std::shared_ptr<Item>							findAmmo(AmmoType ammo);
+	const_iterator									begin() const { return items.begin(); }
+	const_iterator									end() const { return items.end(); }
+	iterator										begin() { return items.begin(); }
+	iterator										end() { return items.end(); }
 private:
 	std::vector<std::shared_ptr<Item>>				items;
 };

@@ -82,23 +82,6 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 		std::cout << "Could not load 'font/Pixellari.ttf'\n";
 	}
 
-	//Interface element attributes that won't change during execution
-	interfaceBkg.setFillColor(sf::Color(0, 0, 0, 200));
-	textFPS.setFont(*font);
-	textFPS.setCharacterSize(12);
-	textCurTurnLabel.setFont(*font);
-	textCurTurnLabel.setCharacterSize(24);
-	textCurTurnLabel.setString("Player");
-	textCurTurnValue.setFont(*font);
-	textCurTurnValue.setCharacterSize(24);
-	textAPLabel.setFont(*font);
-	textAPLabel.setCharacterSize(24);
-	textAPLabel.setString("APs");
-	textAPValue.setFont(*font);
-	textAPValue.setCharacterSize(24);
-	textMouseMode.setFont(*font);
-	textMouseMode.setCharacterSize(24);
-
 	backgroundTexture = std::make_shared<sf::Texture>(sf::Texture());
 	if (!backgroundTexture->loadFromFile("img/background.png"))
 	{
@@ -106,40 +89,11 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	}
 	backgroundSprite.setTexture(*backgroundTexture);
 
-	sf::RectangleShape rs;
-	rs.setFillColor(sf::Color::White);
-	rs.setSize(sf::Vector2f(140, 40));
-
-	buttonExit = Button("Exit to Main Menu", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
-	buttonExit.setCallback([&] { this->exitToMainMenu(); });
-
-	buttonEndTurn = Button("End turn", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
-	buttonEndTurn.setCallback([&] { this->endTurn(App); });
-
-	rs.setSize(sf::Vector2f(50, 20));
-
-	buttonPickupItem = Button("Pick", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
-	buttonPickupItem.setCallback([&] { this->pickupItem(); });
-
-	buttonDropItem = Button("Drop", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
-	buttonDropItem.setCallback([&] { this->dropItem(); });
-
-	buttonEquipItem = Button("Use", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
-	buttonEquipItem.setCallback([&] { this->equipItem(); });
-
 	//Game drawing initialization
 	selectedCharacter = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
 	selectedCharacter.setOutlineColor(sf::Color::Yellow);
 	selectedCharacter.setOutlineThickness(2.0f);
 	selectedCharacter.setFillColor(sf::Color::Transparent);
-
-	selectedItem = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
-	selectedItem.setOutlineColor(sf::Color::Yellow);
-	selectedItem.setOutlineThickness(2.0f);
-	selectedItem.setFillColor(sf::Color::Transparent);
-
-	equippedItem = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
-	equippedItem.setFillColor(sf::Color::Red);
 
 	texPlayer1 = std::make_shared<sf::Texture>(sf::Texture());
 	if (!texPlayer1->loadFromFile("img/character1_sheet.png")) {
@@ -192,18 +146,9 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 		std::cout << "Could not load 'img/lineofsight_shader.frag'\n";
 	}
 
-	texItems = std::make_shared<sf::Texture>(sf::Texture());
-	if (!texItems->loadFromFile("img/tileset_items.png")) {
-		std::cout << "Could not load 'img/tileset_items.png'\n";
-	}
-	inventoryItems.resize(MAX_ITEMS);
-	inventoryItemTexts.resize(MAX_ITEMS);
+	sidePanel = SidePanel(App, *this);
+	gameOverPanel = GameOverPanel(App, *this);
 
-	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-		inventoryItems[i].setTexture(*texItems);
-		inventoryItemTexts[i].setFont(*font);
-		inventoryItemTexts[i].setCharacterSize(10);
-	}
 	updateLayout(App);
 
 	healthbarBkg.setFillColor(sf::Color::Red);
@@ -212,15 +157,21 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	healthbarBkg.setOutlineThickness(1.0f);
 
 	healthbar.setFillColor(sf::Color::Green);
-}
 
-ScreenResult GameScreen::Run(sf::RenderWindow & App)
-{
+	//Status message stuff
+	screenStatusMessage.setFont(*font);
+	screenStatusMessage.setCharacterSize(20);
+	screenStatusMessage.setOutlineThickness(2);
+
 	// Create graphical tilemap presentation from the Map
 	tileMap = std::make_shared<TileMap>(TileMap(game.getGrid()));
 	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", "img/tileset_items.png", sf::Vector2u(TILESIZE, TILESIZE))) {
 		std::cout << "Could not load tilemap\n";
 	}
+}
+
+ScreenResult GameScreen::Run(sf::RenderWindow & App)
+{
 	sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
 	while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
 		sf::Event event;
@@ -236,88 +187,14 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				else if (event.mouseWheelScroll.delta < 0)
 					zoomViewAt({ event.mouseWheelScroll.x, event.mouseWheelScroll.y }, App, gameView, 1.1f);
 			}
-			// Update buttons
-			buttonExit.update(event, App);
-			buttonEndTurn.update(event, App);
-			buttonPickupItem.update(event, App);
-			buttonDropItem.update(event, App);
-			buttonEquipItem.update(event, App);
-			//Handle keyboard input
-			if (event.type == sf::Event::KeyPressed) {
-				switch (event.key.code) {
-				case sf::Keyboard::Left:
-					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						if (game.characterMoveLeft(game.getSelectedCharacter())) {
-							//gameView.move(sf::Vector2f(-TILESIZE, 0));
-						}
-					}
-					break;
-				case sf::Keyboard::Right:
-					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						if (game.characterMoveRight(game.getSelectedCharacter())) {
-							//gameView.move(sf::Vector2f(TILESIZE, 0));
-						}
-					}
-					break;
-				case sf::Keyboard::Down:
-					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						if (game.characterMoveDown(game.getSelectedCharacter())) {
-							//gameView.move(sf::Vector2f(0, TILESIZE));
-						}
-					}
-					break;
-				case sf::Keyboard::Up:
-					if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
-						if (game.characterMoveUp(game.getSelectedCharacter())) {
-							//gameView.move(sf::Vector2f(0, -TILESIZE));
-						}
-					}
-					break;
-                        
-
-
-				case sf::Keyboard::A:
-					if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);
-					break;
-				case sf::Keyboard::D:
-					if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game.getGrid().getWidth() * TILESIZE) gameView.move(TILESIZE, 0);
-					break;
-				case sf::Keyboard::S:
-					if (gameView.getCenter().y + App.getSize().y / 2 < game.getGrid().getHeight() * TILESIZE) gameView.move(0, TILESIZE);
-					break;
-				case sf::Keyboard::W:
-					if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
-					break;
-				//enter shooting mode
-				case sf::Keyboard::Q:
-					mouseMode = (mouseMode == MouseMode::shoot) ? MouseMode::select : MouseMode::shoot;
-					std::cout << "mousemode changed to " << mouseMode << std::endl;
-					break;
-				default:
-					break;
-				}
-
+			// Handle keyboard input
+			if (event.type == sf::Event::KeyPressed && game.getGameState() == GameState::active) {
+				handleKeyPress(event, App);
 			}
-			//Handle mouse input
-			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+			// Handle mouse input
+			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left && game.getGameState() == GameState::active) {
 				unsigned int menuSize = App.getSize().x / 4;
-				if (event.mouseButton.x >= static_cast<int>(App.getSize().x - menuSize)) {
-					//Clicked on the menubar
-					if (event.mouseButton.button == 0) {
-						if (game.getSelectedCharacter() != game.getCharacters().end()) {
-							for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-								if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i]->getType() != Type_None) {
-									game.getSelectedCharacter()->setSelectedItemIndex(i);
-									break;
-								}
-								else {
-									game.getSelectedCharacter()->setSelectedItemIndex(-1);
-								}
-							}
-						}
-					}
-				}
-				else {
+				if (event.mouseButton.x < static_cast<int>(App.getSize().x - menuSize)) {
 					//Clicked on gamescreen
 					//In shoot mode
 					if (mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end()) {
@@ -325,6 +202,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 						auto tiles = game.characterShoot(gc, getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView));
 						for (auto dest : tiles) {
 							addProjectile(gc->getEquipped(), gc->getPosition(), dest);
+							tileMap->updateTile(dest);
 						}
 						
 						std::cout << "PROJS:" << std::endl;
@@ -349,12 +227,10 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 			if (event.type == sf::Event::Resized) {
 				updateLayout(App);
 			}
-			if (event.type == sf::Event::MouseMoved && mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end()) {
-				auto gc = game.getSelectedCharacter();
-				auto target = getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView);
-				auto origin = gc->getPosition();
-				rayLine[0].position = Util::mapToPixels(origin);
-				rayLine[1].position = Util::mapToPixels(game.traceFromCharacter(gc, target, true));
+			if (game.getGameState() == GameState::match_ended) {
+				gameOverPanel.update(event, App, game);
+			} else {
+				sidePanel.update(event, App, game);
 			}
 		}
 
@@ -373,18 +249,67 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 		for (auto &character : game.getCharacters()) {
 			character.update(delta);
 		}
+		game.getStatusMessage().updateStatusMessage(delta);
 
 		App.clear();
 
-		DrawUI(App);
-		DrawGame(App);
+		drawUI(App);
+		drawGame(App);
+		drawGameUI(App);
 
 		App.display();
 	}
 	return m_screenResult;
 }
 
-void GameScreen::DrawGame(sf::RenderWindow &App) {
+void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
+	switch (event.key.code) {
+	case sf::Keyboard::Left:
+		if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
+			game.characterMoveLeft(game.getSelectedCharacter());
+		}
+		break;
+	case sf::Keyboard::Right:
+		if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
+			game.characterMoveRight(game.getSelectedCharacter());
+		}
+		break;
+	case sf::Keyboard::Down:
+		if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
+			game.characterMoveDown(game.getSelectedCharacter());
+		}
+		break;
+	case sf::Keyboard::Up:
+		if (game.getSelectedCharacter() != game.getCharacters().end() && game.getSelectedCharacter()->isMoving() == false) {
+			game.characterMoveUp(game.getSelectedCharacter());
+		}
+		break;
+
+
+
+	case sf::Keyboard::A:
+		if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);
+		break;
+	case sf::Keyboard::D:
+		if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game.getGrid().getWidth() * TILESIZE) gameView.move(TILESIZE, 0);
+		break;
+	case sf::Keyboard::S:
+		if (gameView.getCenter().y + App.getSize().y / 2 < game.getGrid().getHeight() * TILESIZE) gameView.move(0, TILESIZE);
+		break;
+	case sf::Keyboard::W:
+		if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
+		break;
+		//enter shooting mode
+	case sf::Keyboard::Q:
+		mouseMode = (mouseMode == MouseMode::shoot) ? MouseMode::select : MouseMode::shoot;
+		std::cout << "mousemode changed to " << mouseMode << std::endl;
+		break;
+	default:
+		break;
+	}
+}
+
+void GameScreen::drawGame(sf::RenderWindow &App) {
 
 	App.setView(gameView);
 	// Center the camera on the selected player (linear interpolation)
@@ -449,7 +374,12 @@ void GameScreen::DrawGame(sf::RenderWindow &App) {
 		}
 	}
 
-	if (mouseMode == MouseMode::shoot) {
+	if (mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end() && game.getGameState() == GameState::active) {
+		auto gc = game.getSelectedCharacter();
+		auto target = getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView);
+		auto origin = gc->getRenderPosition();
+		rayLine[0].position = sf::Vector2f(static_cast<float>(origin.x + TILESIZE / 2), static_cast<float>(origin.y + TILESIZE / 2));
+		rayLine[1].position = Util::mapToPixels(game.traceFromCharacter(gc, target, true));
 		//"animate" rayline
 		if (rayLine[0].color.r == 255 || rayLine[0].color.r == 0) rayIncr *= -1;
 		rayLine[0].color.r += rayIncr;
@@ -480,70 +410,44 @@ void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::list<sf::Vector2u> 
 	App.draw(sprite, shader);
 }
 
-void GameScreen::DrawUI(sf::RenderWindow &App) {
+void GameScreen::drawUI(sf::RenderWindow &App) {
 	unsigned int menuSize = App.getSize().x / 4;
 
 	updateUIComponents(App);
 
-	//Interface elements that always need to be updated
-	textCurTurnValue.setString(std::to_string(game.getCurrentPlayer()));
-
-	std::string mm = (mouseMode == MouseMode::shoot) ? "SHOOT MODE" : "SELECT MODE";
-	textMouseMode.setString(mm);
-
-	//TODO: Process selected character attributes here and draw them on the interface...
-	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		textAPValue.setString(std::to_string(game.getSelectedCharacter()->getActionPoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxActionPoints()));
-
-		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) {
-			unsigned int margin = 10;
-			unsigned int offset = menuSize / 4;
-			equippedItem.setPosition(static_cast<float>((App.getSize().x - menuSize + margin) + ((game.getSelectedCharacter()->getSelectedWeaponIndex() % ITEMS_PER_ROW) * offset)), static_cast<float>(330 + (game.getSelectedCharacter()->getSelectedWeaponIndex() / ITEMS_PER_ROW) * (offset)));
-		}
-	}
-
-	currentTime = fpsclock.getElapsedTime().asMicroseconds() / 1000000.0f;
-	float fps = 1.f / (currentTime - lastTime);
-	textFPS.setString("FPS: " + std::to_string(fps));
-	lastTime = currentTime;
-
 	//Draw elements
 	App.setView(interfaceView);
 	App.draw(backgroundSprite);
-	App.draw(interfaceBkg); //Must always be first since it covers the whole area and will hide anything "under" it
 
-	// Draw action points
-	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		App.draw(textAPLabel);
-		App.draw(textAPValue);
-		App.draw(buttonPickupItem);
-		App.draw(buttonDropItem);
-		App.draw(buttonEquipItem);
-		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) App.draw(equippedItem);
-		// Draw items
-		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i]->getIcon() * TILESIZE % (texItems->getSize().x), game.getSelectedCharacter()->getInventory()[i]->getIcon() * TILESIZE / (texItems->getSize().x) * TILESIZE, TILESIZE, TILESIZE));
-			App.draw(inventoryItems[i]);
-			if (game.getSelectedCharacter()->getInventory()[i]->isStackable()) {
-				inventoryItemTexts[i].setString(std::to_string(game.getSelectedCharacter()->getInventory()[i]->getAmount()));
-				App.draw(inventoryItemTexts[i]);
-			} else if (game.getSelectedCharacter()->getInventory()[i]->getType() == Type_Weapon){
-				inventoryItemTexts[i].setString(std::to_string(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getLoadedAmmo()) + '-' + std::to_string(game.getSelectedCharacter()->getAmmoAmount(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getAmmoType())));
-				App.draw(inventoryItemTexts[i]);
-			}
-			if (game.getSelectedCharacter()->getSelectedItemIndex() == i) {
-				selectedItem.setPosition(inventoryItems[i].getPosition());
-				App.draw(selectedItem);
-			}
-		}
+	if (game.getGameState() == GameState::match_ended) {
+		gameOverPanel.draw(App, game, *this);
+	}
+	else {
+		sidePanel.draw(App, game, *this);
+	}
+}
+
+void GameScreen::drawGameUI(sf::RenderWindow &App) {
+
+	App.setView(interfaceView);
+
+	screenStatusMessage.setString(game.getStatusMessage().getMessage());
+
+	//Position must be updated every time since not all messages have the same height
+	screenStatusMessage.setPosition(sf::Vector2f(-screenStatusMessage.getLocalBounds().left, App.getSize().y - (screenStatusMessage.getLocalBounds().top + screenStatusMessage.getLocalBounds().height)));
+
+	switch (game.getStatusMessage().getSeverity()) {
+	case SEVERITY_INFORMATION:
+		screenStatusMessage.setFillColor(sf::Color::White);
+		break;
+	case SEVERITY_CRITICAL:
+		screenStatusMessage.setFillColor(sf::Color::Red);
+		break;
+	default:
+		screenStatusMessage.setFillColor(sf::Color::White);
 	}
 
-	App.draw(textFPS);
-	App.draw(textMouseMode);
-	App.draw(buttonExit);
-	App.draw(buttonEndTurn);
-	App.draw(textCurTurnLabel);
-	App.draw(textCurTurnValue);
+	App.draw(screenStatusMessage);
 }
 
 void GameScreen::updateLayout(sf::RenderWindow & App)
@@ -576,72 +480,14 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 	interfaceView.setSize(static_cast<float>(App.getSize().x), static_cast<float>(App.getSize().y));
 	interfaceView.setCenter(static_cast<float>(App.getSize().x / 2), static_cast<float>(App.getSize().y / 2));
 
-	// Interface background
-	interfaceBkg.setSize(sf::Vector2f(static_cast<float>(menuSize), static_cast<float>(App.getSize().y)));
-	interfaceBkg.setPosition(static_cast<float>(App.getSize().x - menuSize), 0);
-
-	// Exit button
-	buttonExit.setPosition(sf::Vector2f(static_cast<float>(menuCenterX), static_cast<float>(App.getSize().y - buttonExit.getGlobalBounds().height / 2 - margin)));
-	sf::RectangleShape rs;
-	rs.setFillColor(sf::Color::White);
-	rs.setSize(sf::Vector2f(static_cast<float>(menuSize - margin), 40));
-	buttonExit.setRectangleShape(rs);
-
-	// End turn button
-	buttonEndTurn.setPosition(sf::Vector2f(static_cast<float>(menuCenterX), static_cast<float>(buttonExit.getPos().y - buttonExit.getGlobalBounds().height / 2 - buttonEndTurn.getGlobalBounds().height / 2 - margin)));
-	rs.setFillColor(sf::Color::White);
-	rs.setSize(sf::Vector2f(static_cast<float>(menuSize - margin), 40));
-	buttonEndTurn.setRectangleShape(rs);
-
-	// Pick up item button
-	rs.setSize(sf::Vector2f(static_cast<float>(menuSize / 3 - margin), 40));
-	buttonPickupItem.setRectangleShape(rs);
-	buttonPickupItem.setPosition(sf::Vector2f(static_cast<float>(menuCenterX - menuSize / 2 + buttonPickupItem.getGlobalBounds().width / 2 + margin), 300));
-
-	// Drop item button
-	rs.setSize(sf::Vector2f(static_cast<float>(menuSize / 3 - margin), 40));
-	buttonDropItem.setRectangleShape(rs);
-	buttonDropItem.setPosition(sf::Vector2f(static_cast<float>(menuCenterX), 300));
-
-	// Equip item button
-	rs.setSize(sf::Vector2f(static_cast<float>(menuSize / 3 - margin), 40));
-	buttonEquipItem.setRectangleShape(rs);
-	buttonEquipItem.setPosition(sf::Vector2f(static_cast<float>(App.getSize().x - buttonEquipItem.getGlobalBounds().width / 2 - margin), 300));
-
-	// Inventory item positions
-	unsigned int offset = menuSize / 4;
-	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
-		inventoryItems[i].setTextureRect(sf::IntRect(0, 0, TILESIZE, TILESIZE));
-		inventoryItems[i].setScale(sf::Vector2f(static_cast<float>(menuSize / ITEMS_PER_ROW / TILESIZE), static_cast<float>(menuSize / ITEMS_PER_ROW / TILESIZE)));
-		inventoryItems[i].setPosition((static_cast<float>(App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset)), static_cast<float>(330 + (i / ITEMS_PER_ROW) * (offset)));
-		inventoryItemTexts[i].setPosition((static_cast<float>(App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset)), static_cast<float>(330 + (i / ITEMS_PER_ROW) * (offset)));
-	}
-
-	selectedItem.setSize(sf::Vector2f(inventoryItems[0].getGlobalBounds().width, inventoryItems[0].getGlobalBounds().height));
-	equippedItem.setSize(sf::Vector2f(inventoryItems[0].getGlobalBounds().width, inventoryItems[0].getGlobalBounds().height));
-
-	updateUIComponents(App);
+	sidePanel.updateLayout(App);
+	gameOverPanel.updateLayout(App);
 }
 
 void GameScreen::updateUIComponents(sf::RenderWindow & App)
 {
-	float menuSize = static_cast<float>(App.getSize().x / 4);
-	float menuCenterX = static_cast<float>(App.getSize().x - menuSize / 2);
-	float margin = 10.f;
-
-	// FPS counter text
-	textFPS.setPosition(menuCenterX - menuSize / 2 + margin, 0);
-
-	// AP text
-	textAPLabel.setPosition(menuCenterX - menuSize / 2 + margin, 100);
-	textAPValue.setPosition(menuCenterX + menuSize / 2 - margin - textAPValue.getGlobalBounds().width, 100);
-
-	// Current turn text
-	textCurTurnLabel.setPosition(menuCenterX - menuSize / 2 + margin, 50);
-	textCurTurnValue.setPosition(menuCenterX + menuSize / 2 - margin - textCurTurnValue.getGlobalBounds().width, 50);
-
-	// Mousemode text
-	textMouseMode.setPosition(menuCenterX - textMouseMode.getGlobalBounds().width / 2, 150);
+	sidePanel.updateUIComponents(App);
+	gameOverPanel.updateUIComponents(App);
 }
 
 void GameScreen::endTurn(sf::RenderWindow &App) {
@@ -663,8 +509,7 @@ void GameScreen::pickupItem() {
 
 void GameScreen::dropItem() {
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		if (game.getSelectedCharacter()->getSelectedItemIndex() != -1) {
-			game.characterDropItem(game.getSelectedCharacter());
+		if (game.characterDropItem(game.getSelectedCharacter())) {;
 			tileMap->updateTile(game.getSelectedCharacter()->getPosition());
 		}
 	}
@@ -672,7 +517,7 @@ void GameScreen::dropItem() {
 
 void GameScreen::equipItem() {
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		game.getSelectedCharacter()->useSelected();
+		game.characterUseItem(game.getSelectedCharacter());
 	}
 }
 
