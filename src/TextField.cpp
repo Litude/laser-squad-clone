@@ -9,18 +9,24 @@ TextField::TextField(int size, sf::RectangleShape Rshape, sf::Font& font)
   t_text.setFillColor(sf::Color::Black);
   t_text.setCharacterSize(size);
   t_text.setFont(font);
+
   t_defText.setFillColor(sf::Color::Black);
   t_defText.setCharacterSize(size);
   t_defText.setFont(font);
-  t_Cursor.setString("|");
-  t_cursorPos = 0;
+
+
+  t_Cursor.setFillColor(sf::Color::Black);
+  t_Cursor.setSize(sf::Vector2f(2.f, 30.f));
+
+  setCursor(0);
+
   t_strMaxLength = 10;
   setFocus(false);
   setStatus(false);
   t_Rshape = Rshape;
+
   t_Rshape.setFillColor(sf::Color::White);
   t_Rshape.setOutlineColor(sf::Color::Black);
-  //t_Rshape.setOutlineThickness(3.f);
 }
 
 TextField::~TextField()
@@ -54,8 +60,8 @@ void TextField::setPosition(sf::Vector2f v)
   sf::Vector2f defTextPosition = sf::Vector2f(t_Rshape.getPosition().x, t_Rshape.getPosition().y - t_Rshape.getGlobalBounds().height / 8);
   t_defText.setOrigin(t_defText.getGlobalBounds().width / 2, t_defText.getGlobalBounds().height / 2);
   t_defText.setPosition(defTextPosition);
-  t_Cursor.setOrigin(t_Cursor.getGlobalBounds().width / 2, t_Cursor.getGlobalBounds().height / 2);
-  t_Cursor.setPosition(defTextPosition);
+
+  t_Cursor.setOrigin(t_text.getOrigin());
 }
 
 void TextField::setString(std::string s)
@@ -101,36 +107,38 @@ void TextField::update(sf::Event e, sf::RenderWindow& window)
   if(getFocus()) {
     if(e.type == sf::Event::TextEntered) {
       if(e.text.unicode == 8){ // Backspace pressed
-        if(t_cursorPos > 0){
-          t_str = t_str.erase(t_cursorPos - 1, 1);
-          setCursor(t_cursorPos - 1);
+        if(t_index > 0){
+          --t_index;
+          t_str = t_str.erase(t_index , 1);
         }
       }else if(e.text.unicode == 27){ // Escape pressed
         t_str.clear();
         t_text.setString(t_str);
-        t_cursorPos = 0;
+        t_index = 0;
         setStatus(false);
         setFocus(false);
       }else if(e.text.unicode == '\r'){ // Return pressed
-        if(!t_text.getString().isEmpty()){
+        if(!t_text.getString().isEmpty()){ // If an empty string is returned the default text will be displayed
           setStatus(true);
-          setFocus(false);
+        }else{
+          setStatus(false);
         }
+        setFocus(false);
       }else{
         if(t_str.length() < t_strMaxLength){  // Writing text
           t_inputChar = static_cast<char>(e.text.unicode);
-          t_str.insert(t_cursorPos, 1, t_inputChar);
-          setCursor(t_cursorPos + 1);
+          t_str.insert(t_index, 1, t_inputChar);
+          ++t_index;
         }
       }
       t_text.setString(t_str);
-    }else if(e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Left && t_cursorPos > 0){ // Left arrow
-      setCursor(t_cursorPos - 1);
-    }else if(e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Right && t_cursorPos < t_str.size()){ // Right arrow
-      setCursor(t_cursorPos + 1);
+    }else if(e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Left && t_index > 0){ // Left arrow
+      --t_index;
+    }else if(e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Right && t_index < t_str.size()){ // Right arrow
+      ++t_index;
     }
+    setCursor(t_index);
   }
-
 }
 
 const sf::FloatRect  TextField::getGlobalBounds()
@@ -141,10 +149,17 @@ const sf::FloatRect  TextField::getGlobalBounds()
 void TextField::draw(sf::RenderTarget& target,sf::RenderStates states) const
 {
   target.draw(t_Rshape, states);
-  if(getStatus() || getFocus()){
+  if(getFocus()){ // Text field has focus
     target.draw(t_text, states);
-    target.draw(t_Cursor, states);
-  }else{
+
+    float blink = t_clock.getElapsedTime().asSeconds();
+		if (blink >= 0.8f) {t_clock.restart();}
+    if (blink < 0.4f){
+      target.draw(t_Cursor, states);
+    }
+  }else if(getStatus()){  // User has pressed return
+    target.draw(t_text, states);
+  }else{  // Display default text
     target.draw(t_defText, states);
   }
 }
@@ -161,11 +176,11 @@ void TextField::click()
 	}
 }
 
-void TextField::setCursor(size_t i)
+void TextField::setCursor(size_t i) // Updates the position of the cursor
 {
   if(i <= t_str.size())
   {
-    t_cursorPos = i;
-    t_Cursor.setPosition(t_text.findCharacterPos(i));
+    t_index = i;
+    t_Cursor.setPosition(t_text.findCharacterPos(t_index).x + t_Rshape.getGlobalBounds().width / 2.3, t_text.findCharacterPos(t_index).y + t_Rshape.getGlobalBounds().height / 2);
   }
 }

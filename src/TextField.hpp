@@ -27,7 +27,7 @@ public:
 
   std::string getString() const {return t_str;};
   sf::Vector2f getPos() const {return t_pos;};
-  int getCursorPos() const {return t_cursorPos;};
+  int getCursorPos() const {return t_index;};
   bool getFocus() const {return t_isFocused;};
   bool getStatus() const {return t_textEntered;};
   const sf::FloatRect  TextField::getGlobalBounds();
@@ -40,12 +40,13 @@ private:
   float t_width;
   float t_height;
   sf::Vector2f t_pos;
-  size_t t_cursorPos;
+  size_t t_index;
   std::string t_str;
   char t_inputChar;
   sf::Font t_font;
   sf::RectangleShape t_Rshape;
-  sf::Text t_Cursor;
+  sf::RectangleShape t_Cursor;
+  mutable sf::Clock t_clock;
   sf::Text t_text;
   sf::Text t_defText;
   std::function<void()> t_callback;
