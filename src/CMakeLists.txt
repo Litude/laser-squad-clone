@@ -1,10 +1,10 @@
 #Change this if you need to target a specific CMake version
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.1)
 
 # Options. Turn on with 'cmake -Dmyvarname=ON'.
 option(test "Build all tests." OFF) # Makes boolean 'test' available.
 
-
+set (CMAKE_CXX_STANDARD 11)
 # Enable debug symbols by default
 # must be done before project() statement
 if(NOT CMAKE_BUILD_TYPE)

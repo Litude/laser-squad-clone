@@ -12,7 +12,7 @@ enum state {
    hovered = 2,
  };
 
- enum b_type {
+ enum button_type {
    text = 0,
    sprite = 1,
    rectangle = 2
@@ -56,7 +56,7 @@ private:
   sf::Vector2f b_pos;
   sf::Uint32 b_state;
   sf::Uint32 b_style;
-  b_type b_type;
+  button_type b_type;
   float b_width = b_text.getLocalBounds().width;
   float b_height = b_text.getLocalBounds().height;
   std::function<void()> b_callback;

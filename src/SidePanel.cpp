@@ -72,6 +72,9 @@ SidePanel::SidePanel(sf::RenderWindow &App, GameScreen &parent)
 	inventoryItemTexts.resize(MAX_ITEMS);
 	inventoryItemBkg.resize(MAX_ITEMS);
 
+	selectedInventoryItemName.setFont(*font);
+	selectedInventoryItemName.setCharacterSize(14);
+
 	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
 		inventoryItemBkg[i].setFillColor(sf::Color(64, 64, 64, 255));
 		inventoryItemBkg[i].setSize(sf::Vector2f(TILESIZE, TILESIZE));
@@ -137,7 +140,7 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) {
 			unsigned int margin = 10;
 			unsigned int offset = menuSize / 4;
-			equippedItem.setPosition(static_cast<float>((App.getSize().x - menuSize + margin) + ((game.getSelectedCharacter()->getSelectedWeaponIndex() % ITEMS_PER_ROW) * offset)), static_cast<float>(330 + (game.getSelectedCharacter()->getSelectedWeaponIndex() / ITEMS_PER_ROW) * (offset)));
+			equippedItem.setPosition(static_cast<float>((App.getSize().x - menuSize + margin) + ((game.getSelectedCharacter()->getSelectedWeaponIndex() % ITEMS_PER_ROW) * offset)), static_cast<float>(360 + (game.getSelectedCharacter()->getSelectedWeaponIndex() / ITEMS_PER_ROW) * (offset)));
 		}
 	}
 
@@ -171,9 +174,17 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 				App.draw(inventoryItemTexts[i]);
 			}
 			if (game.getSelectedCharacter()->getSelectedItemIndex() == i) {
+				selectedInventoryItemName.setString(game.getSelectedCharacter()->getInventory()[game.getSelectedCharacter()->getSelectedItemIndex()]->getName());
+				selectedInventoryItemName.setOrigin(selectedInventoryItemName.getLocalBounds().left + selectedInventoryItemName.getLocalBounds().width / 2.0f, selectedInventoryItemName.getLocalBounds().top + selectedInventoryItemName.getLocalBounds().height / 2.0f);
+				App.draw(selectedInventoryItemName);
 				selectedItem.setPosition(inventoryItems[i].getPosition());
 				App.draw(selectedItem);
 			}
+		}
+		if (game.getSelectedCharacter()->getSelectedItemIndex() == -1) {
+			selectedInventoryItemName.setString("No item selected");
+			selectedInventoryItemName.setOrigin(selectedInventoryItemName.getLocalBounds().left + selectedInventoryItemName.getLocalBounds().width / 2.0f, selectedInventoryItemName.getLocalBounds().top + selectedInventoryItemName.getLocalBounds().height / 2.0f);
+			App.draw(selectedInventoryItemName);
 		}
 	}
 
@@ -235,10 +246,10 @@ void SidePanel::updateLayout(sf::RenderWindow & App)
 	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
 		inventoryItems[i].setTextureRect(sf::IntRect(0, 0, TILESIZE, TILESIZE));
 		inventoryItems[i].setScale(sf::Vector2f(static_cast<float>(menuSize / ITEMS_PER_ROW / TILESIZE), static_cast<float>(menuSize / ITEMS_PER_ROW / TILESIZE)));
-		inventoryItems[i].setPosition((static_cast<float>(App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset)), static_cast<float>(330 + (i / ITEMS_PER_ROW) * (offset)));
+		inventoryItems[i].setPosition((static_cast<float>(App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset)), static_cast<float>(360 + (i / ITEMS_PER_ROW) * (offset)));
 		inventoryItemBkg[i].setScale(sf::Vector2f(static_cast<float>(menuSize / ITEMS_PER_ROW / TILESIZE), static_cast<float>(menuSize / ITEMS_PER_ROW / TILESIZE)));
-		inventoryItemBkg[i].setPosition((static_cast<float>(App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset)), static_cast<float>(330 + (i / ITEMS_PER_ROW) * (offset)));
-		inventoryItemTexts[i].setPosition((static_cast<float>(App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset)), static_cast<float>(330 + (i / ITEMS_PER_ROW) * (offset)));
+		inventoryItemBkg[i].setPosition((static_cast<float>(App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset)), static_cast<float>(360 + (i / ITEMS_PER_ROW) * (offset)));
+		inventoryItemTexts[i].setPosition((static_cast<float>(App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset)), static_cast<float>(360  + (i / ITEMS_PER_ROW) * (offset)));
 	}
 
 	selectedItem.setSize(sf::Vector2f(inventoryItems[0].getGlobalBounds().width, inventoryItems[0].getGlobalBounds().height));
@@ -270,4 +281,7 @@ void SidePanel::updateUIComponents(sf::RenderWindow & App)
 
 	// Mousemode text
 	textMouseMode.setPosition(menuCenterX - textMouseMode.getGlobalBounds().width / 2, 150);
+
+	// Mousemode text
+	selectedInventoryItemName.setPosition(menuCenterX, 340);
 }

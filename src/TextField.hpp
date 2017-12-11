@@ -30,7 +30,7 @@ public:
   int getCursorPos() const {return t_index;};
   bool getFocus() const {return t_isFocused;};
   bool getStatus() const {return t_textEntered;};
-  const sf::FloatRect  TextField::getGlobalBounds();
+  const sf::FloatRect  getGlobalBounds();
 
 private:
     virtual void draw(sf::RenderTarget& target,sf::RenderStates states) const;
