@@ -13,7 +13,7 @@ public:
 	Weapon(ItemIcon icon, std::string name, unsigned ap, unsigned loadedAmmo, unsigned damage, unsigned shots, unsigned deviation, int accuracy, unsigned range, AmmoType ammoType) : Item(Type_Weapon, icon, name), ap(ap), loadedAmmo(loadedAmmo), maxAmmo(loadedAmmo), damage(damage), shots(shots), deviation(deviation), accuracy(accuracy), range(range), ammoType(ammoType) {};
 	bool 		reload(unsigned numberOfAmmo);
 	bool		canFire() const;
-	int			fire();
+	virtual int	fire();
 	const sf::Vector2u deviate(sf::Vector2u target) const;
 	//WeaponType getType() const;
 	unsigned	getDamage() const;
@@ -40,7 +40,8 @@ private:
 
 class Hands : public Weapon {
 public:
-	Hands() : Weapon(Icon_None, "Hands", 1, UINT32_MAX, 3, 1, 1, 100, 1, Ammo_None) {};
+	Hands() : Weapon(Icon_None, "Hands", 1, 1, 3, 1, 1, 100, 1, Ammo_None) {};
+	virtual int fire() { return 1; };
 	virtual void testInheritance() { std::cout << "Testing hands" << std::endl; };
 };
 
