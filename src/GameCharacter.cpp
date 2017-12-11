@@ -84,7 +84,6 @@ void GameCharacter::update(int delta_ms) {
 }
 
 statuscode GameCharacter::shoot(int &numberOfShots) {
-	getEquipped()->testInheritance();
 	if (isDead()) return nothing;
 	if (!getEquipped()->canFire()) {
 		return reloadWeapon();

@@ -22,7 +22,6 @@ public:
 	unsigned	getLoadedAmmo() const { return loadedAmmo; };
 	AmmoType	getAmmoType() const { return ammoType; };
 	unsigned	getReloadAmount() const { return maxAmmo - loadedAmmo; };
-	virtual void testInheritance() { std::cout << "Testing failed" << std::endl;  };
 private:
 	//WeaponType wt
 	unsigned ap;
@@ -42,20 +41,16 @@ class Hands : public Weapon {
 public:
 	Hands() : Weapon(Icon_None, "Hands", 1, 1, 3, 1, 1, 100, 1, Ammo_None) {};
 	virtual int fire() { return 1; };
-	virtual void testInheritance() { std::cout << "Testing hands" << std::endl; };
 };
 
 class Pistol : public Weapon {
 public:
 	Pistol() : Weapon(Icon_Weapon_Pistol, "Pistol", 5, 3, 5, 2, 1, 70, 10, Ammo_9mm_Bullets) {};
-	virtual void testInheritance() override { std::cout << "Testing pistol" << std::endl; };
 };
 
 class Shotgun : public Weapon {
 public:
 	Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 0, 10000, 5, 5, 2, 0, 10, Ammo_Shotgun_Shells) {};
-	//Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 5, 3, 5, 2, 1, 70, 10, Ammo_Shotgun_Shells) {};
-	virtual void testInheritance() override { std::cout << "Testing shotgun" << std::endl; };
 };
 
 #endif
