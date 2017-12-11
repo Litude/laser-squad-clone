@@ -4,6 +4,15 @@
 const int animationFrameTime = 125000; // animation frame time in ms
 const int moveSpeed = 500000; // time it takes in ms to move from one tile to another
 
+void GameCharacter::setHitpoints(unsigned hp) {
+	if (hp > maxHealth) {
+		maxHealth = hp;
+		health = maxHealth;
+	} else {
+		health = (hp == 0 ? 1 : hp);
+	}
+}
+
 void GameCharacter::moveLeft() {
 	animationManager.changeAnim(animations::walk_left);
 	actionPoints -= AP_COST_MOVEMENT;

@@ -52,13 +52,14 @@ public:
 	unsigned int	getActionPoints() const { return actionPoints; }
 	unsigned int	getMaxActionPoints() const { return maxActionPoints; }
 	unsigned int	getHitpoints() const { return health; }
-	unsigned int	getMaxHitpoints() const {return maxHealth; }
+	unsigned int	getMaxHitpoints() const { return maxHealth; }
 	unsigned int	getTeam() const { return team; }
 	sf::Vector2u	getPosition() const { return currentPosition; }
 	sf::Vector2u	getRenderPosition() const;
 	unsigned int	getDirection() const { return char_dir; }
 	int				getSelectedItemIndex() const { return selectedItemIdx; }
 	int				getSelectedWeaponIndex() const { return selectedWeaponIdx; }
+	void			setHitpoints(unsigned hp);
 	bool			isDead() const { return (health == 0); }
 	bool			isMoving() const { return moving; }
 	std::shared_ptr<Weapon>			getEquipped() { return equippedWeapon; }
