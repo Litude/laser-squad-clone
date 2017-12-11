@@ -258,6 +258,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 			character.update(delta);
 		}
 		game.getStatusMessage().updateStatusMessage(delta);
+		game.removeDeadCharacters();
 
 		App.clear();
 

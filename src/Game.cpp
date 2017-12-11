@@ -134,8 +134,8 @@ void Game::characterUseItem(gc_iterator it) {
 	}
 }
 
-void Game::characterKilled(GameCharacter& gc) {
-	//When a character is killed, drop its inventory contents and remove it from the map
+void Game::characterDropAllItems(GameCharacter& gc) {
+	//Called when a character is killed to drop its inventory contents
 	for (auto &item : gc.getInventory()) {
 		if (item->getType() == Type_None) continue;
 		getGrid().getTile(gc.getPosition().x, gc.getPosition().y).addItem(item);
@@ -195,7 +195,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 			if (gc.getPosition() == endTile) {
 				int dmg = weapon->getDamage();
 				if (gc.sufferDamage(dmg)) {
-					characterKilled(gc);
+					characterDropAllItems(gc);
 					recalculateLOS = true;
 				}
 				std::cout << "character suffered " << dmg << " damage" << std::endl;
@@ -328,6 +328,35 @@ void Game::updateGameState()
 	if (matchEnded()) {
 		gameState = GameState::match_ended;
 		setSelectedCharacter(getCharacters().end());
+	}
+}
+
+void Game::removeDeadCharacters()
+{
+	//Find out selected character index
+	int selectedCharIndex = -1;
+
+	for (int i = 0; i < getCharacters().size(); ++i) {
+		if (characters.begin() + i == getSelectedCharacter()) {
+			selectedCharIndex = static_cast<int>(i);
+			break;
+		}
+	}
+
+	int i = 0;
+	for (auto it = characters.begin(); it != characters.end(); ++i) {
+		if (it->shouldBeRemoved()) {
+			it = characters.erase(it);
+			if (selectedCharIndex == -1) {
+				setSelectedCharacter(characters.end());
+			} else if (i < selectedCharIndex) {
+				setSelectedCharacter(characters.begin() + (selectedCharIndex - 1));
+			} else {
+				setSelectedCharacter(characters.begin() + (selectedCharIndex));
+			}
+		} else {
+			++it;
+		}
 	}
 }
 

@@ -69,10 +69,12 @@ bool GameCharacter::moveTo(sf::Vector2i target_dir) {
 }
 
 void GameCharacter::update(int delta_ms) {
-	if (moving || isDead()) {
+	if (isDead()) {
 		animationManager.update(delta_ms);
+		if (animationManager.isFinished()) remove = true;
 	}
 	if (moving) {
+		animationManager.update(delta_ms);
 		moveFactor += static_cast<float>(delta_ms) / static_cast<float>(moveSpeed);
 		if (moveFactor >= 1.f) {
 			moving = false;
