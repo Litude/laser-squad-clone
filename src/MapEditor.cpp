@@ -9,6 +9,7 @@
 #include "MapEditor.hpp"
 #include "constants.hpp"
 #include "Health.hpp"
+#include "GridLoader.hpp"
 
 MapEditor::MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int height)
 {
@@ -20,63 +21,27 @@ MapEditor::MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int hei
 	game.initializeGrid(width, height);
 
 	game.setSelectedCharacter(game.getCharacters().end());
-    
-    //Interface drawing initialization
-    font = std::make_shared<sf::Font>(sf::Font());
-    if (!font->loadFromFile("font/Pixellari.ttf")) {
-        std::cout << "Could not load 'font/Pixellari.ttf'\n";
-    }
-    
-    backgroundTexture = std::make_shared<sf::Texture>(sf::Texture());
-    if (!backgroundTexture->loadFromFile("img/background.png"))
-    {
-        std::cerr << "Error loading background.png" << std::endl;
-    }
-    backgroundSprite.setTexture(*backgroundTexture);
 
-    //Game drawing initialization
-    selectedTile = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
-    selectedTile.setOutlineColor(sf::Color::Yellow);
-    selectedTile.setOutlineThickness(2.0f);
-    selectedTile.setFillColor(sf::Color::Transparent);
-    selectedTile.setPosition(0, 0);
-    
-    texPlayer1 = std::make_shared<sf::Texture>(sf::Texture());
-    if (!texPlayer1->loadFromFile("img/character1_sheet.png")) {
-        std::cout << "Could not load 'img/character1_sheet.png'\n";
-    }
-    
-    texPlayer2 = std::make_shared<sf::Texture>(sf::Texture());
-    if (!texPlayer2->loadFromFile("img/character2_sheet.png")) {
-        std::cout << "Could not load 'img/character2_sheet.png'\n";
-    }
-    
-    // Set up animations
-    Animation animation_walk_left(9, 0, 8, 62000);
-    Animation animation_walk_right(11, 0, 8, 62000);
-    Animation animation_walk_down(10, 0, 8, 62000);
-    Animation animation_walk_up(8, 0, 8, 62000);
-    Animation animation_die(20, 0, 5, 125000, false);
-    AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
-    animManager.addAnim(animation_walk_left);
-    animManager.addAnim(animation_walk_right);
-    animManager.addAnim(animation_walk_down);
-    animManager.addAnim(animation_walk_up);
-    animManager.addAnim(animation_die);
-    animManager.changeAnim(animations::walk_down); // Initial animation
-    for (auto &character : game.getCharacters()) {
-        character.setAnimationManager(animManager);
-    }
+	if (!initComponents(App)) {
+		m_screenResult = ScreenResult::Exit;
+	}
+}
 
-	selectToolCoord = sf::Vector2u(0, 0);
+MapEditor::MapEditor(sf::RenderWindow &App, std::string mapName)
+{
+	m_screenResult = ScreenResult::GameScene;
 
-	sidePanel = SidePanelMapEditor(App, *this);
-   
-    updateLayout(App);
-    
-    // Center gameview
-    zoomViewAt(sf::Vector2i(gameView.getCenter().x, gameView.getCenter().y), App, gameView, 3.f);
-    gameView.setCenter(sf::Vector2f(game.getGrid().getWidth() / 2 * TILESIZE, game.getGrid().getHeight() / 2 * TILESIZE));
+	auto grid = jreader::loadJSON(mapName);
+
+	//Game logic initialization
+	game = Game();
+	game.setGrid(grid);
+
+	game.setSelectedCharacter(game.getCharacters().end());
+
+	if (!initComponents(App)) {
+		m_screenResult = ScreenResult::Exit;
+	}
 }
 
 ScreenResult MapEditor::Run(sf::RenderWindow & App)
@@ -312,9 +277,19 @@ void MapEditor::updateLayout(sf::RenderWindow & App)
     
     /** Game View */
     
-    gameView.setSize(App.getSize().x - menuSize, App.getSize().y);
-    gameView.setCenter((App.getSize().x - menuSize) / 2, App.getSize().y / 2); //TODO: This needs to take into account changes to the view
-    gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - menuSize) / App.getSize().x, 1));
+	gameView.setSize(static_cast<float>(App.getSize().x - menuSize), static_cast<float>(App.getSize().y));
+	gameView.setCenter(static_cast<float>(App.getSize().x - menuSize / 2), static_cast<float>(App.getSize().y / 2));
+	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - menuSize) / static_cast<float>(App.getSize().x), 1));
+
+	// Center the camera
+	if (game.getSelectedCharacter() != game.getCharacters().end()) {
+		gameView.setCenter(sf::Vector2f(static_cast<float>(game.getSelectedCharacter()->getRenderPosition().x), static_cast<float>(game.getSelectedCharacter()->getRenderPosition().y)));
+	}
+	else {
+		float zoomFactor = static_cast<float>(game.getGrid().getHeight() * TILESIZE) / gameView.getSize().y;
+		zoomViewAt(sf::Vector2i(static_cast<int>(gameView.getCenter().x), static_cast<int>(gameView.getCenter().y)), App, gameView, zoomFactor);
+		gameView.setCenter(sf::Vector2f(static_cast<float>(game.getGrid().getWidth() / 2 * TILESIZE), static_cast<float>(game.getGrid().getHeight() / 2 * TILESIZE)));
+	}
     
     /** UI View */
     
@@ -357,6 +332,63 @@ void MapEditor::exitToMainMenu() {
     m_screenResult = ScreenResult::MainMenuScene;
 }
 
+bool MapEditor::initComponents(sf::RenderWindow & App) {
+	//Interface drawing initialization
+	font = std::make_shared<sf::Font>(sf::Font());
+	if (!font->loadFromFile("font/Pixellari.ttf")) {
+		std::cout << "Could not load 'font/Pixellari.ttf'\n";
+	}
+
+	backgroundTexture = std::make_shared<sf::Texture>(sf::Texture());
+	if (!backgroundTexture->loadFromFile("img/background.png"))
+	{
+		std::cerr << "Error loading background.png" << std::endl;
+	}
+	backgroundSprite.setTexture(*backgroundTexture);
+
+	//Game drawing initialization
+	selectedTile = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
+	selectedTile.setOutlineColor(sf::Color::Yellow);
+	selectedTile.setOutlineThickness(2.0f);
+	selectedTile.setFillColor(sf::Color::Transparent);
+	selectedTile.setPosition(0, 0);
+
+	texPlayer1 = std::make_shared<sf::Texture>(sf::Texture());
+	if (!texPlayer1->loadFromFile("img/character1_sheet.png")) {
+		std::cout << "Could not load 'img/character1_sheet.png'\n";
+	}
+
+	texPlayer2 = std::make_shared<sf::Texture>(sf::Texture());
+	if (!texPlayer2->loadFromFile("img/character2_sheet.png")) {
+		std::cout << "Could not load 'img/character2_sheet.png'\n";
+	}
+
+	// Set up animations
+	Animation animation_walk_left(9, 0, 8, 62000);
+	Animation animation_walk_right(11, 0, 8, 62000);
+	Animation animation_walk_down(10, 0, 8, 62000);
+	Animation animation_walk_up(8, 0, 8, 62000);
+	Animation animation_die(20, 0, 5, 125000, false);
+	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
+	animManager.addAnim(animation_walk_left);
+	animManager.addAnim(animation_walk_right);
+	animManager.addAnim(animation_walk_down);
+	animManager.addAnim(animation_walk_up);
+	animManager.addAnim(animation_die);
+	animManager.changeAnim(animations::walk_down); // Initial animation
+	for (auto &character : game.getCharacters()) {
+		character.setAnimationManager(animManager);
+	}
+
+	selectToolCoord = sf::Vector2u(0, 0);
+
+	sidePanel = SidePanelMapEditor(App, *this);
+
+	updateLayout(App);
+
+	return true;
+}
+
 void MapEditor::setGroundTile(TileGround tileGround) {
 	auto& currentTile = game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
 	currentTile.setTile(tileGround, currentTile.getBlock());
@@ -379,4 +411,8 @@ void MapEditor::setBlockTile(TileBlock tileBlock) {
 			tileMap->updateTile(coord);
 		}
 	}
+}
+
+bool MapEditor::saveMap(std::string name) {
+	return jreader::writeJSON(game, name);
 }

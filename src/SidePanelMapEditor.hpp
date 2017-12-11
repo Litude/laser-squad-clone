@@ -11,6 +11,7 @@
 #include "Util.hpp"
 #include "Weapon.hpp"
 #include "Projectile.hpp"
+#include "TextField.hpp"
 
 class MapEditor;
 
@@ -30,7 +31,9 @@ private:
 	std::shared_ptr<sf::Texture> texItems;
 	sf::View interfaceView;
 
-	//std::vector<Button> buttons;
+	void saveMap(MapEditor &editor);
+
+
 	std::vector<Button> buttons_grounds;
 	std::vector<Button> buttons_blocks;
 
@@ -41,6 +44,8 @@ private:
 	Button buttonExit;
 	sf::RectangleShape selectedItem;
 	sf::Text textFPS;
+	TextField mapNameField;
+	Button buttonSaveMap;
 
 	sf::Clock fpsclock;
 	sf::Clock clock;

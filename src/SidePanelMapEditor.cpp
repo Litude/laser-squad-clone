@@ -34,6 +34,14 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 		std::cout << "Could not load 'img/tileset_blocks.png'\n";
 	}
 
+	mapNameField = TextField(25, rs, *font);
+	mapNameField.setPosition(sf::Vector2f(300.f, 450.f));
+	mapNameField.setSize(170, 40);
+	mapNameField.setDefaultStr("Map name...");
+
+	buttonSaveMap = Button("Save", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
+	buttonSaveMap.setCallback([&] { this->saveMap(editor); });
+
 	// Map edit buttons
 
 	// Ground buttons
@@ -75,6 +83,8 @@ void SidePanelMapEditor::update(sf::Event& event, sf::RenderWindow& App, Game &g
 {
 	// Update buttons
 	buttonExit.update(event, App);
+	buttonSaveMap.update(event, App);
+	mapNameField.update(event, App);
 	for (auto it = buttons_grounds.begin(); it != buttons_grounds.end(); ++it) {
 		it->setState(state::normal);
 		it->update(event, App);
@@ -104,6 +114,8 @@ void SidePanelMapEditor::draw(sf::RenderWindow &App, Game &game, MapEditor& edit
 
 	App.draw(textFPS);
 	App.draw(buttonExit);
+	App.draw(mapNameField);
+	App.draw(buttonSaveMap);
 	for (auto button : buttons_grounds) {
 		App.draw(button);
 	}
@@ -133,6 +145,9 @@ void SidePanelMapEditor::updateLayout(sf::RenderWindow & App)
 	rs.setFillColor(sf::Color::White);
 	rs.setSize(sf::Vector2f(static_cast<float>(menuSize - margin), 40));
 	buttonExit.setRectangleShape(rs);
+
+	buttonSaveMap.setPosition(sf::Vector2f(static_cast<float>(menuCenterX), static_cast<float>(buttonExit.getGlobalBounds().top - buttonSaveMap.getGlobalBounds().height / 2 - margin)));
+	mapNameField.setPosition(sf::Vector2f(static_cast<float>(menuCenterX), static_cast<float>(buttonSaveMap.getGlobalBounds().top - mapNameField.getGlobalBounds().height / 2 - margin)));
 
 	// Ground buttons
 	unsigned int groundButtonsGroupY = 40;
@@ -198,4 +213,10 @@ Button SidePanelMapEditor::createBlockTileButton(TileBlock tileBlock, MapEditor 
 	Button button = Button("", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), buttonSprite);
 	button.setCallback([&, tileBlock] { editor.setBlockTile(tileBlock); });
 	return button;
+}
+
+void SidePanelMapEditor::saveMap(MapEditor &editor) {
+	if (!editor.saveMap(mapNameField.getString())) {
+		std::cout << "Could not save map";
+	}
 }
