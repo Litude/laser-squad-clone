@@ -92,7 +92,7 @@ bool Game::characterDropItem(gc_iterator it) {
 		return false;
 	}
 
-	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(*getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItemIndex()]);
+	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItemIndex()]);
 	if (getSelectedCharacter()->removeSelectedItem()) {
 		updateGameState();
 		return true;
@@ -138,7 +138,7 @@ void Game::characterDropAllItems(GameCharacter& gc) {
 	//Called when a character is killed to drop its inventory contents
 	for (auto &item : gc.getInventory()) {
 		if (item->getType() == Type_None) continue;
-		getGrid().getTile(gc.getPosition().x, gc.getPosition().y).addItem(*item);
+		getGrid().getTile(gc.getPosition().x, gc.getPosition().y).addItem(item);
 	}
 
 }

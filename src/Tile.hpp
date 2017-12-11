@@ -38,10 +38,11 @@ public:
 		return true;
 	}
 
-	/*bool addItem(std::shared_ptr<Item> obj) {
+	bool addItem(std::shared_ptr<Item> obj) {
+		//Always use pointers when dropping items!
 		items.push_back(obj);
 		return true;
-	}*/
+	}
 
 private:
 	TileGround ground;
