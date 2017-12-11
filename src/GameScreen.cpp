@@ -463,6 +463,8 @@ void GameScreen::drawGameUI(sf::RenderWindow &App) {
 	}
 
 	App.draw(screenStatusMessage);
+	// Restore gameView
+	App.setView(gameView);
 }
 
 void GameScreen::updateLayout(sf::RenderWindow & App)
