@@ -271,27 +271,27 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                     
                         
                     case sf::Keyboard::Z:
-                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+                        game.getGrid().getTile(coord.x, coord.y).addItem(HealthPackLarge());
                         tileMap->updateTile(coord);
                         break;
                     case sf::Keyboard::X:
-                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
+                        game.getGrid().getTile(coord.x, coord.y).addItem(HealthPackSmall());
                         tileMap->updateTile(coord);
                         break;
                     case sf::Keyboard::C:
-                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Pistol>(Pistol()));
+                        game.getGrid().getTile(coord.x, coord.y).addItem(Pistol());
                         tileMap->updateTile(coord);
                         break;
                     case sf::Keyboard::V:
-                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Shotgun>(Shotgun()));
+                        game.getGrid().getTile(coord.x, coord.y).addItem(Shotgun());
                         tileMap->updateTile(coord);
                         break;
                     case sf::Keyboard::M:
-                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
+                        game.getGrid().getTile(coord.x, coord.y).addItem(Ammo9mmBullets());
                         tileMap->updateTile(coord);
                         break;
                     case sf::Keyboard::N:
-                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
+                        game.getGrid().getTile(coord.x, coord.y).addItem(AmmoShotgunShells());
                         tileMap->updateTile(coord);
                         break;
                         
