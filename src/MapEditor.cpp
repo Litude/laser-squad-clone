@@ -63,6 +63,12 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                 App.close();
                 return ScreenResult::Exit;
             }
+			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+				auto coord = getClickedTilePosition(App, sf::Vector2i(event.mouseButton.x, event.mouseButton.y), gameView);
+				if (coord.x >= 0 && coord.x < game.getGrid().getWidth() && coord.y >= 0 && coord.y < game.getGrid().getHeight()) {
+					selectToolCoord = coord;
+				}
+			}
             if (event.type == sf::Event::MouseWheelScrolled)
             {
                 if (event.mouseWheelScroll.delta > 0)
