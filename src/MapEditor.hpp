@@ -20,7 +20,7 @@
 #include "Util.hpp"
 #include "Weapon.hpp"
 #include "Projectile.hpp"
-
+#include "SidePanelMapEditor.hpp"
 
 namespace MouseMode2 {
     enum Mode2 { shoot, select };
@@ -31,10 +31,11 @@ class MapEditor : public Screen
 public:
     MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int height);
     virtual ScreenResult Run(sf::RenderWindow &App);
+	void exitToMainMenu();
+	void setGroundTile(TileGround tileGround);
 private:
     ScreenResult m_screenResult;
 private:
-    void exitToMainMenu();
     void zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom);
     void DrawGame(sf::RenderWindow &App);
     void DrawUI(sf::RenderWindow &App);
@@ -44,23 +45,22 @@ private:
     sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
 	sf::Vector2u selectToolCoord;
 
-	Button createGroundTileButton(TileGround tileGround);
-	void setGroundTile(TileGround tileGround);
+	SidePanelMapEditor sidePanel;
     
     Game game;
     std::shared_ptr<TileMap> tileMap;
     std::shared_ptr<sf::Font> font;
     std::shared_ptr<sf::Texture> texPlayer1;
     std::shared_ptr<sf::Texture> texPlayer2;
-	std::shared_ptr<sf::Texture> texGrounds;
-	std::shared_ptr<sf::Texture> texBlocks;
-    std::shared_ptr<sf::Texture> texItems;
+	//std::shared_ptr<sf::Texture> texGrounds;
+	//std::shared_ptr<sf::Texture> texBlocks;
+    //std::shared_ptr<sf::Texture> texItems;
     std::shared_ptr<sf::Texture> backgroundTexture;
     sf::Sprite backgroundSprite;
     sf::View gameView;
     sf::View interfaceView;
 
-	std::vector<Button> buttons;
+	//std::vector<Button> buttons;
     
     sf::RectangleShape interfaceBkg;
     Button buttonExit;

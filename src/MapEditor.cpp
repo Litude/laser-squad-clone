@@ -27,51 +27,13 @@ MapEditor::MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int hei
         std::cout << "Could not load 'font/Pixellari.ttf'\n";
     }
     
-    //Interface element attributes that won't change during execution
-    interfaceBkg.setFillColor(sf::Color(0, 0, 0, 200));
-    textFPS.setFont(*font);
-    textFPS.setCharacterSize(12);
-    
     backgroundTexture = std::make_shared<sf::Texture>(sf::Texture());
     if (!backgroundTexture->loadFromFile("img/background.png"))
     {
         std::cerr << "Error loading background.png" << std::endl;
     }
     backgroundSprite.setTexture(*backgroundTexture);
-    
-    sf::RectangleShape rs;
-    rs.setFillColor(sf::Color::White);
-    rs.setSize(sf::Vector2f(140, 40));
-    
-    buttonExit = Button("Exit to Main Menu", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
-    buttonExit.setCallback([&] { this->exitToMainMenu(); });
-    
-    rs.setSize(sf::Vector2f(50, 20));
 
-	texGrounds = std::make_shared<sf::Texture>(sf::Texture());
-	if (!texGrounds->loadFromFile("img/tileset_grounds.png")) {
-		std::cout << "Could not load 'img/tileset_grounds.png'\n";
-	}
-	sf::Sprite buttonSprite;
-	buttonSprite.setTexture(*texGrounds);
-	sf::IntRect buttonSpriteRect;
-	buttonSpriteRect.width = TILESIZE;
-	buttonSpriteRect.height = TILESIZE;
-	buttonSpriteRect.top = 0;
-	buttonSpriteRect.left = 0;
-	int tileNumber_x = TileGround::dirt;
-	int tu = tileNumber_x * TILESIZE;
-	buttonSpriteRect.left = tu;
-	buttonSprite.setTextureRect(buttonSpriteRect);
-
-	// Map edit buttons
-	auto button = createGroundTileButton(TileGround::dirt);
-	button.setPosition(sf::Vector2f(16, 16));
-	buttons.push_back(button);
-	button = createGroundTileButton(TileGround::grass);
-	button.setPosition(sf::Vector2f(32, 32));
-	buttons.push_back(button);
-    
     //Game drawing initialization
     selectedTile = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
     selectedTile.setOutlineColor(sf::Color::Yellow);
@@ -105,13 +67,10 @@ MapEditor::MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int hei
     for (auto &character : game.getCharacters()) {
         character.setAnimationManager(animManager);
     }
-    
-    texItems = std::make_shared<sf::Texture>(sf::Texture());
-    if (!texItems->loadFromFile("img/tileset_items.png")) {
-        std::cout << "Could not load 'img/tileset_items.png'\n";
-    }
 
 	selectToolCoord = sf::Vector2u(0, 0);
+
+	sidePanel = SidePanelMapEditor(App, *this);
    
     updateLayout(App);
     
@@ -145,12 +104,8 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                 else if (event.mouseWheelScroll.delta < 0)
                     zoomViewAt({ event.mouseWheelScroll.x, event.mouseWheelScroll.y }, App, gameView, 1.1f);
             }
-            // Update buttons
-			for (auto it = buttons.begin(); it != buttons.end(); ++it) {
-				it->setState(state::normal);
-				it->update(event, App);
-			}
-            buttonExit.update(event, App);
+            // Update components
+			sidePanel.update(event, App, game);
             //Handle keyboard input
             if (event.type == sf::Event::KeyPressed) {
 				handleKeyPress(event, App);
@@ -323,15 +278,8 @@ void MapEditor::DrawGame(sf::RenderWindow &App) {
 	selectedTile.setPosition(selectToolCoord.x*TILESIZE, selectToolCoord.y*TILESIZE);
     App.draw(selectedTile);
     
-    
     //Draw characters
     for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
-        //if (it->getTeam() != game.getCurrentPlayer()) {
-            //if (std::find(visibleTiles.begin(), visibleTiles.end(), it->getPosition()) == visibleTiles.end()) {
-                // This enemy character is not visible - skip rendering
-                //continue;
-          //  }
-        //}
         sf::Sprite characterShape;
         characterShape.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
         if (it->getTeam() == 1) {
@@ -350,25 +298,10 @@ void MapEditor::DrawUI(sf::RenderWindow &App) {
     
     updateUIComponents(App);
     
-    //Interface elements that always need to be updated
-    
-    //TODO: Process selected character attributes here and draw them on the interface...
-    
-    currentTime = fpsclock.getElapsedTime().asMicroseconds() / 1000000.0f;
-    float fps = 1.f / (currentTime - lastTime);
-    textFPS.setString("FPS: " + std::to_string(fps));
-    lastTime = currentTime;
-    
     //Draw elements
-    App.setView(interfaceView);
-    App.draw(backgroundSprite);
-    App.draw(interfaceBkg); //Must always be first since it covers the whole area and will hide anything "under" it
-    
-    App.draw(textFPS);
-    App.draw(buttonExit);
-	for (auto button : buttons) {
-		App.draw(button);
-	}
+	App.setView(interfaceView);
+	App.draw(backgroundSprite);
+	sidePanel.draw(App, game, *this);
 }
 
 void MapEditor::updateLayout(sf::RenderWindow & App)
@@ -385,35 +318,21 @@ void MapEditor::updateLayout(sf::RenderWindow & App)
     
     /** UI View */
     
-    backgroundSprite.setScale(
-                              App.getSize().x / backgroundSprite.getLocalBounds().width,
-                              App.getSize().y / backgroundSprite.getLocalBounds().height);
+	backgroundSprite.setScale(
+		App.getSize().x / backgroundSprite.getLocalBounds().width,
+		App.getSize().y / backgroundSprite.getLocalBounds().height);
+
+	interfaceView.setSize(App.getSize().x, App.getSize().y);
+	interfaceView.setCenter(App.getSize().x / 2, App.getSize().y / 2);
     
-    interfaceView.setSize(App.getSize().x, App.getSize().y);
-    interfaceView.setCenter(App.getSize().x / 2, App.getSize().y / 2);
-    
-    // Interface background
-    interfaceBkg.setSize(sf::Vector2f(menuSize, App.getSize().y));
-    interfaceBkg.setPosition(App.getSize().x - menuSize, 0);
-    
-    // Exit button
-    buttonExit.setPosition(sf::Vector2f(menuCenterX, App.getSize().y - buttonExit.getGlobalBounds().height / 2 - margin));
-    sf::RectangleShape rs;
-    rs.setFillColor(sf::Color::White);
-    rs.setSize(sf::Vector2f(menuSize - margin, 40));
-    buttonExit.setRectangleShape(rs);
+	sidePanel.updateLayout(App);
     
     updateUIComponents(App);
 }
 
 void MapEditor::updateUIComponents(sf::RenderWindow & App)
 {
-    unsigned int menuSize = App.getSize().x / 4;
-    unsigned int menuCenterX = App.getSize().x - menuSize / 2;
-    unsigned int margin = 10;
-    
-    // FPS counter text
-    textFPS.setPosition(menuCenterX - menuSize / 2 + margin, 0);
+	sidePanel.updateUIComponents(App);
 }
 
 sf::Vector2u MapEditor::getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const {
@@ -436,24 +355,6 @@ void MapEditor::zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::Vie
 
 void MapEditor::exitToMainMenu() {
     m_screenResult = ScreenResult::MainMenuScene;
-}
-
-Button MapEditor::createGroundTileButton(TileGround tileGround) {
-	sf::Sprite buttonSprite;
-	buttonSprite.setTexture(*texGrounds);
-	sf::IntRect buttonSpriteRect;
-	buttonSpriteRect.width = TILESIZE;
-	buttonSpriteRect.height = TILESIZE;
-	buttonSpriteRect.top = 0;
-	buttonSpriteRect.left = 0;
-	int tileNumber_x = tileGround;
-	int tu = tileNumber_x * TILESIZE;
-	buttonSpriteRect.left = tu;
-	buttonSprite.setTextureRect(buttonSpriteRect);
-
-	Button button = Button("", *font, sf::Text::Regular, 25, sf::Vector2f(16.f, 16.f), buttonSprite);
-	button.setCallback([&, tileGround] { this->setGroundTile(tileGround); });
-	return button;
 }
 
 void MapEditor::setGroundTile(TileGround tileGround) {
