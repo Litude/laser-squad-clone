@@ -133,7 +133,6 @@ namespace jreader {
 				unsigned x = jchar["position"][0];
 				unsigned y = jchar["position"][1];
 				unsigned team = jchar["team"];
-				std::cout << "pos: (" << x << ", " << y << ")" << std::endl;
 				std::unique_ptr<GameCharacter> gc_ptr(new GameCharacter(sf::Vector2u(x, y), team));// GameCharacter gc(sf::Vector2u(x, y), team);
 				return gc_ptr;
 			}
