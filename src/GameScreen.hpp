@@ -15,6 +15,7 @@
 #include "SidePanel.hpp"
 #include "GameOverPanel.hpp"
 #include "Line.hpp"
+#include "GridLoader.hpp"
 
 namespace MouseMode {
 	enum Mode { shoot, select };
@@ -44,8 +45,8 @@ private:
 	void updateUIComponents(sf::RenderWindow & App);
 	void handleKeyPress(sf::Event& event, sf::RenderWindow& App);
 	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
-	void DrawVisibleArea(sf::RenderWindow &App, std::list<sf::Vector2u> visibleTiles);
-	void addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination);
+	void DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles);
+	void addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination, int delay=0);
 
 	Game game;
 	std::shared_ptr<TileMap> tileMap;
@@ -79,7 +80,7 @@ private:
 	sf::RectangleShape visibleTileShape;
 	sf::Shader* shader;
 	std::vector<Projectile> activeProjectiles;
-	std::list<sf::Vector2u> visibleTiles;
+	std::vector<sf::Vector2u> visibleTiles;
 
 	sf::Text screenStatusMessage;
 

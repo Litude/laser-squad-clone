@@ -33,27 +33,29 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.getGrid().getTile(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
 	game.getGrid().getTile(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
 
-	game.getGrid().getTile(3, 6).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
-	game.getGrid().getTile(4, 6).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
-	game.getGrid().getTile(4, 7).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
-	game.getGrid().getTile(4, 7).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
+	game.getGrid().getTile(3, 6).addItem(Ammo9mmBullets());
+	game.getGrid().getTile(4, 6).addItem(Ammo9mmBullets());
+	game.getGrid().getTile(4, 7).addItem(AmmoShotgunShells());
+	game.getGrid().getTile(4, 7).addItem(AmmoShotgunShells());
 
-	game.getGrid().getTile(7, 4).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
-	game.getGrid().getTile(7, 6).addItem(std::make_shared<Pistol>(Pistol()));
-	game.getGrid().getTile(9, 6).addItem(std::make_shared<Shotgun>(Shotgun()));
-	game.getGrid().getTile(15, 6).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-	game.getGrid().getTile(15, 6).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+	game.getGrid().getTile(7, 4).addItem(HealthPackSmall());
+	game.getGrid().getTile(2, 2).addItem(Uzi());
+	game.getGrid().getTile(7, 6).addItem(Pistol());
+	game.getGrid().getTile(9, 6).addItem(Shotgun());
+	game.getGrid().getTile(3, 2).addItem(Rifle());
+	game.getGrid().getTile(15, 6).addItem(HealthPackLarge());
+	game.getGrid().getTile(15, 6).addItem(HealthPackLarge());
 
 	//Add 9 pcs to test full inventory
-	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-	game.getGrid().getTile(3, 3).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
+	game.getGrid().getTile(3, 3).addItem(HealthPackLarge());
 
 	// Test put walls on the edges of the map
 	for (unsigned int i = 0; i < game.getGrid().getWidth(); ++i)
@@ -75,6 +77,10 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	game.addCharacter(sf::Vector2u(10, 10), 2);
 
 	game.setSelectedCharacter(game.getCharacters().end());
+
+	game.getCharacters()[0].addItem(std::make_shared<DoubleBarrel>(DoubleBarrel()));
+
+	jreader::writeJSON(game, "test_level");
 
 	//Interface drawing initialization
 	font = std::make_shared<sf::Font>(sf::Font());
@@ -207,13 +213,16 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 					//In shoot mode
 					if (mouseMode == MouseMode::shoot && game.getSelectedCharacter() != game.getCharacters().end()) {
 						auto gc = game.getSelectedCharacter();
+						auto weapon = gc->getEquipped();
 						auto tiles = game.characterShoot(gc, getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView));
+						int k = 0;
 						for (auto dest : tiles) {
-							addProjectile(gc->getEquipped(), gc->getPosition(), dest);
+							addProjectile(weapon, gc->getPosition(), dest, k*(weapon->getDelay()));
+							++k;
 							tileMap->updateTile(dest);
 						}
 						
-						std::cout << "PROJS:" << std::endl;
+						//std::cout << "PROJS:" << std::endl;
 						for (auto proj : activeProjectiles) {
 							std::cout << proj;
 						}
@@ -379,9 +388,11 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 	for (auto proj = activeProjectiles.begin(); proj != activeProjectiles.end(); ) {
 		if (proj->isActive()) {
 			App.draw((*proj).drawable());
-			++proj;
-		} else {
+		}
+		if (proj->reachedDestination()) {
 			proj = activeProjectiles.erase(proj);
+		} else {
+			++proj;
 		}
 	}
 
@@ -411,7 +422,7 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 }
 
 // Draw visible area for the selected game character
-void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::list<sf::Vector2u> visibleTiles) {
+void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles) {
 
 	renderTexture_visibleTiles->clear(sf::Color(0, 0, 0, 0));
 	for (auto it = visibleTiles.begin(); it != visibleTiles.end(); ++it) {
@@ -553,9 +564,9 @@ sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, con
 	return clickedTile;
 }
 
-void GameScreen::addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination) {
+void GameScreen::addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination, int delay) {
 	AmmoType wt = weapon->getAmmoType();
-	Projectile p(wt, Util::mapToPixels(world_origin), Util::mapToPixels(world_destination));
+	Projectile p(wt, Util::mapToPixels(world_origin), Util::mapToPixels(world_destination), delay);
 	activeProjectiles.push_back(p);
 }
 

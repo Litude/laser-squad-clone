@@ -192,27 +192,27 @@ void MapEditor::handleKeyPress(sf::Event& event, sf::RenderWindow& App)
 
 
 	case sf::Keyboard::Z:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(HealthPackLarge());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::X:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(HealthPackSmall());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::C:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Pistol>(Pistol()));
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(Pistol());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::V:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Shotgun>(Shotgun()));
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(Shotgun());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::M:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(Ammo9mmBullets());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::N:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(AmmoShotgunShells());
 		tileMap->updateTile(selectToolCoord);
 		break;
 
