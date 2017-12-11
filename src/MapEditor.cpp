@@ -232,11 +232,6 @@ void MapEditor::handleKeyPress(sf::Event& event, sf::RenderWindow& App)
 void MapEditor::DrawGame(sf::RenderWindow &App) {
     
     App.setView(gameView);
-    // Center the camera on the selected player (linear interpolation)
-    if (game.getSelectedCharacter() != game.getCharacters().end()) {
-        float factor = 0.01f;
-        gameView.setCenter(sf::Vector2f(gameView.getCenter().x + (game.getSelectedCharacter()->getRenderPosition().x - gameView.getCenter().x) * factor, gameView.getCenter().y + (game.getSelectedCharacter()->getRenderPosition().y - gameView.getCenter().y) * factor));
-    }
     
     //Draw the map
     App.draw(*tileMap);
@@ -430,6 +425,30 @@ void MapEditor::removeItem() {
 	auto& currentTile = game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
 	currentTile.popItem();
 	tileMap->updateTile(selectToolCoord);
+}
+
+void MapEditor::addCharacter(unsigned int team) {
+	for (auto character : game.getCharacters()) {
+		if (character.getPosition() == selectToolCoord) {
+			return;
+		}
+	}
+	Animation animation_walk_down(10, 0, 8, 62000);
+	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
+	animManager.addAnim(animation_walk_down);
+	animManager.changeAnim(animations::walk_down);
+	if (!game.addCharacter(selectToolCoord, team)) {
+		std::cout << "Error" << std::endl;
+	};
+	for (auto &character : game.getCharacters()) {
+		character.setAnimationManager(animManager);
+	}
+	game.setSelectedCharacter(game.getCharacters().end());
+}
+
+void MapEditor::removeCharacter() {
+	game.removeCharacter(selectToolCoord);
+	game.setSelectedCharacter(game.getCharacters().end());
 }
 
 bool MapEditor::saveMap(std::string name) {

@@ -37,6 +37,8 @@ public:
 	void setBlockTile(TileBlock tileBlock);
 	void addItem(Item item);
 	void removeItem();
+	void addCharacter(unsigned int team);
+	void removeCharacter();
 	bool saveMap(std::string name);
 private:
     ScreenResult m_screenResult;
