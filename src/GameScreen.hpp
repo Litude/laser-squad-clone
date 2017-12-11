@@ -15,6 +15,7 @@
 #include "SidePanel.hpp"
 #include "GameOverPanel.hpp"
 #include "Line.hpp"
+#include "GridLoader.hpp"
 
 namespace MouseMode {
 	enum Mode { shoot, select };
@@ -78,7 +79,7 @@ private:
 	sf::RectangleShape visibleTileShape;
 	sf::Shader* shader;
 	std::vector<Projectile> activeProjectiles;
-	std::list<sf::Vector2u> visibleTiles;
+	std::vector<sf::Vector2u> visibleTiles;
 
 	sf::Text screenStatusMessage;
 
