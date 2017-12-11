@@ -11,6 +11,7 @@ public:
 	void addAnim(Animation& anim);
 	void update(const unsigned int dt);
 	void changeAnim(unsigned int animNum);
+	bool isFinished();
 	AnimationManager();
 	AnimationManager(const sf::IntRect& frameSize);
 	sf::IntRect getFrame() { return bounds; }

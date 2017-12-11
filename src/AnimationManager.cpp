@@ -27,10 +27,10 @@ void AnimationManager::update(const unsigned int dt)
 	int duration = this->animations[currentAnim].duration;
 
 	// If the time has progressed to a new animation frame, change it
-	if (int((t + dt) / duration) > int(t / duration))
+	if (static_cast<int>((t + dt) / duration) > static_cast<int>(t / duration))
 	{
 		// Calculate the frame number
-		unsigned int frame = (unsigned int) ((t + dt) / duration);
+		unsigned int frame = static_cast<unsigned int> ((t + dt) / duration);
 
 		// If reached end and not looping, return
 		if (frame >= this->animations[currentAnim].getLength() && !this->animations[currentAnim].loop) {
@@ -74,4 +74,9 @@ void AnimationManager::changeAnim(unsigned int animID)
 	rect.top = rect.height * this->animations[animID].offset;
 	this->bounds = rect;
 	this->t = 0;
+}
+
+bool AnimationManager::isFinished()
+{
+	return (animations[currentAnim].duration < t) ? true : false;
 }

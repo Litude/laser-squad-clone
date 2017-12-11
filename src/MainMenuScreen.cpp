@@ -136,6 +136,10 @@ bool MainMenuScreen::initComponents(sf::RenderWindow & App)
 	mapeditor.setCallback([&] {this->openScreen(ScreenResult::NewMapMenuScene); });
 	buttons.push_back(mapeditor);
 
+	Button controls("Controls", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
+	controls.setCallback([&] {this->openScreen(ScreenResult::ControlsScene); });
+	buttons.push_back(controls);
+
 	Button quit("Quit", *font, sf::Text::Bold, 25, sf::Vector2f(350.f, 350.f), rs);
 	quit.setCallback([&] {this->openScreen(ScreenResult::Exit); });
 	buttons.push_back(quit);

@@ -43,6 +43,7 @@ enum statuscode {
 	shoot_reload,
 	shoot_no_ammo,
 	shoot_success,
+	inventory_full,
 };
 
 class GameCharacter {
@@ -67,7 +68,7 @@ public:
 	void			resetActionPoints() { actionPoints = maxActionPoints; }
 	bool 			sufferDamage(int dmg);
     unsigned int    getLengthofSight() const {return lengthofSight;}
-	bool			addItem(std::shared_ptr<Item> obj);
+	statuscode		addItem(std::shared_ptr<Item> obj);
 	bool			removeSelectedItem();
 	Inventory&		getInventory() { return inventory; }
 	void			setSelectedItemIndex(int idx) { selectedItemIdx = idx; }
@@ -78,6 +79,7 @@ public:
 	AnimationManager getAnimationManager() const { return animationManager;  }
 	unsigned int	getAmmoAmount(AmmoType ammotype, unsigned int neededAmount=0);
 	statuscode		reloadWeapon();
+	bool			shouldBeRemoved() { return remove; };
 
 private:
 	void			moveLeft();
@@ -100,9 +102,10 @@ private:
 	unsigned int maxHealth = 10;
 	std::shared_ptr<Weapon> equippedWeapon = std::make_shared<Hands>(Hands());
 	unsigned int team;
-    unsigned int lengthofSight=9;
+    unsigned int lengthofSight = 9;
 	int selectedItemIdx = -1;
 	int selectedWeaponIdx = -1;
+	bool remove = false;
 };
 
 #endif

@@ -12,6 +12,7 @@
 #include "constants.hpp"
 #include "MapEditor.hpp"
 #include "NewMapMenuScreen.hpp"
+#include "ControlsScreen.hpp"
 
 int main(int argc, char* argv[]) {
 
@@ -55,6 +56,10 @@ int main(int argc, char* argv[]) {
 			result = screen->Run(App);
 		}
             break;
+		case ControlsScene:
+			screen.reset(new ControlsScreen());
+			result = screen->Run(App);
+			break;
 		case Exit:
 			exit(0);
 			break;

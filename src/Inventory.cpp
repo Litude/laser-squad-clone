@@ -42,8 +42,12 @@ bool Inventory::add(std::shared_ptr<Item>& newItem) {
 	//Inventory is full, item could not be added
 	return false;
 }
-std::vector<std::shared_ptr<Item>>::iterator Inventory::remove(std::vector<std::shared_ptr<Item>>::iterator it) {
-	return items.erase(it);
+void Inventory::remove(std::shared_ptr<Item> itemPtr) {
+	*itemPtr = Item();
+}
+
+void Inventory::remove(unsigned int itemIdx) {
+	*(items[itemIdx]) = Item();
 }
 
 std::shared_ptr<Item>& Inventory::operator[](unsigned n) {

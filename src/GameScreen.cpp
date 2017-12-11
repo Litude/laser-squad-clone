@@ -89,6 +89,14 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	}
 	backgroundSprite.setTexture(*backgroundTexture);
 
+	crosshairTexture = std::make_shared<sf::Texture>(sf::Texture());
+	if (!crosshairTexture->loadFromFile("img/crosshair.png"))
+	{
+		std::cerr << "Error loading crosshair.png" << std::endl;
+	}
+	crossHairSprite.setTexture(*crosshairTexture);
+	crossHairSprite.setOrigin(crossHairSprite.getGlobalBounds().width / 2, crossHairSprite.getGlobalBounds().height / 2);
+
 	//Game drawing initialization
 	selectedCharacter = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
 	selectedCharacter.setOutlineColor(sf::Color::Yellow);
@@ -123,8 +131,8 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	}
 
 	//Ray tracing line for shooting
-	rayLine[0].color = sf::Color::Red;
-	rayLine[1].color = sf::Color::Blue;
+	rayLine.setColorPoint1(sf::Color(255, 0, 0, 155));
+	rayLine.setColorPoint2(sf::Color(0, 0, 255, 155));
 
 	// Create a render-texture to draw visible tiles based on line of sight
 	renderTexture_visibleTiles = std::make_shared<sf::RenderTexture>();
@@ -213,7 +221,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 					//In select mode
 					else {
 						for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
-							if (it->getTeam() == game.getCurrentPlayer() && it->getPosition() == getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView)) {
+							if (it->getTeam() == game.getCurrentPlayer() && !(it->isDead()) && it->getPosition() == getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView)) {
 								game.setSelectedCharacter(it); //Select clicked character
 								break;
 							}
@@ -250,6 +258,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 			character.update(delta);
 		}
 		game.getStatusMessage().updateStatusMessage(delta);
+		game.removeDeadCharacters();
 
 		App.clear();
 
@@ -298,6 +307,9 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 		break;
 	case sf::Keyboard::W:
 		if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
+		break;
+	case sf::Keyboard::Numpad0:
+		gameView.setSize(sf::Vector2f(App.getSize().x - (App.getSize().x / 4), App.getSize().y));
 		break;
 		//enter shooting mode
 	case sf::Keyboard::Q:
@@ -378,15 +390,22 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 		auto gc = game.getSelectedCharacter();
 		auto target = getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView);
 		auto origin = gc->getRenderPosition();
-		rayLine[0].position = sf::Vector2f(static_cast<float>(origin.x + TILESIZE / 2), static_cast<float>(origin.y + TILESIZE / 2));
-		rayLine[1].position = Util::mapToPixels(game.traceFromCharacter(gc, target, true));
+		rayLine.setPositionPoint1(sf::Vector2f(static_cast<float>(origin.x + TILESIZE / 2), static_cast<float>(origin.y + TILESIZE / 2)));
+		rayLine.setPositionPoint2(Util::mapToPixels(game.traceFromCharacter(gc, target, true)));
 		//"animate" rayline
-		if (rayLine[0].color.r == 255 || rayLine[0].color.r == 0) rayIncr *= -1;
-		rayLine[0].color.r += rayIncr;
-		rayLine[0].color.b += rayIncr * -1;
-		rayLine[1].color.r += rayIncr * -1;
-		rayLine[1].color.b += rayIncr;
+		if (rayLine.getColorPoint1().r == 255 || rayLine.getColorPoint1().r == 0) rayIncr *= -1;
+		sf::Color color1 = rayLine.getColorPoint1();
+		color1.r += rayIncr;
+		color1.b += rayIncr * -1;
+		rayLine.setColorPoint1(color1);
+		sf::Color color2 = rayLine.getColorPoint2();
+		color2.r += rayIncr * -1;
+		color2.b += rayIncr;
+		rayLine.setColorPoint2(color2);
 		App.draw(rayLine);
+		crossHairSprite.setPosition(rayLine.getPositionPoint2());
+		crossHairSprite.setColor(color2);
+		App.draw(crossHairSprite);
 	}
 	// Draw visible area for the selected game character
 	DrawVisibleArea(App, visibleTiles);
@@ -448,6 +467,8 @@ void GameScreen::drawGameUI(sf::RenderWindow &App) {
 	}
 
 	App.draw(screenStatusMessage);
+	// Restore gameView
+	App.setView(gameView);
 }
 
 void GameScreen::updateLayout(sf::RenderWindow & App)
@@ -492,8 +513,8 @@ void GameScreen::updateUIComponents(sf::RenderWindow & App)
 
 void GameScreen::endTurn(sf::RenderWindow &App) {
 	mouseMode = MouseMode::select;
-	rayLine[0].position = sf::Vector2f(0, 0);
-	rayLine[1].position = sf::Vector2f(0, 0);
+	rayLine.setPositionPoint1(sf::Vector2f(0, 0));
+	rayLine.setPositionPoint2(sf::Vector2f(0, 0));
 	game.endTurn();
 	// Reset view for the next player
 	updateLayout(App);
@@ -529,7 +550,7 @@ sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, con
 }
 
 void GameScreen::addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination) {
-	ItemIcon wt = weapon->getIcon();
+	AmmoType wt = weapon->getAmmoType();
 	Projectile p(wt, Util::mapToPixels(world_origin), Util::mapToPixels(world_destination));
 	activeProjectiles.push_back(p);
 }
