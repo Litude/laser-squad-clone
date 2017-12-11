@@ -97,7 +97,7 @@ bool Game::characterDropItem(gc_iterator it) {
 		return false;
 	}
 
-	getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).addItem(*getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItemIndex()]);
+	getGrid()(getSelectedCharacter()->getPosition()).addItem(getSelectedCharacter()->getInventory()[getSelectedCharacter()->getSelectedItemIndex()]);
 	if (getSelectedCharacter()->removeSelectedItem()) {
 		updateGameState();
 		return true;
@@ -105,7 +105,7 @@ bool Game::characterDropItem(gc_iterator it) {
 	else {
 		// Could not drop the item, probably not enough AP so we need to pop the item we just added to the map
 		statusMessage.setStatusMessage(MSG_NOT_ENOUGH_AP, SEVERITY_CRITICAL);
-		getGrid().getTile(getSelectedCharacter()->getPosition().x, getSelectedCharacter()->getPosition().y).popItem();
+		getGrid()(getSelectedCharacter()->getPosition()).popItem();
 		return false;
 	}
 }
@@ -143,9 +143,8 @@ void Game::characterDropAllItems(GameCharacter& gc) {
 	//Called when a character is killed to drop its inventory contents
 	for (auto &item : gc.getInventory()) {
 		if (item->getType() == Type_None) continue;
-		getGrid().getTile(gc.getPosition().x, gc.getPosition().y).addItem(*item);
+		getGrid()(gc.getPosition()).addItem(item);
 	}
-
 }
 
 // Trace line from gamecharacter location to target, returning

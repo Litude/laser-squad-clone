@@ -32,16 +32,16 @@ public:
 	bool isSolid() const;
 	void setTile(TileGround tg, TileBlock tb);
 
-	template<typename T>
-	bool addItem(T item) {
+	/*template<typename T>
+	bool addItem(T& item) {
 		items.push_back(std::make_shared<T>(item));
 		return true;
-	}
+	}*/
 
-	/*bool addItem(std::shared_ptr<Item> obj) {
+	bool addItem(std::shared_ptr<Item> obj) {
 		items.push_back(obj);
 		return true;
-	}*/
+	}
 
 private:
 	TileGround ground;

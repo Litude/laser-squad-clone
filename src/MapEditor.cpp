@@ -192,41 +192,41 @@ void MapEditor::handleKeyPress(sf::Event& event, sf::RenderWindow& App)
 
 
 	case sf::Keyboard::Z:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(HealthPackLarge());
+		game.getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackLarge>());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::X:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(HealthPackSmall());
+		game.getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackSmall>());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::C:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(Pistol());
+		game.getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Pistol>());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::V:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(Shotgun());
+		game.getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Shotgun>());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::M:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(Ammo9mmBullets());
+		game.getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Ammo9mmBullets>());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::N:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(AmmoShotgunShells());
+		game.getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<AmmoShotgunShells>());
 		tileMap->updateTile(selectToolCoord);
 		break;
 
 
 	case sf::Keyboard::T:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, TileBlock::tree);;
+		game.getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, TileBlock::tree);;
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::Y:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, wall);
+		game.getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, wall);
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::B:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, bush);
+		game.getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, bush);
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::H:
@@ -252,8 +252,8 @@ void MapEditor::handleKeyPress(sf::Event& event, sf::RenderWindow& App)
 
 
 	case sf::Keyboard::R:
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, air);
-		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).popItem();
+		game.getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, air);
+		game.getGrid()(selectToolCoord.x, selectToolCoord.y).popItem();
 		game.removeCharacter(selectToolCoord);
 		tileMap->updateTile(selectToolCoord);
 		game.setSelectedCharacter(game.getCharacters().end());
@@ -358,13 +358,13 @@ void MapEditor::exitToMainMenu() {
 }
 
 void MapEditor::setGroundTile(TileGround tileGround) {
-	auto& currentTile = game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
+	auto& currentTile = game.getGrid()(selectToolCoord.x, selectToolCoord.y);
 	currentTile.setTile(tileGround, currentTile.getBlock());
 	tileMap->updateTile(selectToolCoord);
 }
 
 void MapEditor::setBlockTile(TileBlock tileBlock) {
-	auto& currentTile = game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
+	auto& currentTile = game.getGrid()(selectToolCoord.x, selectToolCoord.y);
 	currentTile.setTile(currentTile.getGround(), tileBlock);
 	// Update this tile and adjacent tiles in tilemap
 	for (int dx = -1; dx <= 1; ++dx) {
