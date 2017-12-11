@@ -101,7 +101,7 @@ private:
 	Inventory inventory;
 	unsigned int health = 10;
 	unsigned int maxHealth = 10;
-	std::shared_ptr<Weapon> equippedWeapon = std::make_shared<Hands>(Hands());
+	std::shared_ptr<Weapon> equippedWeapon = std::make_shared<Hands>();
 	unsigned int team;
     unsigned int lengthofSight = 9;
 	int selectedItemIdx = -1;
