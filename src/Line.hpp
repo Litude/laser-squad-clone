@@ -2,6 +2,7 @@
 #define SF_LINE
 
 #include <SFML/Graphics.hpp>
+#include <cmath>
 
 namespace sf
 {
