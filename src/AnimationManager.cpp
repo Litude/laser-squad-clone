@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-#include "animationManager.hpp"
+#include "AnimationManager.hpp"
 
 AnimationManager::AnimationManager()
 {
@@ -83,12 +83,7 @@ bool AnimationManager::isFinished()
 
 	if (frame == (this->animations[currentAnim].getLength() - 1) && animations[currentAnim].duration < t) {
 		return true;
-	} else {
-		return false;
 	}
+	return false;
 
-	//if (frame >= this->animations[currentAnim].getLength()) {
-	//	return true;
-	//}
-	//return (animations[currentAnim].duration < t) ? true : false;
 }

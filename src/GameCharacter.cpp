@@ -9,7 +9,7 @@ void GameCharacter::moveLeft() {
 	actionPoints -= AP_COST_MOVEMENT;
 	previousPosition = currentPosition;
 	currentPosition.x -= 1;
-	direction = left;
+	char_dir = left;
 	moving = true;
 }
 
@@ -18,7 +18,7 @@ void GameCharacter::moveRight() {
 	actionPoints -= AP_COST_MOVEMENT;
 	previousPosition = currentPosition;
 	currentPosition.x += 1;
-	direction = right;
+	char_dir = right;
 	moving = true;
 }
 
@@ -27,7 +27,7 @@ void GameCharacter::moveUp() {
 	actionPoints -= AP_COST_MOVEMENT;
 	previousPosition = currentPosition;
 	currentPosition.y -= 1;
-	direction = up;
+	char_dir = up;
 	moving = true;
 }
 
@@ -36,7 +36,7 @@ void GameCharacter::moveDown() {
 	actionPoints -= AP_COST_MOVEMENT;
 	previousPosition = currentPosition;
 	currentPosition.y += 1;
-	direction = down;
+	char_dir = down;
 	moving = true;
 }
 
