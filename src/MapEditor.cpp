@@ -53,7 +53,7 @@ MapEditor::MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int hei
     selectedTile.setOutlineColor(sf::Color::Yellow);
     selectedTile.setOutlineThickness(2.0f);
     selectedTile.setFillColor(sf::Color::Transparent);
-    selectedTile.setPosition(97,97);
+    selectedTile.setPosition(0, 0);
     
     texPlayer1 = std::make_shared<sf::Texture>(sf::Texture());
     if (!texPlayer1->loadFromFile("img/character1_sheet.png")) {
@@ -86,6 +86,8 @@ MapEditor::MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int hei
     if (!texItems->loadFromFile("img/tileset_items.png")) {
         std::cout << "Could not load 'img/tileset_items.png'\n";
     }
+
+	selectToolCoord = sf::Vector2u(0, 0);
    
     updateLayout(App);
     
@@ -103,9 +105,6 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
     }
     sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
     
-    
-    sf::Vector2u coord=sf::Vector2u(10,10);
-    selectedTile.setPosition(320,320);
     AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
     
     while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
@@ -125,11 +124,6 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
             // Update buttons
             buttonExit.update(event, App);
             //Handle keyboard input
-            
-            int xx=32;
-            int yy=32;
-            
-            
             Animation animation_walk_left(9, 0, 8, 62000);
             Animation animation_walk_right(11, 0, 8, 62000);
             Animation animation_walk_down(10, 0, 8, 62000);
@@ -152,24 +146,24 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                 
                 switch (event.key.code) {
                     case sf::Keyboard::Left:
-                        if(coord.x>0){
-                            coord=sf::Vector2u(coord.x-1,coord.y);
-                            selectedTile.setPosition(coord.x*xx,coord.y*yy);
+                        if (selectToolCoord.x > 0) {
+							selectToolCoord.x -= 1;
                         }
                         break;
                     case sf::Keyboard::Right:
-                            coord=sf::Vector2u(coord.x+1,coord.y);
-                            selectedTile.setPosition(coord.x*xx,coord.y*yy);
+						if (selectToolCoord.x < game.getGrid().getWidth() - 1) {
+							selectToolCoord.x += 1;
+						}
                         break;
                     case sf::Keyboard::Down:
-                            coord=sf::Vector2u(coord.x,coord.y+1);
-                            selectedTile.setPosition(coord.x*xx,coord.y*yy);
+						if (selectToolCoord.y < game.getGrid().getHeight() - 1) {
+							selectToolCoord.y += 1;
+						}
                         break;
                     case sf::Keyboard::Up:
-                        if(coord.y>0){
-                            coord=sf::Vector2u(coord.x,coord.y-1);
-                            selectedTile.setPosition(coord.x*xx,coord.y*yy);
-                        }
+						if (selectToolCoord.y > 0) {
+							selectToolCoord.y -= 1;
+						}
                         break;
                         
                     case sf::Keyboard::A:
@@ -188,45 +182,45 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                     
                         
                     case sf::Keyboard::Z:
-                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-                        tileMap->updateTile(coord);
+                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+                        tileMap->updateTile(selectToolCoord);
                         break;
                     case sf::Keyboard::X:
-                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
-                        tileMap->updateTile(coord);
+                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
+                        tileMap->updateTile(selectToolCoord);
                         break;
                     case sf::Keyboard::C:
-                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Pistol>(Pistol()));
-                        tileMap->updateTile(coord);
+                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Pistol>(Pistol()));
+                        tileMap->updateTile(selectToolCoord);
                         break;
                     case sf::Keyboard::V:
-                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Shotgun>(Shotgun()));
-                        tileMap->updateTile(coord);
+                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Shotgun>(Shotgun()));
+                        tileMap->updateTile(selectToolCoord);
                         break;
                     case sf::Keyboard::M:
-                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
-                        tileMap->updateTile(coord);
+                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
+                        tileMap->updateTile(selectToolCoord);
                         break;
                     case sf::Keyboard::N:
-                        game.getGrid().getTile(coord.x, coord.y).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
-                        tileMap->updateTile(coord);
+                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
+                        tileMap->updateTile(selectToolCoord);
                         break;
                         
                         
                     case sf::Keyboard::T:
-                        game.getGrid().getTile(coord.x, coord.y).setTile(TileGround::dirt, TileBlock::tree);;
-                        tileMap->updateTile(coord);
+                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, TileBlock::tree);;
+                        tileMap->updateTile(selectToolCoord);
                         break;
                     case sf::Keyboard::Y:
-                        game.getGrid().getTile(coord.x, coord.y).setTile(TileGround::dirt, wall);
-                        tileMap->updateTile(coord);
+                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, wall);
+                        tileMap->updateTile(selectToolCoord);
                         break;
                     case sf::Keyboard::B:
-                        game.getGrid().getTile(coord.x, coord.y).setTile(TileGround::dirt, bush);
-                        tileMap->updateTile(coord);
+                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, bush);
+                        tileMap->updateTile(selectToolCoord);
                         break;
                     case sf::Keyboard::H:
-                        if(!game.addCharacter(sf::Vector2u(coord.x, coord.y), 1)){
+                        if(!game.addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 1)){
                             std::cout << "Error" << std::endl;
                         };
                         game.setSelectedCharacter(game.getCharacters().end());
@@ -236,7 +230,7 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                         }
                         break;
                     case sf::Keyboard::J:
-                        if(!game.addCharacter(sf::Vector2u(coord.x, coord.y), 2)){
+                        if(!game.addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 2)){
                             std::cout << "Error" << std::endl;
                         };
                         game.setSelectedCharacter(game.getCharacters().end());
@@ -248,10 +242,10 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                         
                         
                     case sf::Keyboard::R:
-                        game.getGrid().getTile(coord.x, coord.y).setTile(TileGround::dirt, air);
-                        game.getGrid().getTile(coord.x, coord.y).popItem();
-                        game.removeCharacter(coord);
-                        tileMap->updateTile(coord);
+                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, air);
+                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).popItem();
+                        game.removeCharacter(selectToolCoord);
+                        tileMap->updateTile(selectToolCoord);
                         game.setSelectedCharacter(game.getCharacters().end());
                         break;
                     default:
@@ -302,6 +296,7 @@ void MapEditor::DrawGame(sf::RenderWindow &App) {
     //Draw the map
     App.draw(*tileMap);
     
+	selectedTile.setPosition(selectToolCoord.x*TILESIZE, selectToolCoord.y*TILESIZE);
     App.draw(selectedTile);
     
     
