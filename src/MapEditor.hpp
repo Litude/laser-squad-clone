@@ -43,17 +43,24 @@ private:
 	void handleKeyPress(sf::Event& event, sf::RenderWindow& App);
     sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
 	sf::Vector2u selectToolCoord;
+
+	Button createGroundTileButton(TileGround tileGround);
+	void setGroundTile(TileGround tileGround);
     
     Game game;
     std::shared_ptr<TileMap> tileMap;
     std::shared_ptr<sf::Font> font;
     std::shared_ptr<sf::Texture> texPlayer1;
     std::shared_ptr<sf::Texture> texPlayer2;
+	std::shared_ptr<sf::Texture> texGrounds;
+	std::shared_ptr<sf::Texture> texBlocks;
     std::shared_ptr<sf::Texture> texItems;
     std::shared_ptr<sf::Texture> backgroundTexture;
     sf::Sprite backgroundSprite;
     sf::View gameView;
     sf::View interfaceView;
+
+	std::vector<Button> buttons;
     
     sf::RectangleShape interfaceBkg;
     Button buttonExit;

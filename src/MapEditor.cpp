@@ -47,6 +47,30 @@ MapEditor::MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int hei
     buttonExit.setCallback([&] { this->exitToMainMenu(); });
     
     rs.setSize(sf::Vector2f(50, 20));
+
+	texGrounds = std::make_shared<sf::Texture>(sf::Texture());
+	if (!texGrounds->loadFromFile("img/tileset_grounds.png")) {
+		std::cout << "Could not load 'img/tileset_grounds.png'\n";
+	}
+	sf::Sprite buttonSprite;
+	buttonSprite.setTexture(*texGrounds);
+	sf::IntRect buttonSpriteRect;
+	buttonSpriteRect.width = TILESIZE;
+	buttonSpriteRect.height = TILESIZE;
+	buttonSpriteRect.top = 0;
+	buttonSpriteRect.left = 0;
+	int tileNumber_x = TileGround::dirt;
+	int tu = tileNumber_x * TILESIZE;
+	buttonSpriteRect.left = tu;
+	buttonSprite.setTextureRect(buttonSpriteRect);
+
+	// Map edit buttons
+	auto button = createGroundTileButton(TileGround::dirt);
+	button.setPosition(sf::Vector2f(16, 16));
+	buttons.push_back(button);
+	button = createGroundTileButton(TileGround::grass);
+	button.setPosition(sf::Vector2f(32, 32));
+	buttons.push_back(button);
     
     //Game drawing initialization
     selectedTile = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
@@ -122,6 +146,10 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                     zoomViewAt({ event.mouseWheelScroll.x, event.mouseWheelScroll.y }, App, gameView, 1.1f);
             }
             // Update buttons
+			for (auto it = buttons.begin(); it != buttons.end(); ++it) {
+				it->setState(state::normal);
+				it->update(event, App);
+			}
             buttonExit.update(event, App);
             //Handle keyboard input
             if (event.type == sf::Event::KeyPressed) {
@@ -338,6 +366,9 @@ void MapEditor::DrawUI(sf::RenderWindow &App) {
     
     App.draw(textFPS);
     App.draw(buttonExit);
+	for (auto button : buttons) {
+		App.draw(button);
+	}
 }
 
 void MapEditor::updateLayout(sf::RenderWindow & App)
@@ -405,4 +436,28 @@ void MapEditor::zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::Vie
 
 void MapEditor::exitToMainMenu() {
     m_screenResult = ScreenResult::MainMenuScene;
+}
+
+Button MapEditor::createGroundTileButton(TileGround tileGround) {
+	sf::Sprite buttonSprite;
+	buttonSprite.setTexture(*texGrounds);
+	sf::IntRect buttonSpriteRect;
+	buttonSpriteRect.width = TILESIZE;
+	buttonSpriteRect.height = TILESIZE;
+	buttonSpriteRect.top = 0;
+	buttonSpriteRect.left = 0;
+	int tileNumber_x = tileGround;
+	int tu = tileNumber_x * TILESIZE;
+	buttonSpriteRect.left = tu;
+	buttonSprite.setTextureRect(buttonSpriteRect);
+
+	Button button = Button("", *font, sf::Text::Regular, 25, sf::Vector2f(16.f, 16.f), buttonSprite);
+	button.setCallback([&, tileGround] { this->setGroundTile(tileGround); });
+	return button;
+}
+
+void MapEditor::setGroundTile(TileGround tileGround) {
+	auto& currentTile = game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
+	currentTile.setTile(tileGround, currentTile.getBlock());
+	tileMap->updateTile(selectToolCoord);
 }

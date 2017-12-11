@@ -37,12 +37,13 @@ Button::Button(std::string str, sf::Font& font, sf::Uint32 style, int size, sf::
 
   b_text.setFillColor(sf::Color(0, 0, 0, 100));
   b_hoveredColor = sf::Color(0, 0, 0, 255);
-  setPosition(position);
   setStyle(style);
   setColor(sf::Color(0, 0, 0, 100));
 
   setSprite(spr);
   setText(str);
+
+  setPosition(position);
 }
 
 // Button with rectangle shape
