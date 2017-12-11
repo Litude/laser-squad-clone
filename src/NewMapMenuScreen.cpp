@@ -29,10 +29,9 @@ ScreenResult NewMapMenuScreen::Run(sf::RenderWindow & App)
 				return ScreenResult::Exit;
 			}
 		}
-		for (auto it = buttons.begin(); it != buttons.end(); ++it) {
-			it->setState(state::normal);
-			it->update(Event, App);
-		}
+		buttonCreateMap.update(Event, App);
+		buttonLoadMap.update(Event, App);
+		buttonBack.update(Event, App);
 		drawUI(App);
 	}
 
@@ -41,7 +40,23 @@ ScreenResult NewMapMenuScreen::Run(sf::RenderWindow & App)
 
 void NewMapMenuScreen::openScreen(ScreenResult res)
 {
-	m_screenResult = res;
+	if (res == ScreenResult::EditorScene) {
+		if (mapInitType == MapInitType::new_map) {
+			try {
+				if (getMapSizeX() > 0 && getMapSizeX() <= 1000 && getMapSizeY() > 0 && getMapSizeY() <= 1000) {
+					m_screenResult = res;
+				}
+			}
+			catch (std::invalid_argument) {
+			}
+			catch (std::out_of_range) {
+			}
+		} else {
+			m_screenResult = res;
+		}
+	} else {
+		m_screenResult = res;
+	}
 }
 
 void NewMapMenuScreen::drawUI(sf::RenderWindow &App)
@@ -49,9 +64,9 @@ void NewMapMenuScreen::drawUI(sf::RenderWindow &App)
 	App.clear();
 	App.draw(backgroundSprite);
 	App.draw(logoSprite);
-	for (auto button : buttons) {
-		App.draw(button);
-	}
+	App.draw(buttonCreateMap);
+	App.draw(buttonLoadMap);
+	App.draw(buttonBack);
 	App.draw(mapSizeXField);
 	App.draw(mapSizeYField);
 	App.draw(mapNameField);
@@ -65,12 +80,17 @@ void NewMapMenuScreen::updateLayout(sf::RenderWindow & App)
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
 	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, App.getView().getSize().y * 0.5f - logoSprite.getGlobalBounds().height * 1.f });
-	//tField.setPosition({ App.getView().getSize().x * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f});
-	unsigned int i = 1;
-	for (auto &button : buttons) {
-		button.setPosition({ App.getView().getSize().x * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + button.getGlobalBounds().height * 1.5f * i });
-		i++;
-	}
+	
+	float componentOffsetY = logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f;
+	float firstRowWidth = App.getView().getSize().x / 3;
+	float menuCenterX = App.getView().getSize().x / 2;
+	float margin = 10.f;
+	mapSizeXField.setPosition(sf::Vector2f(menuCenterX - mapSizeYField.getGlobalBounds().width / 2 - mapSizeXField.getGlobalBounds().width / 2 - margin, componentOffsetY));
+	mapSizeYField.setPosition(sf::Vector2f(menuCenterX, componentOffsetY));
+	buttonCreateMap.setPosition(sf::Vector2f(menuCenterX + mapSizeYField.getGlobalBounds().width / 2 + buttonCreateMap.getGlobalBounds().width / 2 + margin, componentOffsetY));
+	mapNameField.setPosition(sf::Vector2f(menuCenterX - mapNameField.getGlobalBounds().width / 2 - margin, mapSizeYField.getPos().y + mapSizeYField.getGlobalBounds().height + margin));
+	buttonLoadMap.setPosition(sf::Vector2f(menuCenterX + buttonLoadMap.getGlobalBounds().width / 2 + margin, mapSizeYField.getPos().y + mapSizeYField.getGlobalBounds().height + margin));
+	buttonBack.setPosition(sf::Vector2f(menuCenterX, mapNameField.getPos().y + mapNameField.getGlobalBounds().height + margin));
 }
 
 bool NewMapMenuScreen::initComponents(sf::RenderWindow & App)
@@ -100,21 +120,20 @@ bool NewMapMenuScreen::initComponents(sf::RenderWindow & App)
 
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
-	rs.setSize(sf::Vector2f(140, 40));
+	rs.setSize(sf::Vector2f(240, 40));
 
 	mapSizeXField = TextField(25, rs, *font);
 	mapSizeXField.setPosition(sf::Vector2f(100.f, 450.f));
 	mapSizeXField.setSize(170, 40);
-	mapSizeXField.setDefaultStr("7");
+	mapSizeXField.setDefaultStr("width...");
 
 	mapSizeYField = TextField(25, rs, *font);
 	mapSizeYField.setPosition(sf::Vector2f(300.f, 450.f));
 	mapSizeYField.setSize(170, 40);
-	mapSizeYField.setDefaultStr("3");
+	mapSizeYField.setDefaultStr("height...");
 
 	buttonCreateMap = Button("Create New Map", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
 	buttonCreateMap.setCallback([&] { this->mapInitType = MapInitType::new_map; this->openScreen(ScreenResult::EditorScene); });
-	buttons.push_back(buttonCreateMap);
 
 	mapNameField = TextField(25, rs, *font);
 	mapNameField.setPosition(sf::Vector2f(300.f, 550.f));
@@ -123,11 +142,9 @@ bool NewMapMenuScreen::initComponents(sf::RenderWindow & App)
 
 	buttonLoadMap = Button("Load Map", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
 	buttonLoadMap.setCallback([&] { this->mapInitType = MapInitType::load_map; this->openScreen(ScreenResult::EditorScene); });
-	buttons.push_back(buttonLoadMap);
 
-	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
-	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
-	buttons.push_back(back);
+	buttonBack = Button("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
+	buttonBack.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
 
 	updateLayout(App);
 

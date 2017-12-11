@@ -41,6 +41,7 @@ private:
 
 	Button buttonCreateMap;
 	Button buttonLoadMap;
+	Button buttonBack;
 
 	MapInitType mapInitType;
 };

@@ -35,6 +35,8 @@ public:
 	void exitToMainMenu();
 	void setGroundTile(TileGround tileGround);
 	void setBlockTile(TileBlock tileBlock);
+	void addItem(Item item);
+	void removeItem();
 	bool saveMap(std::string name);
 private:
     ScreenResult m_screenResult;
