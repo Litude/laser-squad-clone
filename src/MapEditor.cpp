@@ -31,26 +31,27 @@ MapEditor::MapEditor(sf::RenderWindow &App, std::string mapName)
 {
 	m_screenResult = ScreenResult::GameScene;
 
-	auto grid = jreader::loadJSON(mapName);
+	try {
+		auto grid = jreader::loadJSON(mapName);
 
-	//Game logic initialization
-	game = Game();
-	game.setGrid(grid);
+		//Game logic initialization
+		game = Game();
+		game.setGrid(grid);
 
-	game.setSelectedCharacter(game.getCharacters().end());
+		game.setSelectedCharacter(game.getCharacters().end());
 
-	if (!initComponents(App)) {
-		m_screenResult = ScreenResult::Exit;
+		if (!initComponents(App)) {
+			m_screenResult = ScreenResult::Exit;
+		}
+	} catch (JSONLoadException) {
+		m_screenResult = ScreenResult::NewMapMenuScene;
+	} catch (JSONWriteException) {
+		m_screenResult = ScreenResult::NewMapMenuScene;
 	}
 }
 
 ScreenResult MapEditor::Run(sf::RenderWindow & App)
 {
-    // Create graphical tilemap presentation from the Map
-    tileMap = std::make_shared<TileMap>(TileMap(game.getGrid()));
-    if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", "img/tileset_items.png", sf::Vector2u(TILESIZE, TILESIZE))) {
-        std::cout << "Could not load tilemap\n";
-    }
     sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
     
     AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
@@ -385,6 +386,12 @@ bool MapEditor::initComponents(sf::RenderWindow & App) {
 	sidePanel = SidePanelMapEditor(App, *this);
 
 	updateLayout(App);
+
+	// Create graphical tilemap presentation from the Map
+	tileMap = std::make_shared<TileMap>(TileMap(game.getGrid()));
+	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", "img/tileset_items.png", sf::Vector2u(TILESIZE, TILESIZE))) {
+		std::cout << "Could not load tilemap\n";
+	}
 
 	return true;
 }

@@ -40,7 +40,23 @@ ScreenResult NewMapMenuScreen::Run(sf::RenderWindow & App)
 
 void NewMapMenuScreen::openScreen(ScreenResult res)
 {
-	m_screenResult = res;
+	if (res == ScreenResult::EditorScene) {
+		if (mapInitType == MapInitType::new_map) {
+			try {
+				if (getMapSizeX() > 0 && getMapSizeX() <= 1000 && getMapSizeY() > 0 && getMapSizeY() <= 1000) {
+					m_screenResult = res;
+				}
+			}
+			catch (std::invalid_argument) {
+			}
+			catch (std::out_of_range) {
+			}
+		} else {
+			m_screenResult = res;
+		}
+	} else {
+		m_screenResult = res;
+	}
 }
 
 void NewMapMenuScreen::drawUI(sf::RenderWindow &App)
