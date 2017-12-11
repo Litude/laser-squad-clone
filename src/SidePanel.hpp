@@ -44,7 +44,6 @@ private:
 	sf::Text textFPS;
 	sf::Text textAPLabel;
 	sf::Text textAPValue;
-	sf::Text textMouseMode;
 
 	sf::Clock fpsclock;
 	sf::Clock clock;

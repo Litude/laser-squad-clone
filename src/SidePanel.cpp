@@ -31,8 +31,6 @@ SidePanel::SidePanel(sf::RenderWindow &App, GameScreen &parent)
 	textAPLabel.setString("APs");
 	textAPValue.setFont(*font);
 	textAPValue.setCharacterSize(24);
-	textMouseMode.setFont(*font);
-	textMouseMode.setCharacterSize(24);
 
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
@@ -136,8 +134,6 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 	textTurnNoValue.setString(std::to_string(game.getTurnNumber()) + '/' + std::to_string(game.getMaxTurns()));
 	textCurTurnValue.setString(std::to_string(game.getCurrentPlayer()));
 
-	std::string mm = (gameScreen.getMouseMode() == MouseMode::shoot) ? "SHOOT MODE" : "SELECT MODE";
-	textMouseMode.setString(mm);
 	(gameScreen.getMouseMode() == MouseMode::shoot) ? buttonAttackMode.setText("Select Mode") : buttonAttackMode.setText("Attack Mode");
 
 	//buttonAttackMode.setText("Select Mode");
@@ -199,7 +195,6 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 	}
 
 	App.draw(textFPS);
-	App.draw(textMouseMode);
 	App.draw(buttonExit);
 	App.draw(buttonEndTurn);
 	App.draw(textTurnNoLabel);
@@ -294,9 +289,6 @@ void SidePanel::updateUIComponents(sf::RenderWindow & App)
 	textCurTurnLabel.setPosition(menuCenterX - menuSize / 2 + margin, 50);
 	textCurTurnValue.setPosition(menuCenterX + menuSize / 2 - margin - textCurTurnValue.getGlobalBounds().width, 50);
 
-	// Mousemode text
-	textMouseMode.setPosition(menuCenterX - textMouseMode.getGlobalBounds().width / 2, 150);
-
-	// Mousemode text
+	// Inventory selected item name text
 	selectedInventoryItemName.setPosition(menuCenterX, 340);
 }
