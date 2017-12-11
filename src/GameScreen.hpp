@@ -77,8 +77,6 @@ private:
 	std::shared_ptr<sf::RenderTexture> renderTexture_visibleTiles;
 	sf::RectangleShape visibleTileShape;
 	sf::Shader* shader;
-	std::vector<sf::Sprite> inventoryItems;
-	std::vector<sf::Text> inventoryItemTexts;
 	std::vector<Projectile> activeProjectiles;
 	std::list<sf::Vector2u> visibleTiles;
 

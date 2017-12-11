@@ -51,6 +51,7 @@ private:
 	float currentTime = 0;
 	int timeStep = 16000;
 	int timeAccumulator = 0;
+	std::vector<sf::RectangleShape> inventoryItemBkg;
 	std::vector<sf::Sprite> inventoryItems;
 	std::vector<sf::Text> inventoryItemTexts;
 	std::vector<Projectile> activeProjectiles;

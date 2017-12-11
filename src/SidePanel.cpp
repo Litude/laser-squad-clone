@@ -70,8 +70,13 @@ SidePanel::SidePanel(sf::RenderWindow &App, GameScreen &parent)
 	}
 	inventoryItems.resize(MAX_ITEMS);
 	inventoryItemTexts.resize(MAX_ITEMS);
+	inventoryItemBkg.resize(MAX_ITEMS);
 
 	for (unsigned int i = 0; i < MAX_ITEMS; i++) {
+		inventoryItemBkg[i].setFillColor(sf::Color(64, 64, 64, 255));
+		inventoryItemBkg[i].setSize(sf::Vector2f(TILESIZE, TILESIZE));
+		inventoryItemBkg[i].setOutlineThickness(2.0f);
+		inventoryItemBkg[i].setOutlineColor(sf::Color(128, 128, 128, 255));
 		inventoryItems[i].setTexture(*texItems);
 		inventoryItemTexts[i].setFont(*font);
 		inventoryItemTexts[i].setCharacterSize(10);
@@ -152,9 +157,10 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 		App.draw(buttonPickupItem);
 		App.draw(buttonDropItem);
 		App.draw(buttonEquipItem);
-		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) App.draw(equippedItem);
 		// Draw items
 		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
+			App.draw(inventoryItemBkg[i]);
+			if (game.getSelectedCharacter()->getSelectedWeaponIndex() == i) App.draw(equippedItem);
 			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i]->getIcon() * TILESIZE % (texItems->getSize().x), game.getSelectedCharacter()->getInventory()[i]->getIcon() * TILESIZE / (texItems->getSize().x) * TILESIZE, TILESIZE, TILESIZE));
 			App.draw(inventoryItems[i]);
 			if (game.getSelectedCharacter()->getInventory()[i]->isStackable()) {
@@ -230,6 +236,8 @@ void SidePanel::updateLayout(sf::RenderWindow & App)
 		inventoryItems[i].setTextureRect(sf::IntRect(0, 0, TILESIZE, TILESIZE));
 		inventoryItems[i].setScale(sf::Vector2f(static_cast<float>(menuSize / ITEMS_PER_ROW / TILESIZE), static_cast<float>(menuSize / ITEMS_PER_ROW / TILESIZE)));
 		inventoryItems[i].setPosition((static_cast<float>(App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset)), static_cast<float>(330 + (i / ITEMS_PER_ROW) * (offset)));
+		inventoryItemBkg[i].setScale(sf::Vector2f(static_cast<float>(menuSize / ITEMS_PER_ROW / TILESIZE), static_cast<float>(menuSize / ITEMS_PER_ROW / TILESIZE)));
+		inventoryItemBkg[i].setPosition((static_cast<float>(App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset)), static_cast<float>(330 + (i / ITEMS_PER_ROW) * (offset)));
 		inventoryItemTexts[i].setPosition((static_cast<float>(App.getSize().x - menuSize + margin) + ((i % ITEMS_PER_ROW) * offset)), static_cast<float>(330 + (i / ITEMS_PER_ROW) * (offset)));
 	}
 
