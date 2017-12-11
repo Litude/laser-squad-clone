@@ -24,13 +24,14 @@ public:
 	unsigned getWidth() const { return width; }
 	unsigned getHeight() const { return grid.size()/width; }
 
-	//const Tile operator()(int x, int y) const;
 	const Tile operator()(sf::Vector2i loc) const;
 	const Tile& operator()(sf::Vector2u loc) const;
-	//const Tile operator()(unsigned x, unsigned y) const;
+	Tile& operator()(sf::Vector2u loc);
 	const Tile& operator()(int x, int y) const;
+	Tile& operator()(int x, int y);
 	const Tile& operator()(unsigned x, unsigned y) const;
 	Tile& operator()(unsigned x, unsigned y);
+	
 	Tile& getTile(unsigned x, unsigned y);
 	Tile& operator[](unsigned n);
 
@@ -41,6 +42,7 @@ public:
 
 	bool addTile( Tile t );
 	void setWidth(unsigned n);
+	bool within_bounds(sf::Vector2u coords);
 
 private:
 	unsigned width;
