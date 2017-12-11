@@ -31,6 +31,11 @@ SidePanel::SidePanel(sf::RenderWindow &App, GameScreen &parent)
 	textAPLabel.setString("APs");
 	textAPValue.setFont(*font);
 	textAPValue.setCharacterSize(24);
+	textHPLabel.setFont(*font);
+	textHPLabel.setCharacterSize(24);
+	textHPLabel.setString("HPs");
+	textHPValue.setFont(*font);
+	textHPValue.setCharacterSize(24);
 
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
@@ -141,6 +146,7 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 	//TODO: Process selected character attributes here and draw them on the interface...
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
 		textAPValue.setString(std::to_string(game.getSelectedCharacter()->getActionPoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxActionPoints()));
+		textHPValue.setString(std::to_string(game.getSelectedCharacter()->getHitpoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxHitpoints()));
 
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) {
 			unsigned int margin = 10;
@@ -162,6 +168,8 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
 		App.draw(textAPLabel);
 		App.draw(textAPValue);
+		App.draw(textHPLabel);
+		App.draw(textHPValue);
 		App.draw(buttonPickupItem);
 		App.draw(buttonDropItem);
 		App.draw(buttonEquipItem);
@@ -278,8 +286,12 @@ void SidePanel::updateUIComponents(sf::RenderWindow & App)
 	textFPS.setPosition(menuCenterX - menuSize / 2 + margin, 0);
 
 	// AP text
-	textAPLabel.setPosition(menuCenterX - menuSize / 2 + margin, 100);
-	textAPValue.setPosition(menuCenterX + menuSize / 2 - margin - textAPValue.getLocalBounds().left - textAPValue.getLocalBounds().width, 100);
+	textAPLabel.setPosition(menuCenterX - menuSize / 2 + margin, 130);
+	textAPValue.setPosition(menuCenterX + menuSize / 2 - margin - textAPValue.getLocalBounds().left - textAPValue.getLocalBounds().width, 130);
+
+	// HP text
+	textHPLabel.setPosition(menuCenterX - menuSize / 2 + margin, 160);
+	textHPValue.setPosition(menuCenterX + menuSize / 2 - margin - textHPValue.getLocalBounds().left - textHPValue.getLocalBounds().width, 160);
 
 	// Turn number text
 	textTurnNoLabel.setPosition(menuCenterX - menuSize / 2 + margin, 25);
