@@ -24,6 +24,16 @@ public:
 	Ammo9mmBullets() : Ammo(Icon_Ammo_9mm, "9mm Bullets", true, 30, Ammo_9mm_Bullets) {};
 };
 
+class Ammo12mmBullets : public Ammo {
+public:
+	Ammo12mmBullets() : Ammo(Icon_Ammo_12mm, "12mm Bullets", true, 30, Ammo_12mm_Bullets) {};
+};
+
+class AmmoRockets : public Ammo {
+public:
+	AmmoRockets() : Ammo(Icon_Ammo_Rockets, "Rockets", true, 3, Ammo_Rockets) {};
+};
+
 class AmmoShotgunShells : public Ammo {
 public:
 	AmmoShotgunShells() : Ammo(Icon_Ammo_Shells, "Shotgun Shells", true, 20, Ammo_Shotgun_Shells) {};
