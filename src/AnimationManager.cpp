@@ -75,3 +75,8 @@ void AnimationManager::changeAnim(unsigned int animID)
 	this->bounds = rect;
 	this->t = 0;
 }
+
+bool AnimationManager::isFinished()
+{
+	return (animations[currentAnim].duration < t) ? true : false;
+}
