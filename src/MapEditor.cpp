@@ -10,30 +10,16 @@
 #include "constants.hpp"
 #include "Health.hpp"
 
-MapEditor::MapEditor(sf::RenderWindow &App)
+MapEditor::MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int height)
 {
     m_screenResult = ScreenResult::GameScene;
-    
-    //Game logic initialization
-    game = Game();
-    
-    game.initializeGrid(30, 30);
 
+	//Game logic initialization
+	game = Game();
 
-    
-    // Test put walls on the edges of the map
-    for (unsigned int i = 0; i < game.getGrid().getWidth(); ++i)
-    {
-        for (unsigned int j = 0; j < game.getGrid().getHeight(); ++j)
-        {
-            if (i == 0 || j == 0 || i == game.getGrid().getWidth() - 1 || j == game.getGrid().getHeight() - 1) {
-                game.getGrid().getTile(i, j).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-            }
-        }
-    }
-    
-    game.addCharacter(sf::Vector2u(4, 4), 1);
-    game.setSelectedCharacter(game.getCharacters().end());
+	game.initializeGrid(width, height);
+
+	game.setSelectedCharacter(game.getCharacters().end());
     
     //Interface drawing initialization
     font = std::make_shared<sf::Font>(sf::Font());

@@ -29,7 +29,7 @@ namespace MouseMode2 {
 class MapEditor : public Screen
 {
 public:
-    MapEditor(sf::RenderWindow &App);
+    MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int height);
     virtual ScreenResult Run(sf::RenderWindow &App);
 private:
     ScreenResult m_screenResult;
