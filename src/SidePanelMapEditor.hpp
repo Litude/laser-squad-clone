@@ -36,9 +36,11 @@ private:
 
 	std::vector<Button> buttons_grounds;
 	std::vector<Button> buttons_blocks;
+	std::vector<Button> buttons_items;
 
 	Button createGroundTileButton(TileGround tileGround, MapEditor &editor);
 	Button createBlockTileButton(TileBlock tileBlock, MapEditor &editor);
+	Button createItemButton(Item item, MapEditor &editor);
 	
 	sf::RectangleShape interfaceBkg;
 	Button buttonExit;

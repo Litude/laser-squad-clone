@@ -420,6 +420,18 @@ void MapEditor::setBlockTile(TileBlock tileBlock) {
 	}
 }
 
+void MapEditor::addItem(Item item) {
+	auto& currentTile = game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
+	currentTile.addItem(item);
+	tileMap->updateTile(selectToolCoord);
+}
+
+void MapEditor::removeItem() {
+	auto& currentTile = game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
+	currentTile.popItem();
+	tileMap->updateTile(selectToolCoord);
+}
+
 bool MapEditor::saveMap(std::string name) {
 	return jreader::writeJSON(game, name);
 }
