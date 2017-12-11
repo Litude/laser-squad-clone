@@ -124,134 +124,8 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
             // Update buttons
             buttonExit.update(event, App);
             //Handle keyboard input
-            Animation animation_walk_left(9, 0, 8, 62000);
-            Animation animation_walk_right(11, 0, 8, 62000);
-            Animation animation_walk_down(10, 0, 8, 62000);
-            Animation animation_walk_up(8, 0, 8, 62000);
-            Animation animation_die(20, 0, 5, 125000, false);
-            AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
-            animManager.addAnim(animation_walk_left);
-            animManager.addAnim(animation_walk_right);
-            animManager.addAnim(animation_walk_down);
-            animManager.addAnim(animation_walk_up);
-            animManager.addAnim(animation_die);
-            
-            
-            
-            
-            
-            
-            
             if (event.type == sf::Event::KeyPressed) {
-                
-                switch (event.key.code) {
-                    case sf::Keyboard::Left:
-                        if (selectToolCoord.x > 0) {
-							selectToolCoord.x -= 1;
-                        }
-                        break;
-                    case sf::Keyboard::Right:
-						if (selectToolCoord.x < game.getGrid().getWidth() - 1) {
-							selectToolCoord.x += 1;
-						}
-                        break;
-                    case sf::Keyboard::Down:
-						if (selectToolCoord.y < game.getGrid().getHeight() - 1) {
-							selectToolCoord.y += 1;
-						}
-                        break;
-                    case sf::Keyboard::Up:
-						if (selectToolCoord.y > 0) {
-							selectToolCoord.y -= 1;
-						}
-                        break;
-                        
-                    case sf::Keyboard::A:
-                        if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);
-                        break;
-                    case sf::Keyboard::D:
-                        if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game.getGrid().getWidth() * TILESIZE) gameView.move(TILESIZE, 0);
-                        break;
-                    case sf::Keyboard::S:
-                        if (gameView.getCenter().y + App.getSize().y / 2 < game.getGrid().getHeight() * TILESIZE) gameView.move(0, TILESIZE);
-                        break;
-                    case sf::Keyboard::W:
-                        if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
-                        break;
-                        
-                    
-                        
-                    case sf::Keyboard::Z:
-                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
-                        tileMap->updateTile(selectToolCoord);
-                        break;
-                    case sf::Keyboard::X:
-                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
-                        tileMap->updateTile(selectToolCoord);
-                        break;
-                    case sf::Keyboard::C:
-                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Pistol>(Pistol()));
-                        tileMap->updateTile(selectToolCoord);
-                        break;
-                    case sf::Keyboard::V:
-                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Shotgun>(Shotgun()));
-                        tileMap->updateTile(selectToolCoord);
-                        break;
-                    case sf::Keyboard::M:
-                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
-                        tileMap->updateTile(selectToolCoord);
-                        break;
-                    case sf::Keyboard::N:
-                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
-                        tileMap->updateTile(selectToolCoord);
-                        break;
-                        
-                        
-                    case sf::Keyboard::T:
-                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, TileBlock::tree);;
-                        tileMap->updateTile(selectToolCoord);
-                        break;
-                    case sf::Keyboard::Y:
-                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, wall);
-                        tileMap->updateTile(selectToolCoord);
-                        break;
-                    case sf::Keyboard::B:
-                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, bush);
-                        tileMap->updateTile(selectToolCoord);
-                        break;
-                    case sf::Keyboard::H:
-                        if(!game.addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 1)){
-                            std::cout << "Error" << std::endl;
-                        };
-                        game.setSelectedCharacter(game.getCharacters().end());
-                        animManager.changeAnim(animations::walk_down);
-                        for (auto &character : game.getCharacters()) {
-                            character.setAnimationManager(animManager);
-                        }
-                        break;
-                    case sf::Keyboard::J:
-                        if(!game.addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 2)){
-                            std::cout << "Error" << std::endl;
-                        };
-                        game.setSelectedCharacter(game.getCharacters().end());
-                        animManager.changeAnim(animations::walk_down);
-                        for (auto &character : game.getCharacters()) {
-                            character.setAnimationManager(animManager);
-                        }
-                        break;
-                        
-                        
-                    case sf::Keyboard::R:
-                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, air);
-                        game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).popItem();
-                        game.removeCharacter(selectToolCoord);
-                        tileMap->updateTile(selectToolCoord);
-                        game.setSelectedCharacter(game.getCharacters().end());
-                        break;
-                    default:
-                        break;
-                }
-                
+				handleKeyPress(event, App);
             }
             if (event.type == sf::Event::Resized) {
                 updateLayout(App);
@@ -282,6 +156,128 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
         App.display();
     }
     return m_screenResult;
+}
+
+void MapEditor::handleKeyPress(sf::Event& event, sf::RenderWindow& App)
+{
+	Animation animation_walk_left(9, 0, 8, 62000);
+	Animation animation_walk_right(11, 0, 8, 62000);
+	Animation animation_walk_down(10, 0, 8, 62000);
+	Animation animation_walk_up(8, 0, 8, 62000);
+	Animation animation_die(20, 0, 5, 125000, false);
+	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
+	animManager.addAnim(animation_walk_left);
+	animManager.addAnim(animation_walk_right);
+	animManager.addAnim(animation_walk_down);
+	animManager.addAnim(animation_walk_up);
+	animManager.addAnim(animation_die);
+	switch (event.key.code) {
+	case sf::Keyboard::Left:
+		if (selectToolCoord.x > 0) {
+			selectToolCoord.x -= 1;
+		}
+		break;
+	case sf::Keyboard::Right:
+		if (selectToolCoord.x < game.getGrid().getWidth() - 1) {
+			selectToolCoord.x += 1;
+		}
+		break;
+	case sf::Keyboard::Down:
+		if (selectToolCoord.y < game.getGrid().getHeight() - 1) {
+			selectToolCoord.y += 1;
+		}
+		break;
+	case sf::Keyboard::Up:
+		if (selectToolCoord.y > 0) {
+			selectToolCoord.y -= 1;
+		}
+		break;
+
+	case sf::Keyboard::A:
+		if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);
+		break;
+	case sf::Keyboard::D:
+		if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game.getGrid().getWidth() * TILESIZE) gameView.move(TILESIZE, 0);
+		break;
+	case sf::Keyboard::S:
+		if (gameView.getCenter().y + App.getSize().y / 2 < game.getGrid().getHeight() * TILESIZE) gameView.move(0, TILESIZE);
+		break;
+	case sf::Keyboard::W:
+		if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
+		break;
+
+
+
+	case sf::Keyboard::Z:
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackLarge>(HealthPackLarge()));
+		tileMap->updateTile(selectToolCoord);
+		break;
+	case sf::Keyboard::X:
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackSmall>(HealthPackSmall()));
+		tileMap->updateTile(selectToolCoord);
+		break;
+	case sf::Keyboard::C:
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Pistol>(Pistol()));
+		tileMap->updateTile(selectToolCoord);
+		break;
+	case sf::Keyboard::V:
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Shotgun>(Shotgun()));
+		tileMap->updateTile(selectToolCoord);
+		break;
+	case sf::Keyboard::M:
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Ammo>(Ammo9mmBullets()));
+		tileMap->updateTile(selectToolCoord);
+		break;
+	case sf::Keyboard::N:
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Ammo>(AmmoShotgunShells()));
+		tileMap->updateTile(selectToolCoord);
+		break;
+
+
+	case sf::Keyboard::T:
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, TileBlock::tree);;
+		tileMap->updateTile(selectToolCoord);
+		break;
+	case sf::Keyboard::Y:
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, wall);
+		tileMap->updateTile(selectToolCoord);
+		break;
+	case sf::Keyboard::B:
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, bush);
+		tileMap->updateTile(selectToolCoord);
+		break;
+	case sf::Keyboard::H:
+		if (!game.addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 1)) {
+			std::cout << "Error" << std::endl;
+		};
+		game.setSelectedCharacter(game.getCharacters().end());
+		animManager.changeAnim(animations::walk_down);
+		for (auto &character : game.getCharacters()) {
+			character.setAnimationManager(animManager);
+		}
+		break;
+	case sf::Keyboard::J:
+		if (!game.addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 2)) {
+			std::cout << "Error" << std::endl;
+		};
+		game.setSelectedCharacter(game.getCharacters().end());
+		animManager.changeAnim(animations::walk_down);
+		for (auto &character : game.getCharacters()) {
+			character.setAnimationManager(animManager);
+		}
+		break;
+
+
+	case sf::Keyboard::R:
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, air);
+		game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y).popItem();
+		game.removeCharacter(selectToolCoord);
+		tileMap->updateTile(selectToolCoord);
+		game.setSelectedCharacter(game.getCharacters().end());
+		break;
+	default:
+		break;
+	}
 }
 
 void MapEditor::DrawGame(sf::RenderWindow &App) {
