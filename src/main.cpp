@@ -23,8 +23,6 @@ int main(int argc, char* argv[]) {
 
 	std::unique_ptr<Screen> screen;
 
-  auto g = jreader::loadJSON("test_level");
-
 	//Main loop
 	while (result != ScreenResult::Exit)
 	{
