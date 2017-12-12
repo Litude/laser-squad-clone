@@ -55,7 +55,7 @@ private:
 
 	SidePanelMapEditor sidePanel;
     
-    Game game;
+	std::shared_ptr<Game> game;
     std::shared_ptr<TileMap> tileMap;
     std::shared_ptr<sf::Font> font;
     std::shared_ptr<sf::Texture> texPlayer1;
