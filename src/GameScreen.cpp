@@ -510,10 +510,14 @@ void GameScreen::toggleAttackMode() {
 }
 
 sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const {
-	sf::Vector2u clickedTile = sf::Vector2u(App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView));
+	sf::Vector2i clickedTile = sf::Vector2i(App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView));
 	clickedTile.x /= TILESIZE;
 	clickedTile.y /= TILESIZE;
-	return clickedTile;
+	clickedTile.x = (clickedTile.x < 0 ? 0 : clickedTile.x);
+	clickedTile.y = (clickedTile.y < 0 ? 0 : clickedTile.y);
+	clickedTile.x = (clickedTile.x > game->getGrid().getWidth() - 1 ? game->getGrid().getWidth() - 1 : clickedTile.x);
+	clickedTile.y = (clickedTile.y > game->getGrid().getHeight() - 1 ? game->getGrid().getHeight() - 1 : clickedTile.y);
+	return sf::Vector2u(clickedTile.x, clickedTile.y);
 }
 
 void GameScreen::addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination, int delay) {

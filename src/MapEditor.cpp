@@ -287,10 +287,14 @@ void MapEditor::updateUIComponents(sf::RenderWindow & App)
 }
 
 sf::Vector2u MapEditor::getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const {
-    sf::Vector2u clickedTile = sf::Vector2u(App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView));
-    clickedTile.x /= TILESIZE;
-    clickedTile.y /= TILESIZE;
-    return clickedTile;
+	sf::Vector2i clickedTile = sf::Vector2i(App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView));
+	clickedTile.x /= TILESIZE;
+	clickedTile.y /= TILESIZE;
+	clickedTile.x = (clickedTile.x < 0 ? 0 : clickedTile.x);
+	clickedTile.y = (clickedTile.y < 0 ? 0 : clickedTile.y);
+	clickedTile.x = (clickedTile.x > game->getGrid().getWidth() - 1 ? game->getGrid().getWidth() - 1 : clickedTile.x);
+	clickedTile.y = (clickedTile.y > game->getGrid().getHeight() - 1 ? game->getGrid().getHeight() - 1 : clickedTile.y);
+	return sf::Vector2u(clickedTile.x, clickedTile.y);
 }
 
 void MapEditor::zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom)

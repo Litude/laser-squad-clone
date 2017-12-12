@@ -154,8 +154,8 @@ void Game::characterDropAllItems(GameCharacter& gc) {
 const sf::Vector2u Game::traceFromCharacter(gc_iterator gc, sf::Vector2u target, bool ignoreCharacters) {
 	//clamp to bounds
 	sf::Vector2u within_bounds;
-	within_bounds.x = (target.x < grid.getWidth() ? target.x : grid.getWidth());
-	within_bounds.y = (target.y < grid.getHeight() ? target.y : grid.getHeight());
+	within_bounds.x = (target.x < grid.getWidth() ? target.x : grid.getWidth() - 1);
+	within_bounds.y = (target.y < grid.getHeight() ? target.y : grid.getHeight() - 1);
 	std::vector<sf::Vector2u> pierced = Util::traceLine(static_cast<sf::Vector2i>(gc->getPosition()), static_cast<sf::Vector2i>(within_bounds));
 	sf::Vector2u endTile;
 	if (pierced.size() > 1) {
