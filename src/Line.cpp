@@ -58,5 +58,8 @@ void sf::Line::calculateVertices()
 
 void sf::Line::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
+	// Apply the transform
+	states.transform *= getTransform();
+
 	target.draw(vertices, 4, sf::Quads);
 }

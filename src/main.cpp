@@ -15,7 +15,7 @@
 #include "ControlsScreen.hpp"
 #include "GridLoader.hpp"
 
-int main(int argc, char* argv[]) {
+int main() {
 
 	sf::RenderWindow App(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Laser Squad");
 

@@ -177,7 +177,7 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 		// Draw items
 		for (unsigned int i = 0; i < MAX_ITEMS; i++) {
 			App.draw(inventoryItemBkg[i]);
-			if (game.getSelectedCharacter()->getSelectedWeaponIndex() == i) App.draw(equippedItem);
+			if (game.getSelectedCharacter()->getSelectedWeaponIndex() == static_cast<int>(i)) App.draw(equippedItem);
 			inventoryItems[i].setTextureRect(sf::IntRect(game.getSelectedCharacter()->getInventory()[i]->getIcon() * TILESIZE % (texItems->getSize().x), game.getSelectedCharacter()->getInventory()[i]->getIcon() * TILESIZE / (texItems->getSize().x) * TILESIZE, TILESIZE, TILESIZE));
 			App.draw(inventoryItems[i]);
 			if (game.getSelectedCharacter()->getInventory()[i]->isStackable()) {
@@ -187,7 +187,7 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 				inventoryItemTexts[i].setString(std::to_string(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getLoadedAmmo()) + '-' + std::to_string(game.getSelectedCharacter()->getAmmoAmount(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getAmmoType())));
 				App.draw(inventoryItemTexts[i]);
 			}
-			if (game.getSelectedCharacter()->getSelectedItemIndex() == i) {
+			if (game.getSelectedCharacter()->getSelectedItemIndex() == static_cast<int>(i)) {
 				selectedInventoryItemName.setString(game.getSelectedCharacter()->getInventory()[game.getSelectedCharacter()->getSelectedItemIndex()]->getName());
 				selectedInventoryItemName.setOrigin(selectedInventoryItemName.getLocalBounds().left + selectedInventoryItemName.getLocalBounds().width / 2.0f, selectedInventoryItemName.getLocalBounds().top + selectedInventoryItemName.getLocalBounds().height / 2.0f);
 				App.draw(selectedInventoryItemName);

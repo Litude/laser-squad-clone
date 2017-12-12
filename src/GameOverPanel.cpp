@@ -27,7 +27,7 @@ GameOverPanel::GameOverPanel(sf::RenderWindow &App, GameScreen &parent)
 	updateLayout(App);
 }
 
-void GameOverPanel::update(sf::Event& event, sf::RenderWindow& App, Game &game)
+void GameOverPanel::update(sf::Event& event, sf::RenderWindow& App)
 {
 	// Update buttons
 	buttonExit.update(event, App);
@@ -36,7 +36,7 @@ void GameOverPanel::update(sf::Event& event, sf::RenderWindow& App, Game &game)
 	}
 }
 
-void GameOverPanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) {
+void GameOverPanel::draw(sf::RenderWindow &App, Game &game) {
 	if (game.isWinner(1)) {
 		textGameOverLabel.setString("Player 1 wins!");
 	} else {
@@ -83,7 +83,6 @@ void GameOverPanel::updateUIComponents(sf::RenderWindow & App)
 {
 	float menuSize = static_cast<float>(App.getSize().x / 4);
 	float menuCenterX = static_cast<float>(App.getSize().x - menuSize / 2);
-	float margin = 10.f;
 
 	// Game over text
 	textGameOverLabel.setPosition(menuCenterX - textGameOverLabel.getGlobalBounds().width / 2, 0);

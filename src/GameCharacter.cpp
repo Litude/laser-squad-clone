@@ -89,7 +89,6 @@ bool GameCharacter::moveTo(sf::Vector2i target_dir) {
 			default:
 				return false;
 			}
-			return false;
 		}
 	}
 	return false;

@@ -6,7 +6,7 @@
 
 namespace sf
 {
-	class Line : public sf::Drawable
+	class Line : public sf::Drawable, public sf::Transformable
 	{
 	public:
 		Line();

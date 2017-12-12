@@ -64,7 +64,7 @@ void AnimationManager::addAnim(Animation& anim)
 void AnimationManager::changeAnim(unsigned int animID)
 {
 	// Check that animation is different from currently active one and that new animation exists
-	if (this->currentAnim == animID || animID >= this->animations.size() ||
+	if (this->currentAnim == static_cast<int>(animID) || animID >= this->animations.size() ||
 		animID < 0) return;
 
 	// Set the current animation

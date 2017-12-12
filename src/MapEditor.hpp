@@ -50,7 +50,7 @@ private:
     void updateLayout(sf::RenderWindow & App);
     void updateUIComponents(sf::RenderWindow & App);
 	void handleKeyPress(sf::Event& event, sf::RenderWindow& App);
-    sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
+    sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App) const;
 	sf::Vector2u selectToolCoord;
 
 	SidePanelMapEditor sidePanel;

@@ -103,7 +103,7 @@ namespace jreader {
 			} else {
 				throw JSONLoadException();
 			}
-		} catch (const nlohmann::detail::exception& e) {
+		} catch (nlohmann::detail::exception) {
 			throw JSONLoadException();
 		}
 
@@ -157,7 +157,7 @@ namespace jreader {
 				try {
 					auto gc_ptr = createCharacter(jchar);
 					game.addCharacter(*gc_ptr);
-				} catch (JSONLoadException& e) {
+				} catch (JSONLoadException) {
 					continue;
 				}
 			}
@@ -175,9 +175,9 @@ namespace jreader {
 			is.open("levels/" + filepath + ".json");
 			is >> jloader;
 			is.close();
-		} catch (const nlohmann::detail::parse_error& pe) {
+		} catch (nlohmann::detail::parse_error) {
 			throw JSONLoadException();
-		} catch (const std::ifstream::failure& e) {
+		} catch (std::ifstream::failure) {
 			throw JSONLoadException();
 		}
 
@@ -227,7 +227,7 @@ namespace jreader {
 			os.open("levels/" + filename + ".json");
 			os << writer;
 			os.close();
-		} catch (std::ofstream::failure& e) {
+		} catch (std::ofstream::failure) {
 			throw JSONWriteException();
 		}
 		return true;

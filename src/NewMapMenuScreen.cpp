@@ -82,7 +82,6 @@ void NewMapMenuScreen::updateLayout(sf::RenderWindow & App)
 	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, App.getView().getSize().y * 0.5f - logoSprite.getGlobalBounds().height * 1.f });
 	
 	float componentOffsetY = logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f;
-	float firstRowWidth = App.getView().getSize().x / 3;
 	float menuCenterX = App.getView().getSize().x / 2;
 	float margin = 10.f;
 	mapSizeXField.setPosition(sf::Vector2f(menuCenterX - mapSizeYField.getGlobalBounds().width / 2 - mapSizeXField.getGlobalBounds().width / 2 - margin, componentOffsetY));

@@ -155,7 +155,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 					if (mouseMode == MouseMode::shoot && game->getSelectedCharacter() != game->getCharacters().end()) {
 						auto gc = game->getSelectedCharacter();
 						auto weapon = gc->getEquipped();
-						auto tiles = game->characterShoot(gc, getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView));
+						auto tiles = game->characterShoot(gc, getClickedTilePosition(App));
 						int k = 0;
 						for (auto dest : tiles) {
 							addProjectile(weapon, gc->getPosition(), dest, k*(weapon->getDelay()));
@@ -171,7 +171,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 					//In select mode
 					else {
 						for (auto it = game->getCharacters().begin(); it != game->getCharacters().end(); ++it) {
-							if (it->getTeam() == game->getCurrentPlayer() && !(it->isDead()) && it->getPosition() == getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView)) {
+							if (it->getTeam() == game->getCurrentPlayer() && !(it->isDead()) && it->getPosition() == getClickedTilePosition(App)) {
 								game->setSelectedCharacter(it); //Select clicked character
 								centerCharacter = true;
 								break;
@@ -187,7 +187,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				updateLayout(App);
 			}
 			if (game->getGameState() == GameState::match_ended) {
-				gameOverPanel.update(event, App, *game);
+				gameOverPanel.update(event, App);
 			} else {
 				sidePanel.update(event, App, *game);
 			}
@@ -349,7 +349,7 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 
 	if (mouseMode == MouseMode::shoot && game->getSelectedCharacter() != game->getCharacters().end() && game->getGameState() == GameState::active) {
 		auto gc = game->getSelectedCharacter();
-		auto target = getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView);
+		auto target = getClickedTilePosition(App);
 		auto origin = gc->getRenderPosition();
 		rayLine.setPositionPoint1(sf::Vector2f(static_cast<float>(origin.x + TILESIZE / 2), static_cast<float>(origin.y + TILESIZE / 2)));
 		rayLine.setPositionPoint2(Util::mapToPixels(game->traceFromCharacter(gc, target, true)));
@@ -373,10 +373,10 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 }
 
 // Draw visible area for the selected game character
-void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles) {
+void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> tiles) {
 
 	renderTexture_visibleTiles->clear(sf::Color(0, 0, 0, 0));
-	for (auto it = visibleTiles.begin(); it != visibleTiles.end(); ++it) {
+	for (auto it = tiles.begin(); it != tiles.end(); ++it) {
 		visibleTileShape.setPosition(static_cast<float>(it->x * TILESIZE), static_cast<float>(it->y * TILESIZE));
 		renderTexture_visibleTiles->draw(visibleTileShape); // or any other drawable
 	}
@@ -391,8 +391,6 @@ void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u
 }
 
 void GameScreen::drawUI(sf::RenderWindow &App) {
-	unsigned int menuSize = App.getSize().x / 4;
-
 	updateUIComponents(App);
 
 	//Draw elements
@@ -400,7 +398,7 @@ void GameScreen::drawUI(sf::RenderWindow &App) {
 	App.draw(backgroundSprite);
 
 	if (game->getGameState() == GameState::match_ended) {
-		gameOverPanel.draw(App, *game, *this);
+		gameOverPanel.draw(App, *game);
 	}
 	else {
 		sidePanel.draw(App, *game, *this);
@@ -435,8 +433,6 @@ void GameScreen::drawGameUI(sf::RenderWindow &App) {
 void GameScreen::updateLayout(sf::RenderWindow & App)
 {
 	unsigned int menuSize = App.getSize().x / 4;
-	unsigned int menuCenterX = App.getSize().x - menuSize / 2;
-	unsigned int margin = 10;
 
 	/** Game View */
 
@@ -509,7 +505,7 @@ void GameScreen::toggleAttackMode() {
 	std::cout << "mousemode changed to " << mouseMode << std::endl;
 }
 
-sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const {
+sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App) const {
 	sf::Vector2i clickedTile = sf::Vector2i(App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView));
 	clickedTile.x /= TILESIZE;
 	clickedTile.y /= TILESIZE;

@@ -16,8 +16,8 @@ class GameOverPanel
 public:
 	GameOverPanel() {}
 	GameOverPanel(sf::RenderWindow &App, GameScreen& gameScreen);
-	void draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen);
-	void update(sf::Event& event, sf::RenderWindow& App, Game &game);
+	void draw(sf::RenderWindow &App, Game &game);
+	void update(sf::Event& event, sf::RenderWindow& App);
 	void updateLayout(sf::RenderWindow & App);
 	void updateUIComponents(sf::RenderWindow & App);
 private:

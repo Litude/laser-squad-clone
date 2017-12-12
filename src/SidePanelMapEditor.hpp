@@ -20,8 +20,8 @@ class SidePanelMapEditor
 public:
 	SidePanelMapEditor() {}
 	SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor);
-	void draw(sf::RenderWindow &App, Game &game, MapEditor& editor);
-	void update(sf::Event& event, sf::RenderWindow& App, Game &game);
+	void draw(sf::RenderWindow &App);
+	void update(sf::Event& event, sf::RenderWindow& App);
 	void updateLayout(sf::RenderWindow & App);
 	void updateUIComponents(sf::RenderWindow & App);
 	const std::string getMapName();

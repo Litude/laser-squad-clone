@@ -124,7 +124,7 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	updateLayout(App);
 }
 
-void SidePanelMapEditor::update(sf::Event& event, sf::RenderWindow& App, Game &game)
+void SidePanelMapEditor::update(sf::Event& event, sf::RenderWindow& App)
 {
 	// Update buttons
 	buttonExit.update(event, App);
@@ -151,9 +151,7 @@ void SidePanelMapEditor::update(sf::Event& event, sf::RenderWindow& App, Game &g
 	}
 }
 
-void SidePanelMapEditor::draw(sf::RenderWindow &App, Game &game, MapEditor& editor) {
-	unsigned int menuSize = App.getSize().x / 4;
-
+void SidePanelMapEditor::draw(sf::RenderWindow &App) {
 	updateUIComponents(App);
 
 	currentTime = fpsclock.getElapsedTime().asMicroseconds() / 1000000.0f;

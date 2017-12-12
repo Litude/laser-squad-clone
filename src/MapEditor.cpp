@@ -61,7 +61,7 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                 return ScreenResult::Exit;
             }
 			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
-				auto coord = getClickedTilePosition(App, sf::Vector2i(event.mouseButton.x, event.mouseButton.y), gameView);
+				auto coord = getClickedTilePosition(App);
 				if (event.mouseButton.x < menuStartX && coord.x >= 0 && coord.x < game->getGrid().getWidth() && coord.y >= 0 && coord.y < game->getGrid().getHeight()) {
 					selectToolCoord = coord;
 				}
@@ -74,7 +74,7 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                     zoomViewAt({ event.mouseWheelScroll.x, event.mouseWheelScroll.y }, App, gameView, 1.1f);
             }
             // Update components
-			sidePanel.update(event, App, *game);
+			sidePanel.update(event, App);
             //Handle keyboard input
             if (event.type == sf::Event::KeyPressed) {
 				handleKeyPress(event, App);
@@ -239,21 +239,17 @@ void MapEditor::DrawGame(sf::RenderWindow &App) {
 }
 
 void MapEditor::DrawUI(sf::RenderWindow &App) {
-    unsigned int menuSize = App.getSize().x / 4;
-    
     updateUIComponents(App);
     
     //Draw elements
 	App.setView(interfaceView);
 	App.draw(backgroundSprite);
-	sidePanel.draw(App, *game, *this);
+	sidePanel.draw(App);
 }
 
 void MapEditor::updateLayout(sf::RenderWindow & App)
 {
     unsigned int menuSize = App.getSize().x / 4;
-    unsigned int menuCenterX = App.getSize().x - menuSize / 2;
-    unsigned int margin = 10;
     
     /** Game View */
     
@@ -285,7 +281,7 @@ void MapEditor::updateUIComponents(sf::RenderWindow & App)
 	sidePanel.updateUIComponents(App);
 }
 
-sf::Vector2u MapEditor::getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const {
+sf::Vector2u MapEditor::getClickedTilePosition(const sf::RenderWindow& App) const {
 	sf::Vector2i clickedTile = sf::Vector2i(App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView));
 	clickedTile.x /= TILESIZE;
 	clickedTile.y /= TILESIZE;
