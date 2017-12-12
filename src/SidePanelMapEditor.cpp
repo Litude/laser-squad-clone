@@ -322,8 +322,16 @@ Button SidePanelMapEditor::createRemoveCharacterButton(MapEditor &editor) {
 	return button;
 }
 
+const std::string SidePanelMapEditor::getMapName() {
+	return mapNameField.getString();
+}
+
+void SidePanelMapEditor::setMapName(const std::string &name) {
+	mapNameField.setString(name);
+}
+
 void SidePanelMapEditor::saveMap(MapEditor &editor) {
-	if (!editor.saveMap(mapNameField.getString())) {
+	if (!editor.saveMap()) {
 		std::cout << "Could not save map";
 	}
 }

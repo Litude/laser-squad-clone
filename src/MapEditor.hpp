@@ -39,7 +39,7 @@ public:
 	void removeItem();
 	void addCharacter(unsigned int team);
 	void removeCharacter();
-	bool saveMap(std::string name);
+	bool saveMap();
 private:
     ScreenResult m_screenResult;
 private:

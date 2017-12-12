@@ -40,6 +40,7 @@ MapEditor::MapEditor(sf::RenderWindow &App, std::string mapName)
 		if (!initComponents(App)) {
 			m_screenResult = ScreenResult::Exit;
 		}
+		sidePanel.setMapName(mapName);
 	} catch (JSONLoadException) {
 		m_screenResult = ScreenResult::NewMapMenuScene;
 	} catch (JSONWriteException) {
@@ -454,6 +455,6 @@ void MapEditor::removeCharacter() {
 	game.setSelectedCharacter(game.getCharacters().end());
 }
 
-bool MapEditor::saveMap(std::string name) {
-	return jreader::writeJSON(game, name);
+bool MapEditor::saveMap() {
+	return jreader::writeJSON(game, sidePanel.getMapName());
 }
