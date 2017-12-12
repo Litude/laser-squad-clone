@@ -296,8 +296,10 @@ Button SidePanelMapEditor::createItemButton(Item item, MapEditor &editor) {
 	buttonSpriteRect.top = 0;
 	buttonSpriteRect.left = 0;
 	int tileNumber_x = item.getIcon();
-	int tu = tileNumber_x * TILESIZE;
+	int tu = (tileNumber_x * TILESIZE) % texItems->getSize().x;
 	buttonSpriteRect.left = tu;
+	int tv = ((tileNumber_x * TILESIZE) / texItems->getSize().x) * TILESIZE;
+	buttonSpriteRect.top = tv;
 	buttonSprite.setTextureRect(buttonSpriteRect);
 
 	Button button = Button("", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), buttonSprite);
