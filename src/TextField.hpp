@@ -50,6 +50,6 @@ private:
   sf::Text t_text;
   sf::Text t_defText;
   std::function<void()> t_callback;
-  int t_strMaxLength;
+  unsigned int t_strMaxLength;
 };
 #endif

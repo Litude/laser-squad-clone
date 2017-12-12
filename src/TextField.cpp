@@ -54,7 +54,7 @@ void TextField::setPosition(sf::Vector2f v)
   t_Rshape.setPosition(t_pos);
 
   sf::Vector2f textPosition = sf::Vector2f(t_Rshape.getPosition().x, t_Rshape.getPosition().y + t_Rshape.getGlobalBounds().height / 8);
-  t_text.setOrigin(t_Rshape.getGlobalBounds().width / 2.3, t_Rshape.getGlobalBounds().height / 2);
+  t_text.setOrigin(t_Rshape.getGlobalBounds().width / 2.3f, t_Rshape.getGlobalBounds().height / 2);
   t_text.setPosition(textPosition);
 
   sf::Vector2f defTextPosition = sf::Vector2f(t_Rshape.getPosition().x, t_Rshape.getPosition().y - t_Rshape.getGlobalBounds().height / 8);
@@ -186,6 +186,6 @@ void TextField::setCursor(size_t i) // Updates the position of the cursor
   if(i <= t_str.size())
   {
     t_index = i;
-    t_Cursor.setPosition(t_text.findCharacterPos(t_index).x + t_Rshape.getGlobalBounds().width / 2.3, t_text.findCharacterPos(t_index).y + t_Rshape.getGlobalBounds().height / 2);
+    t_Cursor.setPosition(t_text.findCharacterPos(t_index).x + t_Rshape.getGlobalBounds().width / 2.3f, t_text.findCharacterPos(t_index).y + t_Rshape.getGlobalBounds().height / 2);
   }
 }

@@ -202,7 +202,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 			gameView.move(x, y);
 		}
 
-		//Handle time delta dependent actions
+		// Handle time delta dependent actions
 		int delta = static_cast<int>(clock.restart().asMicroseconds());
 		timeAccumulator += delta;
 
@@ -269,7 +269,7 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 		centerCharacter = false;
 		break;
 	case sf::Keyboard::Numpad0:
-		gameView.setSize(sf::Vector2f(App.getSize().x - (App.getSize().x / 4), App.getSize().y));
+		gameView.setSize(sf::Vector2f(static_cast<float>(App.getSize().x - (App.getSize().x / 4)), static_cast<float>(App.getSize().y)));
 		break;
 		//enter shooting mode
 	case sf::Keyboard::Q:
@@ -515,8 +515,8 @@ sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, con
 	clickedTile.y /= TILESIZE;
 	clickedTile.x = (clickedTile.x < 0 ? 0 : clickedTile.x);
 	clickedTile.y = (clickedTile.y < 0 ? 0 : clickedTile.y);
-	clickedTile.x = (clickedTile.x > game->getGrid().getWidth() - 1 ? game->getGrid().getWidth() - 1 : clickedTile.x);
-	clickedTile.y = (clickedTile.y > game->getGrid().getHeight() - 1 ? game->getGrid().getHeight() - 1 : clickedTile.y);
+	clickedTile.x = (clickedTile.x > static_cast<int>(game->getGrid().getWidth() - 1) ? static_cast<int>(game->getGrid().getWidth() - 1) : clickedTile.x);
+	clickedTile.y = (clickedTile.y > static_cast<int>(game->getGrid().getHeight() - 1) ? static_cast<int>(game->getGrid().getHeight() - 1) : clickedTile.y);
 	return sf::Vector2u(clickedTile.x, clickedTile.y);
 }
 

@@ -71,14 +71,14 @@ void ControlsScreen::drawUI(sf::RenderWindow &App)
 		App.draw(button);
 	}
 
-	for (auto it = 0; it < IGDescriptions.size(); it++) {
-		App.draw(IGDescriptions[it]);
-		App.draw(IGKeys[it]);
+	for (size_t i = 0; i < IGDescriptions.size(); i++) {
+		App.draw(IGDescriptions[i]);
+		App.draw(IGKeys[i]);
 	}
 
-	for (auto it = 0; it < MEDescriptions.size(); it++) {
-		App.draw(MEDescriptions[it]);
-		App.draw(MEKeys[it]);
+	for (size_t i = 0; i < MEDescriptions.size(); i++) {
+		App.draw(MEDescriptions[i]);
+		App.draw(MEKeys[i]);
 	}
 	App.display();
 }
@@ -91,8 +91,8 @@ void ControlsScreen::updateLayout(sf::RenderWindow & App)
 	backgroundSprite.setScale(App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 								App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
 	rec.setScale(
-		App.getView().getSize().x / rec.getLocalBounds().width / 1.4,
-		App.getView().getSize().y / rec.getLocalBounds().height / 1.4);
+		App.getView().getSize().x / rec.getLocalBounds().width / 1.4f,
+		App.getView().getSize().y / rec.getLocalBounds().height / 1.4f);
 	logoSprite.setScale(
 		App.getView().getSize().x / rec.getLocalBounds().width / 4,
 		App.getView().getSize().y / rec.getLocalBounds().height / 4);
@@ -231,14 +231,14 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 		std::cerr << "Description and key sizes do not match" << std::endl;
 	}
 
-	for(auto it = 0; it < IGdes.size(); it++) {
-		IGDescriptions.push_back(sf::Text(IGdes[it], *font, charSize));
-		IGKeys.push_back(sf::Text(IGk[it], *font, charSize));
+	for(size_t i = 0; i < IGdes.size(); i++) {
+		IGDescriptions.push_back(sf::Text(IGdes[i], *font, charSize));
+		IGKeys.push_back(sf::Text(IGk[i], *font, charSize));
 	}
 
-	for(auto it = 0; it < MEdes.size(); it++) {
-		MEDescriptions.push_back(sf::Text(MEdes[it], *font, charSize));
-		MEKeys.push_back(sf::Text(MEk[it], *font, charSize));
+	for(size_t i = 0; i < MEdes.size(); i++) {
+		MEDescriptions.push_back(sf::Text(MEdes[i], *font, charSize));
+		MEKeys.push_back(sf::Text(MEk[i], *font, charSize));
 	}
 
 	 // Find the largest width for in-game keys

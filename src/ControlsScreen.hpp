@@ -35,7 +35,7 @@ private:
 	std::vector<sf::Text> sfDescriptions;
 	std::vector<sf::Text> sfKeys;
 	int charSize = 40;
-	float spacing = charSize * 1.2;
+	float spacing = charSize * 1.2f;
 	sf::Vector2f helperScale;
 	sf::Text IGtitle;
 	sf::Text MEtitle;

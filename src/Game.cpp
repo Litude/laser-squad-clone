@@ -342,7 +342,7 @@ void Game::removeDeadCharacters()
 	//Find out selected character index
 	int selectedCharIndex = -1;
 
-	for (int i = 0; i < getCharacters().size(); ++i) {
+	for (unsigned int i = 0; i < getCharacters().size(); ++i) {
 		if (characters.begin() + i == getSelectedCharacter()) {
 			selectedCharIndex = static_cast<int>(i);
 			break;

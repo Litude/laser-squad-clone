@@ -51,8 +51,8 @@ MapEditor::MapEditor(sf::RenderWindow &App, std::string mapName)
 ScreenResult MapEditor::Run(sf::RenderWindow & App)
 {
     sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
-	unsigned int menuSize = App.getSize().x / 4;
-	unsigned int menuStartX = App.getSize().x - menuSize;
+    int menuSize = App.getSize().x / 4;
+	int menuStartX = App.getSize().x - menuSize;
     while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
         sf::Event event;
         while (App.pollEvent(event)) {
@@ -92,9 +92,9 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
             gameView.move(x, y);
         }
         
-        //Handle time delta dependent actions
-        double delta = clock.restart().asMicroseconds();
-        timeAccumulator += delta;
+        // Handle time delta dependent actions
+		int delta = static_cast<int>(clock.restart().asMicroseconds());
+		timeAccumulator += delta;
         
         for (auto &character : game->getCharacters()) {
             character.update(delta);
@@ -220,13 +220,13 @@ void MapEditor::DrawGame(sf::RenderWindow &App) {
     //Draw the map
     App.draw(*tileMap);
     
-	selectedTile.setPosition(selectToolCoord.x*TILESIZE, selectToolCoord.y*TILESIZE);
+	selectedTile.setPosition(static_cast<float>(selectToolCoord.x * TILESIZE), static_cast<float>(selectToolCoord.y*TILESIZE));
     App.draw(selectedTile);
     
     //Draw characters
     for (auto it = game->getCharacters().begin(); it != game->getCharacters().end(); ++it) {
         sf::Sprite characterShape;
-        characterShape.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
+        characterShape.setPosition(static_cast<float>(it->getRenderPosition().x), static_cast<float>(it->getRenderPosition().y));
         if (it->getTeam() == 1) {
             characterShape.setTexture(*texPlayer1);
         }
@@ -272,8 +272,8 @@ void MapEditor::updateLayout(sf::RenderWindow & App)
 		App.getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getSize().y / backgroundSprite.getLocalBounds().height);
 
-	interfaceView.setSize(App.getSize().x, App.getSize().y);
-	interfaceView.setCenter(App.getSize().x / 2, App.getSize().y / 2);
+	interfaceView.setSize(static_cast<float>(App.getSize().x), static_cast<float>(App.getSize().y));
+	interfaceView.setCenter(static_cast<float>(App.getSize().x / 2), static_cast<float>(App.getSize().y / 2));
     
 	sidePanel.updateLayout(App);
     
@@ -291,8 +291,8 @@ sf::Vector2u MapEditor::getClickedTilePosition(const sf::RenderWindow& App, cons
 	clickedTile.y /= TILESIZE;
 	clickedTile.x = (clickedTile.x < 0 ? 0 : clickedTile.x);
 	clickedTile.y = (clickedTile.y < 0 ? 0 : clickedTile.y);
-	clickedTile.x = (clickedTile.x > game->getGrid().getWidth() - 1 ? game->getGrid().getWidth() - 1 : clickedTile.x);
-	clickedTile.y = (clickedTile.y > game->getGrid().getHeight() - 1 ? game->getGrid().getHeight() - 1 : clickedTile.y);
+	clickedTile.x = (clickedTile.x > static_cast<int>(game->getGrid().getWidth() - 1) ? static_cast<int>(game->getGrid().getWidth() - 1) : clickedTile.x);
+	clickedTile.y = (clickedTile.y > static_cast<int>(game->getGrid().getHeight() - 1) ? static_cast<int>(game->getGrid().getHeight() - 1) : clickedTile.y);
 	return sf::Vector2u(clickedTile.x, clickedTile.y);
 }
 
@@ -372,7 +372,7 @@ void MapEditor::setBlockTile(TileBlock tileBlock) {
 			int coordX = selectToolCoord.x + dx;
 			int coordY = selectToolCoord.y + dy;
 			// Check that within bounds
-			if (coordX < 0 || coordX > game->getGrid().getWidth() - 1 || coordY < 0 || coordY > game->getGrid().getHeight() - 1) {
+			if (coordX < 0 || coordX > static_cast<int>(game->getGrid().getWidth() - 1) || coordY < 0 || coordY > static_cast<int>(game->getGrid().getHeight() - 1)) {
 				continue;
 			}
 			sf::Vector2u coord(selectToolCoord.x + dx, selectToolCoord.y + dy);
