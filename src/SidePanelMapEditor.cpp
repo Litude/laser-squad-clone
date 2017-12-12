@@ -88,6 +88,24 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	buttons_items.push_back(button);
 	button = createItemButton(HealthPackSmall(), editor);
 	buttons_items.push_back(button);
+	button = createItemButton(Pistol(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Shotgun(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Uzi(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Rifle(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(DoubleBarrel(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Ammo9mmBullets(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Ammo12mmBullets(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(AmmoShotgunShells(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(AmmoRockets(), editor);
+	buttons_items.push_back(button);
 
 	// Character buttons
 	button = createRemoveCharacterButton(editor);
