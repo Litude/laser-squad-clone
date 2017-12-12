@@ -16,11 +16,11 @@ MapEditor::MapEditor(sf::RenderWindow &App, unsigned int width, unsigned int hei
     m_screenResult = ScreenResult::GameScene;
 
 	//Game logic initialization
-	game = Game();
+	game = std::make_shared<Game>(Game());
 
-	game.initializeGrid(width, height);
+	game->initializeGrid(width, height);
 
-	game.setSelectedCharacter(game.getCharacters().end());
+	game->setSelectedCharacter(game->getCharacters().end());
 
 	if (!initComponents(App)) {
 		m_screenResult = ScreenResult::Exit;
@@ -32,7 +32,7 @@ MapEditor::MapEditor(sf::RenderWindow &App, std::string mapName)
 	m_screenResult = ScreenResult::GameScene;
 
 	try {
-		auto game = jreader::loadJSON(mapName);
+		game = jreader::loadJSON(mapName);
 
 		//Game logic initialization
 		game->setSelectedCharacter(game->getCharacters().end());
@@ -40,6 +40,7 @@ MapEditor::MapEditor(sf::RenderWindow &App, std::string mapName)
 		if (!initComponents(App)) {
 			m_screenResult = ScreenResult::Exit;
 		}
+		sidePanel.setMapName(mapName);
 	} catch (JSONLoadException) {
 		m_screenResult = ScreenResult::NewMapMenuScene;
 	} catch (JSONWriteException) {
@@ -62,7 +63,7 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
             }
 			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
 				auto coord = getClickedTilePosition(App, sf::Vector2i(event.mouseButton.x, event.mouseButton.y), gameView);
-				if (coord.x >= 0 && coord.x < game.getGrid().getWidth() && coord.y >= 0 && coord.y < game.getGrid().getHeight()) {
+				if (coord.x >= 0 && coord.x < game->getGrid().getWidth() && coord.y >= 0 && coord.y < game->getGrid().getHeight()) {
 					selectToolCoord = coord;
 				}
 			}
@@ -74,7 +75,7 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
                     zoomViewAt({ event.mouseWheelScroll.x, event.mouseWheelScroll.y }, App, gameView, 1.1f);
             }
             // Update components
-			sidePanel.update(event, App, game);
+			sidePanel.update(event, App, *game);
             //Handle keyboard input
             if (event.type == sf::Event::KeyPressed) {
 				handleKeyPress(event, App);
@@ -96,7 +97,7 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
         double delta = clock.restart().asMicroseconds();
         timeAccumulator += delta;
         
-        for (auto &character : game.getCharacters()) {
+        for (auto &character : game->getCharacters()) {
             character.update(delta);
         }
         
@@ -112,17 +113,6 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
 
 void MapEditor::handleKeyPress(sf::Event& event, sf::RenderWindow& App)
 {
-	Animation animation_walk_left(9, 0, 8, 62000);
-	Animation animation_walk_right(11, 0, 8, 62000);
-	Animation animation_walk_down(10, 0, 8, 62000);
-	Animation animation_walk_up(8, 0, 8, 62000);
-	Animation animation_die(20, 0, 5, 125000, false);
-	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
-	animManager.addAnim(animation_walk_left);
-	animManager.addAnim(animation_walk_right);
-	animManager.addAnim(animation_walk_down);
-	animManager.addAnim(animation_walk_up);
-	animManager.addAnim(animation_die);
 	switch (event.key.code) {
 	case sf::Keyboard::Left:
 		if (selectToolCoord.x > 0) {
@@ -130,12 +120,12 @@ void MapEditor::handleKeyPress(sf::Event& event, sf::RenderWindow& App)
 		}
 		break;
 	case sf::Keyboard::Right:
-		if (selectToolCoord.x < game.getGrid().getWidth() - 1) {
+		if (selectToolCoord.x < game->getGrid().getWidth() - 1) {
 			selectToolCoord.x += 1;
 		}
 		break;
 	case sf::Keyboard::Down:
-		if (selectToolCoord.y < game.getGrid().getHeight() - 1) {
+		if (selectToolCoord.y < game->getGrid().getHeight() - 1) {
 			selectToolCoord.y += 1;
 		}
 		break;
@@ -149,10 +139,10 @@ void MapEditor::handleKeyPress(sf::Event& event, sf::RenderWindow& App)
 		if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);
 		break;
 	case sf::Keyboard::D:
-		if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game.getGrid().getWidth() * TILESIZE) gameView.move(TILESIZE, 0);
+		if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game->getGrid().getWidth() * TILESIZE) gameView.move(TILESIZE, 0);
 		break;
 	case sf::Keyboard::S:
-		if (gameView.getCenter().y + App.getSize().y / 2 < game.getGrid().getHeight() * TILESIZE) gameView.move(0, TILESIZE);
+		if (gameView.getCenter().y + App.getSize().y / 2 < game->getGrid().getHeight() * TILESIZE) gameView.move(0, TILESIZE);
 		break;
 	case sf::Keyboard::W:
 		if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
@@ -161,71 +151,63 @@ void MapEditor::handleKeyPress(sf::Event& event, sf::RenderWindow& App)
 
 
 	case sf::Keyboard::Z:
-		game.getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackLarge>());
+		game->getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackLarge>());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::X:
-		game.getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackSmall>());
+		game->getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackSmall>());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::C:
-		game.getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Pistol>());
+		game->getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Pistol>());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::V:
-		game.getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Shotgun>());
+		game->getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Shotgun>());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::M:
-		game.getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Ammo9mmBullets>());
+		game->getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Ammo9mmBullets>());
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::N:
-		game.getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<AmmoShotgunShells>());
+		game->getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<AmmoShotgunShells>());
 		tileMap->updateTile(selectToolCoord);
 		break;
 
 
 	case sf::Keyboard::T:
-		game.getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, TileBlock::tree);;
+		game->getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, TileBlock::tree);;
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::Y:
-		game.getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, wall);
+		game->getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, wall);
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::B:
-		game.getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, bush);
+		game->getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, bush);
 		tileMap->updateTile(selectToolCoord);
 		break;
 	case sf::Keyboard::H:
-		if (!game.addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 1)) {
+		if (!game->addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 1)) {
 			std::cout << "Error" << std::endl;
 		};
-		game.setSelectedCharacter(game.getCharacters().end());
-		animManager.changeAnim(animations::walk_down);
-		for (auto &character : game.getCharacters()) {
-			character.setAnimationManager(animManager);
-		}
+		game->setSelectedCharacter(game->getCharacters().end());		
 		break;
 	case sf::Keyboard::J:
-		if (!game.addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 2)) {
+		if (!game->addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 2)) {
 			std::cout << "Error" << std::endl;
 		};
-		game.setSelectedCharacter(game.getCharacters().end());
-		animManager.changeAnim(animations::walk_down);
-		for (auto &character : game.getCharacters()) {
-			character.setAnimationManager(animManager);
-		}
+		game->setSelectedCharacter(game->getCharacters().end());
 		break;
 
 
 	case sf::Keyboard::R:
-		game.getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, air);
-		game.getGrid()(selectToolCoord.x, selectToolCoord.y).popItem();
-		game.removeCharacter(selectToolCoord);
+		game->getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, air);
+		game->getGrid()(selectToolCoord.x, selectToolCoord.y).popItem();
+		game->removeCharacter(selectToolCoord);
 		tileMap->updateTile(selectToolCoord);
-		game.setSelectedCharacter(game.getCharacters().end());
+		game->setSelectedCharacter(game->getCharacters().end());
 		break;
 	default:
 		break;
@@ -243,7 +225,7 @@ void MapEditor::DrawGame(sf::RenderWindow &App) {
     App.draw(selectedTile);
     
     //Draw characters
-    for (auto it = game.getCharacters().begin(); it != game.getCharacters().end(); ++it) {
+    for (auto it = game->getCharacters().begin(); it != game->getCharacters().end(); ++it) {
         sf::Sprite characterShape;
         characterShape.setPosition(it->getRenderPosition().x, it->getRenderPosition().y);
         if (it->getTeam() == 1) {
@@ -265,7 +247,7 @@ void MapEditor::DrawUI(sf::RenderWindow &App) {
     //Draw elements
 	App.setView(interfaceView);
 	App.draw(backgroundSprite);
-	sidePanel.draw(App, game, *this);
+	sidePanel.draw(App, *game, *this);
 }
 
 void MapEditor::updateLayout(sf::RenderWindow & App)
@@ -281,14 +263,9 @@ void MapEditor::updateLayout(sf::RenderWindow & App)
 	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - menuSize) / static_cast<float>(App.getSize().x), 1));
 
 	// Center the camera
-	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		gameView.setCenter(sf::Vector2f(static_cast<float>(game.getSelectedCharacter()->getRenderPosition().x), static_cast<float>(game.getSelectedCharacter()->getRenderPosition().y)));
-	}
-	else {
-		float zoomFactor = static_cast<float>(game.getGrid().getHeight() * TILESIZE) / gameView.getSize().y;
-		zoomViewAt(sf::Vector2i(static_cast<int>(gameView.getCenter().x), static_cast<int>(gameView.getCenter().y)), App, gameView, zoomFactor);
-		gameView.setCenter(sf::Vector2f(static_cast<float>(game.getGrid().getWidth() / 2 * TILESIZE), static_cast<float>(game.getGrid().getHeight() / 2 * TILESIZE)));
-	}
+	float zoomFactor = static_cast<float>(game->getGrid().getHeight() * TILESIZE) / gameView.getSize().y;
+	zoomViewAt(sf::Vector2i(static_cast<int>(gameView.getCenter().x), static_cast<int>(gameView.getCenter().y)), App, gameView, zoomFactor);
+	gameView.setCenter(sf::Vector2f(static_cast<float>(game->getGrid().getWidth() / 2 * TILESIZE), static_cast<float>(game->getGrid().getHeight() / 2 * TILESIZE)));
     
     /** UI View */
     
@@ -362,23 +339,6 @@ bool MapEditor::initComponents(sf::RenderWindow & App) {
 		std::cout << "Could not load 'img/character2_sheet.png'\n";
 	}
 
-	// Set up animations
-	Animation animation_walk_left(9, 0, 8, 62000);
-	Animation animation_walk_right(11, 0, 8, 62000);
-	Animation animation_walk_down(10, 0, 8, 62000);
-	Animation animation_walk_up(8, 0, 8, 62000);
-	Animation animation_die(20, 0, 5, 125000, false);
-	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
-	animManager.addAnim(animation_walk_left);
-	animManager.addAnim(animation_walk_right);
-	animManager.addAnim(animation_walk_down);
-	animManager.addAnim(animation_walk_up);
-	animManager.addAnim(animation_die);
-	animManager.changeAnim(animations::walk_down); // Initial animation
-	for (auto &character : game.getCharacters()) {
-		character.setAnimationManager(animManager);
-	}
-
 	selectToolCoord = sf::Vector2u(0, 0);
 
 	sidePanel = SidePanelMapEditor(App, *this);
@@ -386,7 +346,7 @@ bool MapEditor::initComponents(sf::RenderWindow & App) {
 	updateLayout(App);
 
 	// Create graphical tilemap presentation from the Map
-	tileMap = std::make_shared<TileMap>(TileMap(game.getGrid()));
+	tileMap = std::make_shared<TileMap>(TileMap(game->getGrid()));
 	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", "img/tileset_items.png", sf::Vector2u(TILESIZE, TILESIZE))) {
 		std::cout << "Could not load tilemap\n";
 	}
@@ -395,13 +355,13 @@ bool MapEditor::initComponents(sf::RenderWindow & App) {
 }
 
 void MapEditor::setGroundTile(TileGround tileGround) {
-	auto& currentTile = game.getGrid()(selectToolCoord.x, selectToolCoord.y);
+	auto& currentTile = game->getGrid()(selectToolCoord.x, selectToolCoord.y);
 	currentTile.setTile(tileGround, currentTile.getBlock());
 	tileMap->updateTile(selectToolCoord);
 }
 
 void MapEditor::setBlockTile(TileBlock tileBlock) {
-	auto& currentTile = game.getGrid()(selectToolCoord.x, selectToolCoord.y);
+	auto& currentTile = game->getGrid()(selectToolCoord.x, selectToolCoord.y);
 	currentTile.setTile(currentTile.getGround(), tileBlock);
 	// Update this tile and adjacent tiles in tilemap
 	for (int dx = -1; dx <= 1; ++dx) {
@@ -409,7 +369,7 @@ void MapEditor::setBlockTile(TileBlock tileBlock) {
 			int coordX = selectToolCoord.x + dx;
 			int coordY = selectToolCoord.y + dy;
 			// Check that within bounds
-			if (coordX < 0 || coordX > game.getGrid().getWidth() - 1 || coordY < 0 || coordY > game.getGrid().getHeight() - 1) {
+			if (coordX < 0 || coordX > game->getGrid().getWidth() - 1 || coordY < 0 || coordY > game->getGrid().getHeight() - 1) {
 				continue;
 			}
 			sf::Vector2u coord(selectToolCoord.x + dx, selectToolCoord.y + dy);
@@ -419,41 +379,34 @@ void MapEditor::setBlockTile(TileBlock tileBlock) {
 }
 
 void MapEditor::addItem(Item item) {
-	auto& currentTile = game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
+	auto& currentTile = game->getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
 	currentTile.addItem(std::make_shared<Item>(item));
 	tileMap->updateTile(selectToolCoord);
 }
 
 void MapEditor::removeItem() {
-	auto& currentTile = game.getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
+	auto& currentTile = game->getGrid().getTile(selectToolCoord.x, selectToolCoord.y);
 	currentTile.popItem();
 	tileMap->updateTile(selectToolCoord);
 }
 
 void MapEditor::addCharacter(unsigned int team) {
-	for (auto character : game.getCharacters()) {
+	for (auto character : game->getCharacters()) {
 		if (character.getPosition() == selectToolCoord) {
 			return;
 		}
 	}
-	Animation animation_walk_down(10, 0, 8, 62000);
-	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
-	animManager.addAnim(animation_walk_down);
-	animManager.changeAnim(animations::walk_down);
-	if (!game.addCharacter(selectToolCoord, team)) {
+	if (!game->addCharacter(selectToolCoord, team)) {
 		std::cout << "Error" << std::endl;
 	};
-	for (auto &character : game.getCharacters()) {
-		character.setAnimationManager(animManager);
-	}
-	game.setSelectedCharacter(game.getCharacters().end());
+	game->setSelectedCharacter(game->getCharacters().end());
 }
 
 void MapEditor::removeCharacter() {
-	game.removeCharacter(selectToolCoord);
-	game.setSelectedCharacter(game.getCharacters().end());
+	game->removeCharacter(selectToolCoord);
+	game->setSelectedCharacter(game->getCharacters().end());
 }
 
-bool MapEditor::saveMap(std::string name) {
-	return jreader::writeJSON(game, name);
+bool MapEditor::saveMap() {
+	return jreader::writeJSON(*game, sidePanel.getMapName());
 }

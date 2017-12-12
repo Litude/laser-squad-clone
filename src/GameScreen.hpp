@@ -30,7 +30,7 @@ struct playerViewInformation {
 class GameScreen : public Screen
 {
 public:
-	GameScreen(sf::RenderWindow &App);
+	GameScreen(sf::RenderWindow &App, std::string mapName);
 	virtual ScreenResult Run(sf::RenderWindow &App);
 public:
 	void exitToMainMenu();

@@ -39,7 +39,7 @@ public:
 	void removeItem();
 	void addCharacter(unsigned int team);
 	void removeCharacter();
-	bool saveMap(std::string name);
+	bool saveMap();
 private:
     ScreenResult m_screenResult;
 private:
@@ -55,7 +55,7 @@ private:
 
 	SidePanelMapEditor sidePanel;
     
-    Game game;
+	std::shared_ptr<Game> game;
     std::shared_ptr<TileMap> tileMap;
     std::shared_ptr<sf::Font> font;
     std::shared_ptr<sf::Texture> texPlayer1;

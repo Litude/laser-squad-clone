@@ -147,3 +147,7 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 
 	return true;
 }
+
+std::string NgMenuScreen::getMapName() {
+	return tField.getString();
+}

@@ -24,6 +24,8 @@ public:
 	void update(sf::Event& event, sf::RenderWindow& App, Game &game);
 	void updateLayout(sf::RenderWindow & App);
 	void updateUIComponents(sf::RenderWindow & App);
+	const std::string getMapName();
+	void setMapName(const std::string &name);
 private:
 	std::shared_ptr<sf::Font> font;
 	std::shared_ptr<sf::Texture> texGrounds;
