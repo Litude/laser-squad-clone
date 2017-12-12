@@ -83,6 +83,8 @@ private:
 	std::vector<Projectile> activeProjectiles;
 	std::vector<sf::Vector2u> visibleTiles;
 
+	bool centerCharacter = false;
+
 	sf::Text screenStatusMessage;
 
 	MouseMode::Mode mouseMode = MouseMode::select;

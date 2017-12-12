@@ -241,6 +241,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 						for (auto it = game->getCharacters().begin(); it != game->getCharacters().end(); ++it) {
 							if (it->getTeam() == game->getCurrentPlayer() && !(it->isDead()) && it->getPosition() == getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView)) {
 								game->setSelectedCharacter(it); //Select clicked character
+								centerCharacter = true;
 								break;
 							}
 							else {
@@ -265,6 +266,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 		float y = (float)mousePos_old.y - mousePos.y;
 		mousePos_old = mousePos;
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
+			centerCharacter = false;
 			gameView.move(x, y);
 		}
 
@@ -294,21 +296,25 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 	case sf::Keyboard::Left:
 		if (game->getSelectedCharacter() != game->getCharacters().end() && game->getSelectedCharacter()->isMoving() == false) {
 			game->characterMoveLeft(game->getSelectedCharacter());
+			centerCharacter = true;
 		}
 		break;
 	case sf::Keyboard::Right:
 		if (game->getSelectedCharacter() != game->getCharacters().end() && game->getSelectedCharacter()->isMoving() == false) {
 			game->characterMoveRight(game->getSelectedCharacter());
+			centerCharacter = true;
 		}
 		break;
 	case sf::Keyboard::Down:
 		if (game->getSelectedCharacter() != game->getCharacters().end() && game->getSelectedCharacter()->isMoving() == false) {
 			game->characterMoveDown(game->getSelectedCharacter());
+			centerCharacter = true;
 		}
 		break;
 	case sf::Keyboard::Up:
 		if (game->getSelectedCharacter() != game->getCharacters().end() && game->getSelectedCharacter()->isMoving() == false) {
 			game->characterMoveUp(game->getSelectedCharacter());
+			centerCharacter = true;
 		}
 		break;
 
@@ -316,15 +322,19 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 
 	case sf::Keyboard::A:
 		if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);
+		centerCharacter = false;
 		break;
 	case sf::Keyboard::D:
 		if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game->getGrid().getWidth() * TILESIZE) gameView.move(TILESIZE, 0);
+		centerCharacter = false;
 		break;
 	case sf::Keyboard::S:
 		if (gameView.getCenter().y + App.getSize().y / 2 < game->getGrid().getHeight() * TILESIZE) gameView.move(0, TILESIZE);
+		centerCharacter = false;
 		break;
 	case sf::Keyboard::W:
 		if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
+		centerCharacter = false;
 		break;
 	case sf::Keyboard::Numpad0:
 		gameView.setSize(sf::Vector2f(App.getSize().x - (App.getSize().x / 4), App.getSize().y));
@@ -342,7 +352,7 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 
 	App.setView(gameView);
 	// Center the camera on the selected player (linear interpolation)
-	if (game->getSelectedCharacter() != game->getCharacters().end()) {
+	if (game->getSelectedCharacter() != game->getCharacters().end() && centerCharacter == true) {
 		float factor = 0.01f;
 		gameView.setCenter(sf::Vector2f(gameView.getCenter().x + (game->getSelectedCharacter()->getRenderPosition().x - gameView.getCenter().x) * factor, gameView.getCenter().y + (game->getSelectedCharacter()->getRenderPosition().y - gameView.getCenter().y) * factor));
 	}
