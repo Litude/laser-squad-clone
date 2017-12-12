@@ -63,6 +63,7 @@ void ControlsScreen::drawUI(sf::RenderWindow &App)
 	App.clear();
 	App.draw(backgroundSprite);
 	App.draw(logoSprite);
+	App.draw(rec);
 	for (auto button : buttons) {
 		App.draw(button);
 	}
@@ -75,10 +76,14 @@ void ControlsScreen::updateLayout(sf::RenderWindow & App)
 	backgroundSprite.setScale(
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
-	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, App.getView().getSize().y * 0.25f - logoSprite.getGlobalBounds().height * 1.f });
+	rec.setScale(
+		App.getView().getSize().x / rec.getLocalBounds().width / 1.5,
+		App.getView().getSize().y / rec.getLocalBounds().height / 2);
+	rec.setPosition({ App.getView().getSize().x * 0.5f - rec.getGlobalBounds().width * 0.5f, App.getView().getSize().y * 0.5f - rec.getGlobalBounds().height * 0.5f });
+	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, rec.getPosition().y - rec.getLocalBounds().height / 2 });
 	unsigned int i = 4;
 	for (auto &button : buttons) {
-		button.setPosition({ App.getView().getSize().x * 0.5f,  App.getView().getSize().y * 0.9f});
+		button.setPosition({ App.getView().getSize().x * 0.5f,  rec.getPosition().y + rec.getGlobalBounds().height + button.getGlobalBounds().height / 2});
 		i++;
 	}
 }
@@ -115,6 +120,9 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
 	rs.setSize(sf::Vector2f(170, 40));
+
+	rec.setFillColor(sf::Color(0, 0, 0, 200));
+	rec.setSize(sf::Vector2f(500, 300));
 
   Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
 	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });

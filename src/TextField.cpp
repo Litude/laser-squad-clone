@@ -137,6 +137,11 @@ void TextField::update(sf::Event e, sf::RenderWindow& window)
     }else if(e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Right && t_index < t_str.size()){ // Right arrow
       ++t_index;
     }
+    if(t_text.getString().isEmpty()) {
+      setStatus(false);
+    }else{
+      setStatus(true);
+    }
     setCursor(t_index);
   }
 }
