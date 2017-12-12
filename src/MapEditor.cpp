@@ -51,9 +51,8 @@ MapEditor::MapEditor(sf::RenderWindow &App, std::string mapName)
 ScreenResult MapEditor::Run(sf::RenderWindow & App)
 {
     sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
-    
-    AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
-    
+	unsigned int menuSize = App.getSize().x / 4;
+	unsigned int menuStartX = App.getSize().x - menuSize;
     while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
         sf::Event event;
         while (App.pollEvent(event)) {
@@ -63,7 +62,7 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
             }
 			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
 				auto coord = getClickedTilePosition(App, sf::Vector2i(event.mouseButton.x, event.mouseButton.y), gameView);
-				if (coord.x >= 0 && coord.x < game->getGrid().getWidth() && coord.y >= 0 && coord.y < game->getGrid().getHeight()) {
+				if (event.mouseButton.x < menuStartX && coord.x >= 0 && coord.x < game->getGrid().getWidth() && coord.y >= 0 && coord.y < game->getGrid().getHeight()) {
 					selectToolCoord = coord;
 				}
 			}
