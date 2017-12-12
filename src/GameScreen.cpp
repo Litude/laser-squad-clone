@@ -191,6 +191,22 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", "img/tileset_items.png", sf::Vector2u(TILESIZE, TILESIZE))) {
 		std::cout << "Could not load tilemap\n";
 	}
+
+	playerViews.resize(2);
+
+	for (unsigned int i = 0; i < 2; ++i) {
+		playerViews[i].viewCenter = gameView.getCenter(); //Fall-back in case we can't find any characters for the player
+		playerViews[i].zoom = 1.0f;
+
+		//Search for the first character owned by the player and center view on it
+		for (auto it = game->getCharacters().begin(); it != game->getCharacters().end(); ++it) {
+			if (it->getTeam() != i + 1) continue;
+			playerViews[i].viewCenter = sf::Vector2f(it->getRenderPosition());
+			break;
+		}
+
+	gameView.setCenter(playerViews[0].viewCenter);
+	}
 }
 
 ScreenResult GameScreen::Run(sf::RenderWindow & App)
@@ -509,17 +525,7 @@ void GameScreen::updateLayout(sf::RenderWindow & App)
 	/** Game View */
 
 	gameView.setSize(static_cast<float>(App.getSize().x - menuSize), static_cast<float>(App.getSize().y));
-	gameView.setCenter(static_cast<float>(App.getSize().x - menuSize / 2), static_cast<float>(App.getSize().y / 2));
 	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - menuSize) / static_cast<float>(App.getSize().x), 1));
-
-	// Center the camera
-	if (game->getSelectedCharacter() != game->getCharacters().end()) {
-		gameView.setCenter(sf::Vector2f(static_cast<float>(game->getSelectedCharacter()->getRenderPosition().x), static_cast<float>(game->getSelectedCharacter()->getRenderPosition().y)));
-	} else {
-		float zoomFactor = static_cast<float>(game->getGrid().getHeight() * TILESIZE) / gameView.getSize().y;
-		zoomViewAt(sf::Vector2i(static_cast<int>(gameView.getCenter().x), static_cast<int>(gameView.getCenter().y)), App, gameView, zoomFactor);
-		gameView.setCenter(sf::Vector2f(static_cast<float>(game->getGrid().getWidth() / 2 * TILESIZE), static_cast<float>(game->getGrid().getHeight() / 2 * TILESIZE)));
-	}
 	
 	/** UI View */
 
@@ -544,12 +550,20 @@ void GameScreen::endTurn(sf::RenderWindow &App) {
 	mouseMode = MouseMode::select;
 	rayLine.setPositionPoint1(sf::Vector2f(0, 0));
 	rayLine.setPositionPoint2(sf::Vector2f(0, 0));
+
+	// Store view information for the current player
+	playerViews.at(game->getCurrentPlayer() - 1).viewCenter = gameView.getCenter();
+	playerViews.at(game->getCurrentPlayer() - 1).zoom = gameView.getSize().y / App.getSize().y;
+
 	game->endTurn();
 	EndTurnScreen endTurnScr;
 	endTurnScr.setTurn(game->getCurrentPlayer());
 	m_screenResult = endTurnScr.Run(App);
-	// Reset view for the next player
-	updateLayout(App);
+
+	// Retrieve view for the next player
+	gameView.setCenter(playerViews[game->getCurrentPlayer() - 1].viewCenter);
+	gameView.setSize(static_cast<float>(App.getSize().x - (App.getSize().x / 4)) * playerViews[game->getCurrentPlayer() - 1].zoom, static_cast<float>(App.getSize().y * playerViews[game->getCurrentPlayer() - 1].zoom));
+
 }
 
 void GameScreen::pickupItem() {
