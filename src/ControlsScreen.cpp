@@ -44,7 +44,7 @@ ScreenResult ControlsScreen::Run(sf::RenderWindow & App)
 		}
 
     selectedButtonItem->update(Event, App);
-    selectedButtonItem->setState(state::hovered);
+    selectedButtonItem->setState(Button::state::hovered);
 
 
 		drawUI(App);

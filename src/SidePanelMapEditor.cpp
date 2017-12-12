@@ -131,19 +131,19 @@ void SidePanelMapEditor::update(sf::Event& event, sf::RenderWindow& App)
 	buttonSaveMap.update(event, App);
 	mapNameField.update(event, App);
 	for (auto it = buttons_grounds.begin(); it != buttons_grounds.end(); ++it) {
-		it->setState(state::normal);
+		it->setState(Button::state::normal);
 		it->update(event, App);
 	}
 	for (auto it = buttons_blocks.begin(); it != buttons_blocks.end(); ++it) {
-		it->setState(state::normal);
+		it->setState(Button::state::normal);
 		it->update(event, App);
 	}
 	for (auto it = buttons_items.begin(); it != buttons_items.end(); ++it) {
-		it->setState(state::normal);
+		it->setState(Button::state::normal);
 		it->update(event, App);
 	}
 	for (auto it = buttons_characters.begin(); it != buttons_characters.end(); ++it) {
-		it->setState(state::normal);
+		it->setState(Button::state::normal);
 		it->update(event, App);
 	}
 	if (event.type == sf::Event::Resized) {

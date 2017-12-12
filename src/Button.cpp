@@ -79,7 +79,7 @@ void Button::setRectangleShape(sf::RectangleShape Rshape)
 	setPosition(getPos());
 };
 
-const sf::FloatRect  Button::getGlobalBounds()
+const sf::FloatRect Button::getGlobalBounds() const
 {
 	switch (b_type) {
 	case text:

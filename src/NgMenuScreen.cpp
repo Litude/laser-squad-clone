@@ -48,15 +48,15 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 			}
 		}
 		for (auto it = buttons.begin(); it != buttons.end(); ++it) {
-			it->setState(state::normal);
+			it->setState(Button::state::normal);
 			it->update(Event, App);
-			if (it->getState() == state::hovered){
+			if (it->getState() == Button::state::hovered){
 				selectedButtonItem = it;
 			}
 		}
 
-		if (selectedButtonItem->getState() != state::clicked) {
-			selectedButtonItem->setState(state::hovered);
+		if (selectedButtonItem->getState() != Button::state::clicked) {
+			selectedButtonItem->setState(Button::state::hovered);
 		}
 		drawUI(App);
 	}

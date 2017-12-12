@@ -6,18 +6,6 @@
 #include <functional>
 #include "Screen.hpp"
 
-enum state {
-   normal = 0,
-   clicked = 1,
-   hovered = 2,
- };
-
- enum button_type {
-   text = 0,
-   sprite = 1,
-   rectangle = 2
- };
-
 class Button : public sf::Drawable
 {
 public:
@@ -27,21 +15,33 @@ public:
   Button(std::string str,  sf::Font& font, sf::Uint32 style, int size, sf::Vector2f position, sf::RectangleShape Rshape);
   ~Button();
 
+  enum state {
+	  normal = 0,
+	  clicked = 1,
+	  hovered = 2,
+  };
+
+  enum button_type {
+	  text = 0,
+	  sprite = 1,
+	  rectangle = 2
+  };
+
   void setText(std::string s);
   void setFont(sf::Font& f) {b_font = f;};
   void setStyle(sf::Uint32 s) {b_style = s;}
   void setSize(int size) {b_text.setCharacterSize(size);};
   void setColor(sf::Color c) {b_color = c;};
-  void setHovColor(sf::Color hovC) {b_hoveredColor = hovC;}; // Hovered
+  void setHovColor(sf::Color hovC) {b_hoveredColor = hovC;};
   void setPosition(sf::Vector2f pos);
   void setState(sf::Uint32 st);
   void setSprite(sf::Sprite s) {b_sprite = s;};
   void setRectangleShape(sf::RectangleShape Rshape);
 
-  sf::Text getText() {return b_text;}
-  sf::Vector2f getPos() {return b_pos;}
-  sf::Uint32 getState() {return b_state;}
-  const sf::FloatRect getGlobalBounds();
+  const sf::Text& getText() const {return b_text;}
+  const sf::Vector2f& getPos() const {return b_pos;}
+  const sf::Uint32& getState() const {return b_state;}
+  const sf::FloatRect getGlobalBounds() const;
   void update(sf::Event& e, sf::RenderWindow& window);
   void setCallback(std::function<void()> callback);
   void click();
@@ -62,6 +62,5 @@ private:
   std::function<void()> b_callback;
   sf::Sprite b_sprite;
   sf::RectangleShape b_Rshape;
-
 };
 #endif
