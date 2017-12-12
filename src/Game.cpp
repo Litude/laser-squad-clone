@@ -141,9 +141,11 @@ void Game::characterUseItem(gc_iterator it) {
 
 void Game::characterDropAllItems(GameCharacter& gc) {
 	//Called when a character is killed to drop its inventory contents
-	for (auto &item : gc.getInventory()) {
-		if (item->getType() == Type_None) continue;
-		getGrid()(gc.getPosition()).addItem(item);
+	for (auto it = gc.getInventory().begin(); it != gc.getInventory().end(); ++it) {
+		if ((*it)->getType() == Type_None) continue;
+		getGrid()(gc.getPosition()).addItem(*it);
+		*it = std::make_shared<Item>(Item()); //remove item from inventory after dropping
+
 	}
 }
 
