@@ -5,92 +5,25 @@
 
 #define N(T) std::make_shared<T>()
 
-GameScreen::GameScreen(sf::RenderWindow &App)
+GameScreen::GameScreen(sf::RenderWindow &App, std::string mapName)
 {
 	m_screenResult = ScreenResult::GameScene;
 
-	//Game logic initialization
-	/*
-	game = Game();
-
-	game->initializeGrid(30, 30);
-	game->getGrid()(12, 12).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-	game->getGrid()(12, 13).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-	game->getGrid()(12, 14).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-
-	game->getGrid()(5, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-	game->getGrid()(6, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-	game->getGrid()(7, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-    game->getGrid()(8, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-    game->getGrid()(9, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-
-	game->getGrid()(7, 4).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-	game->getGrid()(7, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-	game->getGrid()(6, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-
-	game->getGrid()(6, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
-	game->getGrid()(5, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
-
-	game->getGrid()(7, 2).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-
-	game->getGrid()(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
-	game->getGrid()(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
-
-	game->getGrid()(3, 6).addItem(N(Ammo9mmBullets));
-	game->getGrid()(4, 6).addItem(N(Ammo9mmBullets));
-	game->getGrid()(4, 7).addItem(N(AmmoShotgunShells));
-	game->getGrid()(4, 7).addItem(N(AmmoShotgunShells));
-
-	game->getGrid()(7, 4).addItem(N(HealthPackSmall));
-	game->getGrid()(2, 2).addItem(N(Uzi));
-	game->getGrid()(7, 6).addItem(N(Pistol));
-	game->getGrid()(9, 6).addItem(N(Shotgun));
-	game->getGrid()(3, 2).addItem(N(Rifle));
-	game->getGrid()(15, 6).addItem(N(HealthPackLarge));
-	game->getGrid()(15, 6).addItem(N(HealthPackLarge));
-
-	//Add 9 pcs to test full inventory
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-
-	// Test put walls on the edges of the map
-	for (unsigned int i = 0; i < game->getGrid().getWidth(); ++i)
-	{
-		for (unsigned int j = 0; j < game->getGrid().getHeight(); ++j)
-		{
-			if (i == 0 || j == 0 || i == game->getGrid().getWidth() - 1 || j == game->getGrid().getHeight() - 1) {
-				game->getGrid()(i, j).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-			}
-		}
+	try {
+		//Game logic initialization
+		if (mapName.empty()) mapName = "test_level";
+		game = jreader::loadJSON(mapName);
+		game->setSelectedCharacter(game->getCharacters().end());
+	}
+	catch (JSONLoadException) {
+		m_screenResult = ScreenResult::NewGameScene;
+		return;
+	}
+	catch (JSONWriteException) {
+		m_screenResult = ScreenResult::NewGameScene;
+		return;
 	}
 
-	// Test updating tile after tilemap has already been created
-	game->getGrid()(12, 16).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
-
-	game->addCharacter(sf::Vector2u(1, 1), 1);
-	game->addCharacter(sf::Vector2u(4, 4), 1);
-	game->addCharacter(sf::Vector2u(8, 8), 2);
-	game->addCharacter(sf::Vector2u(10, 10), 2);
-
-	game->setSelectedCharacter(game->getCharacters().end());
-
-	game->getCharacters()[0].addItem(N(DoubleBarrel));
-	
-	jreader::writeJSON(game, "test_level");
-	*/
-	game = jreader::loadJSON("test_level");
-	
-	//Need to call this magic function after loading, otherwise the program segfaults.
-	//Don't ask me.
-	game->setSelectedCharacter(game->getCharacters().end());
-		
 	//Interface drawing initialization
 	font = std::make_shared<sf::Font>(sf::Font());
 	if (!font->loadFromFile("font/Pixellari.ttf")) {

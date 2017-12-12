@@ -14,6 +14,7 @@ public:
 	NgMenuScreen(void);
 	virtual ScreenResult Run(sf::RenderWindow &App);
 	void openScreen(ScreenResult res);
+	std::string getMapName();
 private:
 	ScreenResult m_screenResult;
 private:
