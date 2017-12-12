@@ -61,23 +61,6 @@ GameScreen::GameScreen(sf::RenderWindow &App, std::string mapName)
 		std::cout << "Could not load 'img/character2_sheet.png'\n";
 	}
 
-	// Set up animations
-	Animation animation_walk_left(9, 0, 8, 62000);
-	Animation animation_walk_right(11, 0, 8, 62000);
-	Animation animation_walk_down(10, 0, 8, 62000);
-	Animation animation_walk_up(8, 0, 8, 62000);
-	Animation animation_die(20, 0, 5, 125000, false);
-	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
-	animManager.addAnim(animation_walk_left);
-	animManager.addAnim(animation_walk_right);
-	animManager.addAnim(animation_walk_down);
-	animManager.addAnim(animation_walk_up);
-	animManager.addAnim(animation_die);
-	animManager.changeAnim(animations::walk_down); // Initial animation
-	for (auto &character : game->getCharacters()) {
-		character.setAnimationManager(animManager);
-	}
-
 	//Ray tracing line for shooting
 	rayLine.setColorPoint1(sf::Color(255, 0, 0, 155));
 	rayLine.setColorPoint2(sf::Color(0, 0, 255, 155));

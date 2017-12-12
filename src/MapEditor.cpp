@@ -113,17 +113,6 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
 
 void MapEditor::handleKeyPress(sf::Event& event, sf::RenderWindow& App)
 {
-	Animation animation_walk_left(9, 0, 8, 62000);
-	Animation animation_walk_right(11, 0, 8, 62000);
-	Animation animation_walk_down(10, 0, 8, 62000);
-	Animation animation_walk_up(8, 0, 8, 62000);
-	Animation animation_die(20, 0, 5, 125000, false);
-	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
-	animManager.addAnim(animation_walk_left);
-	animManager.addAnim(animation_walk_right);
-	animManager.addAnim(animation_walk_down);
-	animManager.addAnim(animation_walk_up);
-	animManager.addAnim(animation_die);
 	switch (event.key.code) {
 	case sf::Keyboard::Left:
 		if (selectToolCoord.x > 0) {
@@ -203,21 +192,13 @@ void MapEditor::handleKeyPress(sf::Event& event, sf::RenderWindow& App)
 		if (!game->addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 1)) {
 			std::cout << "Error" << std::endl;
 		};
-		game->setSelectedCharacter(game->getCharacters().end());
-		animManager.changeAnim(animations::walk_down);
-		for (auto &character : game->getCharacters()) {
-			character.setAnimationManager(animManager);
-		}
+		game->setSelectedCharacter(game->getCharacters().end());		
 		break;
 	case sf::Keyboard::J:
 		if (!game->addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 2)) {
 			std::cout << "Error" << std::endl;
 		};
 		game->setSelectedCharacter(game->getCharacters().end());
-		animManager.changeAnim(animations::walk_down);
-		for (auto &character : game->getCharacters()) {
-			character.setAnimationManager(animManager);
-		}
 		break;
 
 
@@ -358,23 +339,6 @@ bool MapEditor::initComponents(sf::RenderWindow & App) {
 		std::cout << "Could not load 'img/character2_sheet.png'\n";
 	}
 
-	// Set up animations
-	Animation animation_walk_left(9, 0, 8, 62000);
-	Animation animation_walk_right(11, 0, 8, 62000);
-	Animation animation_walk_down(10, 0, 8, 62000);
-	Animation animation_walk_up(8, 0, 8, 62000);
-	Animation animation_die(20, 0, 5, 125000, false);
-	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
-	animManager.addAnim(animation_walk_left);
-	animManager.addAnim(animation_walk_right);
-	animManager.addAnim(animation_walk_down);
-	animManager.addAnim(animation_walk_up);
-	animManager.addAnim(animation_die);
-	animManager.changeAnim(animations::walk_down); // Initial animation
-	for (auto &character : game->getCharacters()) {
-		character.setAnimationManager(animManager);
-	}
-
 	selectToolCoord = sf::Vector2u(0, 0);
 
 	sidePanel = SidePanelMapEditor(App, *this);
@@ -432,16 +396,9 @@ void MapEditor::addCharacter(unsigned int team) {
 			return;
 		}
 	}
-	Animation animation_walk_down(10, 0, 8, 62000);
-	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
-	animManager.addAnim(animation_walk_down);
-	animManager.changeAnim(animations::walk_down);
 	if (!game->addCharacter(selectToolCoord, team)) {
 		std::cout << "Error" << std::endl;
 	};
-	for (auto &character : game->getCharacters()) {
-		character.setAnimationManager(animManager);
-	}
 	game->setSelectedCharacter(game->getCharacters().end());
 }
 
