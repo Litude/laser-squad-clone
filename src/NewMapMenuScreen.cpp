@@ -80,7 +80,7 @@ void NewMapMenuScreen::updateLayout(sf::RenderWindow & App)
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
 	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, App.getView().getSize().y * 0.5f - logoSprite.getGlobalBounds().height * 1.f });
-	
+
 	float componentOffsetY = logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f;
 	float menuCenterX = App.getView().getSize().x / 2;
 	float margin = 10.f;
@@ -121,12 +121,12 @@ bool NewMapMenuScreen::initComponents(sf::RenderWindow & App)
 	rs.setFillColor(sf::Color::White);
 	rs.setSize(sf::Vector2f(240, 40));
 
-	mapSizeXField = TextField(25, rs, *font);
+	mapSizeXField = TextField(25, rs, *font, tf_type::number);
 	mapSizeXField.setPosition(sf::Vector2f(100.f, 450.f));
 	mapSizeXField.setSize(170, 40);
 	mapSizeXField.setDefaultStr("width...");
 
-	mapSizeYField = TextField(25, rs, *font);
+	mapSizeYField = TextField(25, rs, *font, tf_type::number);
 	mapSizeYField.setPosition(sf::Vector2f(300.f, 450.f));
 	mapSizeYField.setSize(170, 40);
 	mapSizeYField.setDefaultStr("height...");

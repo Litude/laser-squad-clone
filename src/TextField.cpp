@@ -4,7 +4,7 @@ TextField::TextField()
 {
 }
 
-TextField::TextField(int size, sf::RectangleShape Rshape, sf::Font& font)
+TextField::TextField(int size, sf::RectangleShape Rshape, sf::Font& font, tf_type t)
 {
   t_text.setFillColor(sf::Color::Black);
   t_text.setCharacterSize(size);
@@ -27,6 +27,8 @@ TextField::TextField(int size, sf::RectangleShape Rshape, sf::Font& font)
 
   t_Rshape.setFillColor(sf::Color::White);
   t_Rshape.setOutlineColor(sf::Color::Black);
+
+  t_type = t;
 }
 
 TextField::~TextField()
@@ -125,6 +127,11 @@ void TextField::update(sf::Event e, sf::RenderWindow& window)
         }
         setFocus(false);
       }else{
+        if(getType() == number) {
+          if(!std::iswdigit(e.text.unicode)) {
+            return;
+          }
+        }
         if(t_str.length() < t_strMaxLength){  // Writing text
           t_inputChar = static_cast<char>(e.text.unicode);
           t_str.insert(t_index, 1, t_inputChar);
