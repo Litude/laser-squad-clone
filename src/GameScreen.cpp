@@ -258,19 +258,19 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 
 
 	case sf::Keyboard::A:
-		if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);
+		gameView.move(-TILESIZE, 0);
 		centerCharacter = false;
 		break;
 	case sf::Keyboard::D:
-		if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game->getGrid().getWidth() * TILESIZE) gameView.move(TILESIZE, 0);
+		gameView.move(TILESIZE, 0);
 		centerCharacter = false;
 		break;
 	case sf::Keyboard::S:
-		if (gameView.getCenter().y + App.getSize().y / 2 < game->getGrid().getHeight() * TILESIZE) gameView.move(0, TILESIZE);
+		gameView.move(0, TILESIZE);
 		centerCharacter = false;
 		break;
 	case sf::Keyboard::W:
-		if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
+		gameView.move(0, -TILESIZE);
 		centerCharacter = false;
 		break;
 	case sf::Keyboard::Numpad0:
