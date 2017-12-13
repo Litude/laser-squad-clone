@@ -328,7 +328,7 @@ void SidePanelMapEditor::updateLayout(sf::RenderWindow & App)
 	for (unsigned int i = 0; i < buttons_tilesets.size(); i++) {
 		auto bounds = buttons_tilesets[i].getGlobalBounds();
 		buttons_tilesets[i].setPosition(sf::Vector2f(static_cast<float>(App.getSize().x - menuSize + margin + bounds.width / 2) + ((i % ITEMS_PER_ROW) * tilesetsButtonsOffset + bounds.height / 2), static_cast<float>(tilesetsButtonsGroupY + (i / ITEMS_PER_ROW) * (tilesetsButtonsOffset))));
-		if (i == activeElements) selectedTileset.setPosition(sf::Vector2f(static_cast<float>(App.getSize().x - menuSize + margin + bounds.width / 2) + ((i % ITEMS_PER_ROW) * tilesetsButtonsOffset + bounds.height / 2) - TILESIZE / 2.0f, static_cast<float>(tilesetsButtonsGroupY + (i / ITEMS_PER_ROW) * (tilesetsButtonsOffset) -TILESIZE / 2.0f)));
+		if (static_cast<int>(i) == activeElements) selectedTileset.setPosition(sf::Vector2f(static_cast<float>(App.getSize().x - menuSize + margin + bounds.width / 2) + ((i % ITEMS_PER_ROW) * tilesetsButtonsOffset + bounds.height / 2) - TILESIZE / 2.0f, static_cast<float>(tilesetsButtonsGroupY + (i / ITEMS_PER_ROW) * (tilesetsButtonsOffset) -TILESIZE / 2.0f)));
 	}
 
 	// Ground buttons

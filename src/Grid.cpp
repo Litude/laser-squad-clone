@@ -102,7 +102,7 @@ bool Grid::within_bounds(sf::Vector2u coords) {
 }
 
 bool Grid::within_bounds(sf::Vector2i coords) {
-	return (coords.x < getWidth() && coords.y < getHeight() && coords.x >= 0 && coords.y >= 0);
+	return (coords.x < static_cast<int>(getWidth()) && coords.y < static_cast<int>(getHeight()) && coords.x >= 0 && coords.y >= 0);
 }
 
 std::ostream& operator<<(std::ostream& out, const Grid g) {

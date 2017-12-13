@@ -134,7 +134,7 @@ void TextField::update(sf::Event e, sf::RenderWindow& window)
         setFocus(false);
       }else{
         if(getType() == number) {
-          if(!std::iswdigit(e.text.unicode)) {
+          if(!std::iswdigit(static_cast<unsigned short>(e.text.unicode))) {
             return;
           }
         }
