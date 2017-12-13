@@ -37,6 +37,14 @@ public:
 				rect.left = 128;
 				proj.setTextureRect(rect);
 				break;
+			case Ammo_Knife:
+				rect.left = 160;
+				proj.setTextureRect(rect);
+				break;
+			case Ammo_Sword:
+				rect.left = 192;
+				proj.setTextureRect(rect);
+				break;
 			default:
 				std::cout << "Unknown weapontype, default texture chosen." << std::endl;
 				proj.setTextureRect(rect);
