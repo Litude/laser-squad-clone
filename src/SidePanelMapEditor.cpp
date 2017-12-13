@@ -81,6 +81,14 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	buttons_blocks.push_back(button);
 	button = createBlockTileButton(TileBlock::wall, editor);
 	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::trophy, editor);
+	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::small_tree, editor);
+	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::cherry_tree, editor);
+	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::rock, editor);
+	buttons_blocks.push_back(button);
 
 	// Item buttons
 	button = createItemButton(Item(), editor);
