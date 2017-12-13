@@ -81,7 +81,6 @@ void TextField::setDefaultStr(std:: string defS)
 void TextField::update(sf::Event e, sf::RenderWindow& window)
 {
   sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-
 	sf::Vector2f objPos;
 	sf::FloatRect objGlobalBounds;
   objPos = t_Rshape.getPosition();
@@ -106,6 +105,11 @@ void TextField::update(sf::Event e, sf::RenderWindow& window)
         break;
       }
     }
+
+  if(!t_text.getString().isEmpty()) {
+    setStatus(true);
+    setCursor(t_text.getString().getSize());
+  }
 
   if(getFocus()) {
     if(e.type == sf::Event::TextEntered) {
