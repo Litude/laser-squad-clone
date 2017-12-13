@@ -57,6 +57,11 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 		std::cout << "Could not load 'img/tileset_items.png'\n";
 	}
 
+	texRemoveIcon = std::make_shared<sf::Texture>(sf::Texture());
+	if (!texRemoveIcon->loadFromFile("img/mapeditor_remove_icon.png")) {
+		std::cout << "Could not load 'img/mapeditor_remove_icon.png'\n";
+	}
+
 	mapNameField = TextField(25, rs, *font);
 	mapNameField.setPosition(sf::Vector2f(300.f, 450.f));
 	mapNameField.setSize(170, 40);
@@ -489,10 +494,9 @@ Button SidePanelMapEditor::createCharacterButton(unsigned int team, MapEditor &e
 }
 
 Button SidePanelMapEditor::createRemoveCharacterButton(MapEditor &editor) {
-	sf::RectangleShape rs;
-	rs.setFillColor(sf::Color::Red);
-	rs.setSize(sf::Vector2f(TILESIZE, TILESIZE));
-	Button button = Button("Exit to Main Menu", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	sf::Sprite buttonSprite;
+	buttonSprite.setTexture(*texRemoveIcon);
+	Button button = Button("", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), buttonSprite);
 	button.setCallback([&] { editor.removeCharacter(); });
 	return button;
 }

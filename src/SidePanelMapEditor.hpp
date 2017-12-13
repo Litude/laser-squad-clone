@@ -41,6 +41,7 @@ private:
 	std::shared_ptr<sf::Texture> texItems;
 	std::shared_ptr<sf::Texture> texPlayer1;
 	std::shared_ptr<sf::Texture> texPlayer2;
+	std::shared_ptr<sf::Texture> texRemoveIcon;
 	sf::View interfaceView;
 
 	void saveMap(MapEditor &editor);
