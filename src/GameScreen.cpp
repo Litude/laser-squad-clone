@@ -2,6 +2,7 @@
 #include "constants.hpp"
 #include "Health.hpp"
 #include "Ammo.hpp"
+#include <SFML/Config.hpp>
 
 #define N(T) std::make_shared<T>()
 
@@ -100,7 +101,11 @@ GameScreen::GameScreen(sf::RenderWindow &App, std::string mapName)
 	//Status message stuff
 	screenStatusMessage.setFont(*font);
 	screenStatusMessage.setCharacterSize(20);
+
+#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
 	screenStatusMessage.setOutlineThickness(2);
+	screenStatusMessage.setOutlineColor(sf::Color::Black);
+#endif
 
 	// Create graphical tilemap presentation from the Map
 	tileMap = std::make_shared<TileMap>(TileMap(game->getGrid()));
@@ -416,13 +421,13 @@ void GameScreen::drawGameUI(sf::RenderWindow &App) {
 
 	switch (game->getStatusMessage().getSeverity()) {
 	case SEVERITY_INFORMATION:
-		screenStatusMessage.setFillColor(sf::Color::White);
+		screenStatusMessage.setTextColor(sf::Color::White);
 		break;
 	case SEVERITY_CRITICAL:
-		screenStatusMessage.setFillColor(sf::Color::Red);
+		screenStatusMessage.setTextColor(sf::Color::Red);
 		break;
 	default:
-		screenStatusMessage.setFillColor(sf::Color::White);
+		screenStatusMessage.setTextColor(sf::Color::White);
 	}
 
 	App.draw(screenStatusMessage);

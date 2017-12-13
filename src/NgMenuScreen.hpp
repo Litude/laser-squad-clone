@@ -30,7 +30,6 @@ private:
 	std::shared_ptr<sf::Font> font;
 	std::vector<Button> buttons;
 	TextField tField;
-	bool status;
 };
 
 #endif

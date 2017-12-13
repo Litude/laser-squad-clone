@@ -1,4 +1,5 @@
 #include "TextField.hpp"
+#include "constants.hpp"
 
 TextField::TextField()
 {
@@ -6,11 +7,11 @@ TextField::TextField()
 
 TextField::TextField(int size, sf::RectangleShape Rshape, sf::Font& font, tf_type t)
 {
-  t_text.setFillColor(sf::Color::Black);
+  t_text.setTextColor(sf::Color::Black);
   t_text.setCharacterSize(size);
   t_text.setFont(font);
 
-  t_defText.setFillColor(sf::Color::Black);
+  t_defText.setTextColor(sf::Color::Black);
   t_defText.setCharacterSize(size);
   t_defText.setFont(font);
 
@@ -153,7 +154,7 @@ void TextField::update(sf::Event e, sf::RenderWindow& window)
   }
 }
 
-const sf::FloatRect  TextField::getGlobalBounds()
+const sf::FloatRect TextField::getGlobalBounds() const
 {
   return t_Rshape.getGlobalBounds();
 }

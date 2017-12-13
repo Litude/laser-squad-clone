@@ -51,10 +51,10 @@ MapEditor::MapEditor(sf::RenderWindow &App, std::string mapName)
 ScreenResult MapEditor::Run(sf::RenderWindow & App)
 {
     sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
-    int menuSize = App.getSize().x / 4;
-	int menuStartX = App.getSize().x - menuSize;
     while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
         sf::Event event;
+		int menuSize = App.getSize().x / 4;
+		int menuStartX = App.getSize().x - menuSize;
         while (App.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 App.close();
@@ -145,68 +145,6 @@ void MapEditor::handleKeyPress(sf::Event& event, sf::RenderWindow& App)
 		break;
 	case sf::Keyboard::W:
 		if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
-		break;
-
-
-
-	case sf::Keyboard::Z:
-		game->getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackLarge>());
-		tileMap->updateTile(selectToolCoord);
-		break;
-	case sf::Keyboard::X:
-		game->getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<HealthPackSmall>());
-		tileMap->updateTile(selectToolCoord);
-		break;
-	case sf::Keyboard::C:
-		game->getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Pistol>());
-		tileMap->updateTile(selectToolCoord);
-		break;
-	case sf::Keyboard::V:
-		game->getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Shotgun>());
-		tileMap->updateTile(selectToolCoord);
-		break;
-	case sf::Keyboard::M:
-		game->getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<Ammo9mmBullets>());
-		tileMap->updateTile(selectToolCoord);
-		break;
-	case sf::Keyboard::N:
-		game->getGrid()(selectToolCoord.x, selectToolCoord.y).addItem(std::make_shared<AmmoShotgunShells>());
-		tileMap->updateTile(selectToolCoord);
-		break;
-
-
-	case sf::Keyboard::T:
-		game->getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, TileBlock::tree);;
-		tileMap->updateTile(selectToolCoord);
-		break;
-	case sf::Keyboard::Y:
-		game->getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, wall);
-		tileMap->updateTile(selectToolCoord);
-		break;
-	case sf::Keyboard::B:
-		game->getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, bush);
-		tileMap->updateTile(selectToolCoord);
-		break;
-	case sf::Keyboard::H:
-		if (!game->addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 1)) {
-			std::cout << "Error" << std::endl;
-		};
-		game->setSelectedCharacter(game->getCharacters().end());		
-		break;
-	case sf::Keyboard::J:
-		if (!game->addCharacter(sf::Vector2u(selectToolCoord.x, selectToolCoord.y), 2)) {
-			std::cout << "Error" << std::endl;
-		};
-		game->setSelectedCharacter(game->getCharacters().end());
-		break;
-
-
-	case sf::Keyboard::R:
-		game->getGrid()(selectToolCoord.x, selectToolCoord.y).setTile(TileGround::dirt, air);
-		game->getGrid()(selectToolCoord.x, selectToolCoord.y).popItem();
-		game->removeCharacter(selectToolCoord);
-		tileMap->updateTile(selectToolCoord);
-		game->setSelectedCharacter(game->getCharacters().end());
 		break;
 	default:
 		break;
