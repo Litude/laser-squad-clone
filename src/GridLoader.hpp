@@ -21,12 +21,12 @@
 namespace jreader {
 
 	typedef Item* (*item_create)();
-	static std::map<std::string, TileBlock> block = { {"wall", wall}, {"tree", tree}, {"bush", bush}, {"air", air}, {"trophy", trophy}, {"small_tree", small_tree}, {"cherry_tree", cherry_tree}, {"rock", rock} };
+	static std::map<std::string, TileBlock> block = { {"wall", wall}, {"tree", tree}, {"bush", bush}, {"air", air}, {"trophy", trophy}, {"small_tree", small_tree}, {"cherry_tree", cherry_tree}, {"rock", rock}, {"barrels", barrels}, {"stove", stove}, {"stone_head", stone_head}, {"toilet", toilet } };
 	static std::map<std::string, TileGround> ground = {{"grass", grass}, {"dirt", dirt}, {"wood", wood}, {"stone", stone}, {"metal", metal}, {"black", black}};
 	
 	// Order must be same as in ground and block enum
 	static std::vector<std::string> ground_str = {"black", "dirt", "grass", "wood", "stone", "metal"};
-	static std::vector<std::string> block_str = {"air", "wall", "tree", "bush", "trophy", "small_tree", "cherry_tree", "rock" };
+	static std::vector<std::string> block_str = {"air", "wall", "tree", "bush", "trophy", "small_tree", "cherry_tree", "rock", "barrels", "stove", "stone_head", "toilet" };
 
 	inline std::shared_ptr<Item> create_item(std::string item_str) {
 		if (item_str == "Small Health Pack") {

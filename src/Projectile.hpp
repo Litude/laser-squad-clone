@@ -40,6 +40,7 @@ public:
 				break;
 			case Ammo_Knife:
 				rect.left = 160;
+				m_spin = 15;
 				proj.setTextureRect(rect);
 				break;
 			case Ammo_Sword:
