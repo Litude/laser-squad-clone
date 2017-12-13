@@ -7,6 +7,7 @@
 #include "Inventory.hpp"
 #include "Weapon.hpp"
 #include "Health.hpp"
+#include "Powerup.hpp"
 #include "AnimationManager.hpp"
 #include "constants.hpp"
 
@@ -40,6 +41,9 @@ enum statuscode {
 	item_max_health,
 	item_unusable,
 	item_none_selected,
+	item_increase_ap,
+	item_increase_hp,
+	item_increase_los,
 	shoot_reload,
 	shoot_no_ammo,
 	shoot_success,

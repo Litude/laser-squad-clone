@@ -199,6 +199,28 @@ statuscode GameCharacter::useSelected()
 			actionPoints -= AP_COST_USE;
 			status = item_healed;
 			break;
+		case Type_Powerup:
+			switch (std::dynamic_pointer_cast<Powerup>(inventory[selectedItemIdx])->getStatType()) {
+			case Powerup_ActionPoints:
+				maxActionPoints += std::dynamic_pointer_cast<Powerup>(inventory[selectedItemIdx])->getIncreaseAmount();
+				actionPoints += std::dynamic_pointer_cast<Powerup>(inventory[selectedItemIdx])->getIncreaseAmount();
+				status = item_increase_ap;
+				break;
+			case Powerup_Health:
+				maxHealth += std::dynamic_pointer_cast<Powerup>(inventory[selectedItemIdx])->getIncreaseAmount();
+				health += std::dynamic_pointer_cast<Powerup>(inventory[selectedItemIdx])->getIncreaseAmount();
+				status = item_increase_hp;
+				break;
+			case Powerup_LineOfSight:
+				lengthofSight += std::dynamic_pointer_cast<Powerup>(inventory[selectedItemIdx])->getIncreaseAmount();
+				status = item_increase_los;
+				break;
+			default:
+				break;
+			actionPoints -= AP_COST_USE;
+			break;
+			}
+
 		default:
 			status = item_unusable;
 			break;
