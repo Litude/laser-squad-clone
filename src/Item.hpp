@@ -27,15 +27,18 @@ enum ItemIcon {
 	Icon_Ammo_12mm,
 	Icon_Ammo_Shells,
 	Icon_Ammo_Rockets,
+	Icon_Weapon_Knife,
+	Icon_Weapon_Sword,
+	Icon_Weapon_Grenade,
 };
 
 //Should only be possible to construct "none"-type items, i.e. empty inventory slots
 class Item {
 public:
 	Item() : m_itemType(Type_None), m_itemIcon(Icon_None), m_stackable(false), m_amount(1) {};
-	virtual ~Item() {};
 	Item(ItemType type, ItemIcon icon, std::string name) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_consumable(false), m_stackable(false), m_amount(1) {};
 	Item(ItemType type, ItemIcon icon, std::string name, bool stackable, bool consumable, unsigned int amount) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_consumable(consumable), m_stackable(stackable), m_amount(amount) {};
+	virtual ~Item() {};
 	ItemType getType() const { return m_itemType; };
 	ItemIcon getIcon() const { return m_itemIcon; };
 	std::string getName() const {return m_itemName; };
