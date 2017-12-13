@@ -147,7 +147,7 @@ void TextField::update(sf::Event e, sf::RenderWindow& window)
   }
 }
 
-const sf::FloatRect  TextField::getGlobalBounds()
+const sf::FloatRect TextField::getGlobalBounds() const
 {
   return t_Rshape.getGlobalBounds();
 }
