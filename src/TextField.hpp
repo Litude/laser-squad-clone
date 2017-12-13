@@ -5,12 +5,18 @@
 #include <stdio.h>
 #include <functional>
 #include <SFML/Graphics.hpp>
+#include <cwctype>
+
+enum tf_type {
+  text,
+  number
+};
 
 class TextField : public sf::Drawable
 {
 public:
   TextField();
-  TextField(int size, sf::RectangleShape Rshape, sf::Font& font);
+  TextField(int size, sf::RectangleShape Rshape, sf::Font& font, tf_type t = text);
   ~TextField();
   void setPosition(sf::Vector2f v);
   void setSize(float w, float h);
@@ -31,10 +37,12 @@ public:
   const bool getFocus() const {return t_isFocused;};
   const bool getStatus() const {return t_textEntered;};
   const sf::FloatRect getGlobalBounds() const;
+  const tf_type getType() const {return t_type;};
 
 private:
     virtual void draw(sf::RenderTarget& target,sf::RenderStates states) const;
 private:
+  tf_type t_type;
   bool t_isFocused;
   bool t_textEntered;
   float t_width;

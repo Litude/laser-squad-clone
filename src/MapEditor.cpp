@@ -62,7 +62,7 @@ ScreenResult MapEditor::Run(sf::RenderWindow & App)
             }
 			if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
 				auto coord = getClickedTilePosition(App);
-				if (event.mouseButton.x < menuStartX && coord.x >= 0 && coord.x < game->getGrid().getWidth() && coord.y >= 0 && coord.y < game->getGrid().getHeight()) {
+				if (event.mouseButton.x < menuStartX && coord.x < game->getGrid().getWidth() && coord.y < game->getGrid().getHeight()) {
 					selectToolCoord = coord;
 				}
 			}
