@@ -217,9 +217,9 @@ statuscode GameCharacter::useSelected()
 				break;
 			default:
 				break;
+			}
 			actionPoints -= AP_COST_USE;
 			break;
-			}
 
 		default:
 			status = item_unusable;

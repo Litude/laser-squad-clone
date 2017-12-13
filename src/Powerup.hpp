@@ -28,7 +28,7 @@ public:
 
 class Sight : public Powerup {
 public:
-	Sight() : Powerup(Powerup_LineOfSight, 2, Icon_Powerup_Sight, "Bionic Sight") {};
+	Sight() : Powerup(Powerup_LineOfSight, 4, Icon_Powerup_Sight, "Bionic Sight") {};
 };
 
 

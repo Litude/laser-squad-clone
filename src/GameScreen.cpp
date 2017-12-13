@@ -426,6 +426,9 @@ void GameScreen::drawGameUI(sf::RenderWindow &App) {
 	case SEVERITY_CRITICAL:
 		screenStatusMessage.setTextColor(sf::Color::Red);
 		break;
+	case SEVERITY_BOOST:
+		screenStatusMessage.setTextColor(sf::Color::Green);
+		break;
 	default:
 		screenStatusMessage.setTextColor(sf::Color::White);
 	}

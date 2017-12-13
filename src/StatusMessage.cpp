@@ -20,6 +20,12 @@ std::string StatusMessage::getMessage() {
 		return "Cannot use that item!";
 	case MSG_ITEM_NONE_SELECTED:
 		return "Select an item first";
+	case MSG_ITEM_INCREASE_AP:
+		return "Maximum action points increased!";
+	case MSG_ITEM_INCREASE_HP:
+		return "Maximum hitpoints increased!";
+	case MSG_ITEM_INCREASE_LOS:
+		return "Line of sight increased!";
 	case MSG_RELOADING:
 		return "Reloading...";
 	case MSG_NOT_ENOUGH_AMMO:
