@@ -3,6 +3,7 @@
 #include "Health.hpp"
 #include "Ammo.hpp"
 #include "MapEditor.hpp"
+#include "Powerup.hpp"
 
 SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 {
@@ -105,6 +106,12 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	button = createItemButton(AmmoShotgunShells(), editor);
 	buttons_items.push_back(button);
 	button = createItemButton(AmmoRockets(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Armor(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Sight(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Boots(), editor);
 	buttons_items.push_back(button);
 
 	// Character buttons
