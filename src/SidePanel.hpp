@@ -46,6 +46,7 @@ private:
 	sf::Text textAPValue;
 	sf::Text textHPLabel;
 	sf::Text textHPValue;
+	sf::Text textEquipped;
 
 	sf::Clock fpsclock;
 	sf::Clock clock;

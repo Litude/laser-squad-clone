@@ -23,6 +23,8 @@ namespace jreader {
 	typedef Item* (*item_create)();
 	static std::map<std::string, TileBlock> block = { {"wall", wall}, {"tree", tree}, {"bush", bush}, {"air", air}, {"trophy", trophy}, {"small_tree", small_tree}, {"cherry_tree", cherry_tree}, {"rock", rock} };
 	static std::map<std::string, TileGround> ground = {{"grass", grass}, {"dirt", dirt}, {"wood", wood}, {"stone", stone}, {"metal", metal}, {"black", black}};
+	
+	// Order must be same as in ground and block enum
 	static std::vector<std::string> ground_str = {"black", "dirt", "grass", "wood", "stone", "metal"};
 	static std::vector<std::string> block_str = {"air", "wall", "tree", "bush", "trophy", "small_tree", "cherry_tree", "rock" };
 
@@ -41,6 +43,12 @@ namespace jreader {
 			return std::make_shared<Rifle>();
 		} else if (item_str == "Double Barrel") {
 			return std::make_shared<DoubleBarrel>();
+		} else if (item_str == "Throwing Knife") {
+			return std::make_shared<Knife>();
+		} else if (item_str == "Sword") {
+			return std::make_shared<Sword>();
+		} else if (item_str == "Rocket Launcher") {
+			return std::make_shared<RocketLauncher>();
 		} else if (item_str == "9mm Bullets") {
 			return std::make_shared<Ammo9mmBullets>();
 		} else if (item_str == "12mm Bullets") {
@@ -55,6 +63,8 @@ namespace jreader {
 			return std::make_shared<Sight>();
 		} else if (item_str == "Boots of Running Urgently") {
 			return std::make_shared<Boots>();
+		} else if (item_str == "Grenade") {
+			return std::make_shared<Grenade>();
 		} else {
 			return nullptr;
 		}

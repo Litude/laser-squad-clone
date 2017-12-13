@@ -28,6 +28,9 @@ enum ItemIcon {
 	Icon_Ammo_Shells,
 	Icon_Ammo_Rockets,
 	Icon_Powerup_Boots,
+	Icon_Weapon_Knife,
+	Icon_Weapon_Sword,
+	Icon_Weapon_Grenade,
 };
 
 //Should only be possible to construct "none"-type items, i.e. empty inventory slots
