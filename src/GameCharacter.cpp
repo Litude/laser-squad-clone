@@ -118,14 +118,19 @@ statuscode GameCharacter::shoot(int &numberOfShots) {
 	if (actionPoints >= getEquipped()->apCost() && getEquipped()->canFire()) {
 		actionPoints -= getEquipped()->apCost();
 		numberOfShots = getEquipped()->fire();
-		if (getEquipped()->getAmount() == 0) {
-			auto removeIndex = selectedWeaponIdx;
-			unequipCharacter();
-			inventory.remove(removeIndex);
-		}
 		return shoot_success;
 	} else {
 		return not_enough_ap;
+	}
+}
+
+void GameCharacter::checkStackableWeaponAmmo() {
+	//Called each time after firing since the amount of stackable weapons decreases when firing
+	//If current amount is zero, the weapon is removed
+	if (getEquipped()->getAmount() == 0) {
+		auto removeIndex = selectedWeaponIdx;
+		unequipCharacter();
+		inventory.remove(removeIndex);
 	}
 }
 

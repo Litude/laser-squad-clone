@@ -70,6 +70,7 @@ public:
 	bool			moveTo(sf::Vector2i target_dir);
 	void			update(int delta_ms);
 	statuscode 		shoot(int &numberOfShots);
+	void			checkStackableWeaponAmmo();
 	void			resetActionPoints() { actionPoints = maxActionPoints; }
 	bool 			sufferDamage(int dmg);
     unsigned int    getLengthofSight() const {return lengthofSight;}

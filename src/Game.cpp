@@ -221,6 +221,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 	}
 
 	std::cout << "Number of shots fired: " << numberOfShots << std::endl;
+	it->checkStackableWeaponAmmo();
 	updateGameState();
 	return endTiles;
 }
