@@ -6,13 +6,13 @@
 
 SidePanel::SidePanel(sf::RenderWindow &App, GameScreen &parent)
 {
-	//Interface drawing initialization
+	// Interface drawing initialization
 	font = std::make_shared<sf::Font>(sf::Font());
 	if (!font->loadFromFile("font/Pixellari.ttf")) {
 		std::cout << "Could not load 'font/Pixellari.ttf'\n";
 	}
 
-	//Interface element attributes that won't change during execution
+	// Interface element attributes that won't change during execution
 	interfaceBkg.setFillColor(sf::Color(0, 0, 0, 200));
 	textFPS.setFont(*font);
 	textFPS.setCharacterSize(12);
@@ -65,7 +65,7 @@ SidePanel::SidePanel(sf::RenderWindow &App, GameScreen &parent)
 	buttonEquipItem = Button("Use", *font, sf::Text::Regular, 16, sf::Vector2f(0.f, 0.f), rs);
 	buttonEquipItem.setCallback([&] { parent.equipItem(); });
 
-	//Game drawing initialization
+	// Game drawing initialization
 	selectedItem = sf::RectangleShape(sf::Vector2f(TILESIZE, TILESIZE));
 	selectedItem.setOutlineColor(sf::Color::Yellow);
 	selectedItem.setOutlineThickness(2.0f);
@@ -107,19 +107,18 @@ void SidePanel::update(sf::Event& event, sf::RenderWindow& App, Game &game)
 	buttonEquipItem.update(event, App);
 	buttonAttackMode.update(event, App);
 			
-	//Handle mouse input
+	// Handle mouse input
 	if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
 		unsigned int menuSize = App.getSize().x / 4;
 		if (event.mouseButton.x >= static_cast<int>(App.getSize().x - menuSize)) {
-			//Clicked on the menubar
+			// Clicked on the menubar
 			if (event.mouseButton.button == 0) {
 				if (game.getSelectedCharacter() != game.getCharacters().end()) {
 					for (unsigned int i = 0; i < MAX_ITEMS; i++) {
 						if (inventoryItems[i].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(App))) && game.getSelectedCharacter()->getInventory()[i]->getType() != Type_None) {
 							game.getSelectedCharacter()->setSelectedItemIndex(i);
 							break;
-						}
-						else {
+						} else {
 							game.getSelectedCharacter()->setSelectedItemIndex(-1);
 						}
 					}
@@ -137,15 +136,13 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 
 	updateUIComponents(App);
 
-	//Interface elements that always need to be updated
+	// Interface elements that always need to be updated
 	textTurnNoValue.setString(std::to_string(game.getTurnNumber()) + '/' + std::to_string(game.getMaxTurns()));
 	textCurTurnValue.setString(std::to_string(game.getCurrentPlayer()));
 
 	(gameScreen.getMouseMode() == MouseMode::shoot) ? buttonAttackMode.setText("Select Mode") : buttonAttackMode.setText("Attack Mode");
 
-	//buttonAttackMode.setText("Select Mode");
-
-	//TODO: Process selected character attributes here and draw them on the interface...
+	// Draw selected character specific details
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
 		auto gc = game.getSelectedCharacter();
 		auto equipped = gc->getEquipped();
@@ -165,11 +162,11 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 	textFPS.setString("FPS: " + std::to_string(fps));
 	lastTime = currentTime;
 
-	//Draw elements
+	// Draw elements
 	App.setView(interfaceView);
-	App.draw(interfaceBkg); //Must always be first since it covers the whole area and will hide anything "under" it
+	App.draw(interfaceBkg);
 
-	// Draw action points
+	// Draw selected character specific details
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
 		App.draw(textAPLabel);
 		App.draw(textAPValue);
@@ -190,8 +187,10 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 				inventoryItemTexts[i].setString(std::to_string(game.getSelectedCharacter()->getInventory()[i]->getAmount()));
 				App.draw(inventoryItemTexts[i]);
 			} else if (game.getSelectedCharacter()->getInventory()[i]->getType() == Type_Weapon){
-				inventoryItemTexts[i].setString(std::to_string(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getLoadedAmmo()) + '-' + std::to_string(game.getSelectedCharacter()->getAmmoAmount(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getAmmoType())));
-				App.draw(inventoryItemTexts[i]);
+				if (std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getRange() > 1) {
+					inventoryItemTexts[i].setString(std::to_string(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getLoadedAmmo()) + '-' + std::to_string(game.getSelectedCharacter()->getAmmoAmount(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getAmmoType())));
+					App.draw(inventoryItemTexts[i]);
+				}
 			}
 			if (game.getSelectedCharacter()->getSelectedItemIndex() == static_cast<int>(i)) {
 				selectedInventoryItemName.setString(game.getSelectedCharacter()->getInventory()[game.getSelectedCharacter()->getSelectedItemIndex()]->getName());

@@ -15,8 +15,6 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 
 	//Interface element attributes that won't change during execution
 	interfaceBkg.setFillColor(sf::Color(0, 0, 0, 200));
-	textFPS.setFont(*font);
-	textFPS.setCharacterSize(12);
 
 	textActiveElement.setFont(*font);
 	textActiveElement.setCharacterSize(16);
@@ -111,6 +109,14 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	buttons_blocks.push_back(button);
 	button = createBlockTileButton(TileBlock::rock, editor);
 	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::barrels, editor);
+	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::stove, editor);
+	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::stone_head, editor);
+	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::toilet, editor);
+	buttons_blocks.push_back(button);
 
 	// Item buttons
 	button = createRemoveItemButton(editor);
@@ -142,6 +148,14 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	button = createItemButton(Sight(), editor);
 	buttons_items.push_back(button);
 	button = createItemButton(Boots(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(RocketLauncher(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Sword(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Knife(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Grenade(), editor);
 	buttons_items.push_back(button);
 
 	// Character buttons
@@ -223,25 +237,20 @@ void SidePanelMapEditor::update(sf::Event& event, sf::RenderWindow& App)
 		}
 		break;
 	}
-	if (event.type == sf::Event::Resized || event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonReleased) {
+	if (event.type == sf::Event::Resized || event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonPressed) {
 		updateLayout(App);
 	}
 
 }
 
 void SidePanelMapEditor::draw(sf::RenderWindow &App) {
+	// Update components that need to be updated every iteration
 	updateUIComponents(App);
-
-	currentTime = fpsclock.getElapsedTime().asMicroseconds() / 1000000.0f;
-	float fps = 1.f / (currentTime - lastTime);
-	textFPS.setString("FPS: " + std::to_string(fps));
-	lastTime = currentTime;
 
 	//Draw elements
 	App.setView(interfaceView);
-	App.draw(interfaceBkg); //Must always be first since it covers the whole area and will hide anything "under" it
+	App.draw(interfaceBkg);
 
-	//App.draw(textFPS);
 	App.draw(textTilesets);
 	App.draw(textActiveElement);
 	App.draw(buttonExit);
@@ -277,8 +286,6 @@ void SidePanelMapEditor::draw(sf::RenderWindow &App) {
 	default:
 		break;
 	}
-
-	//std::cout << activeElements << std::endl;
 }
 
 void SidePanelMapEditor::updateLayout(sf::RenderWindow & App)
@@ -312,7 +319,7 @@ void SidePanelMapEditor::updateLayout(sf::RenderWindow & App)
 	for (unsigned int i = 0; i < buttons_tilesets.size(); i++) {
 		auto bounds = buttons_tilesets[i].getGlobalBounds();
 		buttons_tilesets[i].setPosition(sf::Vector2f(static_cast<float>(App.getSize().x - menuSize + margin + bounds.width / 2) + ((i % ITEMS_PER_ROW) * tilesetsButtonsOffset + bounds.height / 2), static_cast<float>(tilesetsButtonsGroupY + (i / ITEMS_PER_ROW) * (tilesetsButtonsOffset))));
-		if (i == activeElements) selectedTileset.setPosition(sf::Vector2f(static_cast<float>(App.getSize().x - menuSize + margin + bounds.width / 2) + ((i % ITEMS_PER_ROW) * tilesetsButtonsOffset + bounds.height / 2) - TILESIZE / 2.0f, static_cast<float>(tilesetsButtonsGroupY + (i / ITEMS_PER_ROW) * (tilesetsButtonsOffset) -TILESIZE / 2.0f)));
+		if (static_cast<int>(i) == activeElements) selectedTileset.setPosition(sf::Vector2f(static_cast<float>(App.getSize().x - menuSize + margin + bounds.width / 2) + ((i % ITEMS_PER_ROW) * tilesetsButtonsOffset + bounds.height / 2) - TILESIZE / 2.0f, static_cast<float>(tilesetsButtonsGroupY + (i / ITEMS_PER_ROW) * (tilesetsButtonsOffset) -TILESIZE / 2.0f)));
 	}
 
 	// Ground buttons
@@ -377,9 +384,6 @@ void SidePanelMapEditor::updateUIComponents(sf::RenderWindow & App)
 		textActiveElement.setString("");
 		break;
 	}
-
-	// FPS counter text
-	textFPS.setPosition(menuCenterX - menuSize / 2 + margin, 0);
 }
 
 Button SidePanelMapEditor::createTilesetButton(ElementType element, MapEditor &editor) {
@@ -517,7 +521,7 @@ Button SidePanelMapEditor::createRemoveCharacterButton(MapEditor &editor) {
 	return button;
 }
 
-const std::string SidePanelMapEditor::getMapName() {
+const std::string SidePanelMapEditor::getMapName() const {
 	return mapNameField.getString();
 }
 

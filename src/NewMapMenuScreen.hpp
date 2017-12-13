@@ -2,11 +2,13 @@
 #define LASER_NEWMAPMENUSCREEN_HPP
 
 #include <iostream>
+#include <fstream>
 #include "Screen.hpp"
 #include "Button.hpp"
 #include "TextField.hpp"
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include "constants.hpp"
 
 enum MapInitType { new_map, load_map };
 
@@ -27,6 +29,7 @@ private:
 	void drawUI(sf::RenderWindow &App);
 	bool initComponents(sf::RenderWindow & App);
 	void updateLayout(sf::RenderWindow & App);
+	void NewMapMenuScreen::checkMap(const std::string& mapname);
 
 	std::shared_ptr<sf::Texture> backgroundTexture;
 	sf::Sprite backgroundSprite;
@@ -34,6 +37,10 @@ private:
 	sf::Sprite logoSprite;
 	std::shared_ptr<sf::Font> font;
 	std::vector<Button> buttons;
+
+	sf::Text screenStatusMessage;
+	bool errorMessage;
+	sf::Clock errorClock;
 
 	TextField mapSizeXField;
 	TextField mapSizeYField;

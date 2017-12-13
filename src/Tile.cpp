@@ -23,11 +23,10 @@ const std::vector<std::shared_ptr<Item>>& Tile::getItems() const { return items;
 
 bool Tile::isSolid() const { return !(block == air); }
 
-/*
 bool Tile::addItem(std::shared_ptr<Item> obj) {
 	items.push_back(obj);
 	return true;
-}*/
+}
 
 std::ostream& operator<<(std::ostream& os, const Tile& t) {
 

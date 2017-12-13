@@ -70,6 +70,14 @@ void NewMapMenuScreen::drawUI(sf::RenderWindow &App)
 	App.draw(mapSizeXField);
 	App.draw(mapSizeYField);
 	App.draw(mapNameField);
+	if(errorMessage){
+		float errorTime = errorClock.getElapsedTime().asSeconds();
+		if(errorTime < 1.5f){
+			App.draw(screenStatusMessage);
+	}else{
+		errorMessage = false;
+		}
+	}
 	App.display();
 }
 
@@ -80,6 +88,7 @@ void NewMapMenuScreen::updateLayout(sf::RenderWindow & App)
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
 	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, App.getView().getSize().y * 0.5f - logoSprite.getGlobalBounds().height * 1.f });
+	screenStatusMessage.setPosition(sf::Vector2f(0 , App.getSize().y - screenStatusMessage.getGlobalBounds().height * 1.2f));
 
 	float componentOffsetY = logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f;
 	float menuCenterX = App.getView().getSize().x / 2;
@@ -140,10 +149,20 @@ bool NewMapMenuScreen::initComponents(sf::RenderWindow & App)
 	mapNameField.setDefaultStr("map name...");
 
 	buttonLoadMap = Button("Load Map", *font, sf::Text::Regular, 25, sf::Vector2f(0.f, 0.f), rs);
-	buttonLoadMap.setCallback([&] { this->mapInitType = MapInitType::load_map; this->openScreen(ScreenResult::EditorScene); });
+	buttonLoadMap.setCallback([&] { this->mapInitType = MapInitType::load_map; this->checkMap(getMapName()); });
 
 	buttonBack = Button("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
 	buttonBack.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
+
+	#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
+	screenStatusMessage.setOutlineThickness(4);
+	screenStatusMessage.setOutlineColor(sf::Color::Black);
+	#endif
+	screenStatusMessage.setTextColor(sf::Color::Red);
+	screenStatusMessage.setString("Map not found!");
+	screenStatusMessage.setCharacterSize(40);
+	screenStatusMessage.setFont(*font);
+	errorMessage = false;
 
 	updateLayout(App);
 
@@ -158,4 +177,15 @@ unsigned int NewMapMenuScreen::getMapSizeY() {
 }
 std::string NewMapMenuScreen::getMapName() {
 	return mapNameField.getString();
+}
+
+void NewMapMenuScreen::checkMap(const std::string& mapname) {
+	mapNameField.setString(mapname);
+	std::ifstream f("levels/" + mapname + ".json");
+	if(f.good() && !mapNameField.getString().empty()) {
+		openScreen(ScreenResult::EditorScene);
+	}else{
+		errorMessage = true;
+		errorClock.restart();
+	}
 }
