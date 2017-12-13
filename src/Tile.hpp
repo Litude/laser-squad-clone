@@ -28,20 +28,9 @@ public:
 	std::shared_ptr<Item> getTopItem();
 	void popItem();
 	const std::vector<std::shared_ptr<Item>>& getItems() const;
-	//bool removeItem(int item);
 	bool isSolid() const;
 	void setTile(TileGround tg, TileBlock tb);
-
-	/*template<typename T>
-	bool addItem(T& item) {
-		items.push_back(std::make_shared<T>(item));
-		return true;
-	}*/
-
-	bool addItem(std::shared_ptr<Item> obj) {
-		items.push_back(obj);
-		return true;
-	}
+	bool addItem(std::shared_ptr<Item> obj);
 
 private:
 	TileGround ground;
