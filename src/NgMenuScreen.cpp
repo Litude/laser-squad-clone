@@ -50,7 +50,7 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 		for (auto it = buttons.begin(); it != buttons.end(); ++it) {
 			it->setState(Button::state::normal);
 			it->update(Event, App);
-			if (it->getState() == Button::state::hovered){
+			if (it->getState() == Button::state::hovered) {
 				selectedButtonItem = it;
 			}
 		}
@@ -78,12 +78,12 @@ void NgMenuScreen::drawUI(sf::RenderWindow &App)
 		App.draw(button);
 	}
 	App.draw(tField);
-	if(errorMessage){
+	if (errorMessage) {
 		float errorTime = errorClock.getElapsedTime().asSeconds();
-		if(errorTime < 1.5f){
+		if (errorTime < 1.5f) {
 			App.draw(screenStatusMessage);
-	}else{
-		errorMessage = false;
+		} else {
+			errorMessage = false;
 		}
 	}
 	App.display();
@@ -96,14 +96,14 @@ void NgMenuScreen::updateLayout(sf::RenderWindow & App)
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
 	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, App.getView().getSize().y * 0.5f - logoSprite.getGlobalBounds().height * 1.f });
-	screenStatusMessage.setPosition(sf::Vector2f(0 , App.getSize().y - screenStatusMessage.getGlobalBounds().height * 1.2f));
+	screenStatusMessage.setPosition(sf::Vector2f(0, App.getSize().y - screenStatusMessage.getGlobalBounds().height * 1.2f));
 
 	float margin = 10.f;
 
 	tField.setPosition({ App.getSize().x * 0.5f - buttons[0].getGlobalBounds().width / 2 - margin / 2,
-		logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + buttons[0].getGlobalBounds().height * 1.5f});
+		logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + buttons[0].getGlobalBounds().height * 1.5f });
 	buttons[0].setPosition({ App.getView().getSize().x * 0.5f + buttons[0].getGlobalBounds().width / 2 + margin / 2,
-		logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + buttons[0].getGlobalBounds().height * 1.5f});
+		logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + buttons[0].getGlobalBounds().height * 1.5f });
 	buttons[1].setPosition({ App.getView().getSize().x * 0.5f,
 		logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + buttons[1].getGlobalBounds().height * 3.0f });
 
@@ -142,7 +142,7 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
-	rs.setSize(sf::Vector2f(170,40));
+	rs.setSize(sf::Vector2f(170, 40));
 
 	Button launchgame("Launch game", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	launchgame.setCallback([&] {this->checkMap(getMapName()); });
@@ -170,10 +170,10 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	map3.setCallback([&] {this->checkMap("map3"); });
 	buttons.push_back(map3);
 
-	#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
+#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
 	screenStatusMessage.setOutlineThickness(4);
 	screenStatusMessage.setOutlineColor(sf::Color::Black);
-	#endif
+#endif
 	screenStatusMessage.setTextColor(sf::Color::Red);
 	screenStatusMessage.setString("Map not found!");
 	screenStatusMessage.setCharacterSize(40);
@@ -192,9 +192,10 @@ std::string NgMenuScreen::getMapName() {
 void NgMenuScreen::checkMap(const std::string& mapname) {
 	tField.setString(mapname);
 	std::ifstream f("levels/" + mapname + ".json");
-	if(f.good() && !tField.getString().empty()) {
+	if (f.good() && !tField.getString().empty()) {
 		openScreen(ScreenResult::GameScene);
-	}else{
+	}
+	else {
 		errorMessage = true;
 		errorClock.restart();
 	}
