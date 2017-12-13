@@ -223,7 +223,7 @@ void SidePanelMapEditor::update(sf::Event& event, sf::RenderWindow& App)
 		}
 		break;
 	}
-	if (event.type == sf::Event::Resized || event.type == sf::Event::KeyPressed) {
+	if (event.type == sf::Event::Resized || event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonReleased) {
 		updateLayout(App);
 	}
 
@@ -409,7 +409,7 @@ Button SidePanelMapEditor::createTilesetButton(ElementType element, MapEditor &e
 	buttonSprite.setTextureRect(buttonSpriteRect);
 
 	Button button = Button("", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), buttonSprite);
-	button.setCallback([&, element] { this->setActiveTileset(element); });
+	button.setCallback([&, element] { editor.setActiveTileset(element); });
 	return button;
 }
 
@@ -532,8 +532,5 @@ void SidePanelMapEditor::saveMap(MapEditor &editor) {
 }
 
 void SidePanelMapEditor::setActiveTileset(ElementType element) {
-	std::cout << "This does nothing...\n";
-	//std::cout << element << " Got here!\n";
-	//activeElements = element;
-	//std::cout << activeElements << std::endl;
+	activeElements = element;
 }
