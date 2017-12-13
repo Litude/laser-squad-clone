@@ -24,7 +24,7 @@ private:
 	void drawUI(sf::RenderWindow &App);
 	bool initComponents(sf::RenderWindow & App);
 	void updateLayout(sf::RenderWindow & App);
-	void NgMenuScreen::checkMap(const std::string& mapname);
+	void checkMap(const std::string& mapname);
 
 	std::shared_ptr<sf::Texture> backgroundTexture;
 	sf::Sprite backgroundSprite;
