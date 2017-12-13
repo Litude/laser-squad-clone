@@ -4,6 +4,7 @@
 #include "../Inventory.hpp"
 #include "../Weapon.hpp"
 #include "../Health.hpp"
+#include "../Powerup.hpp"
 
 TEST(InventoryAmmo, CanFindAmmo) {
 	Inventory inventory;
@@ -77,9 +78,9 @@ TEST(InventoryCapacity, Adding) {
 
 	//Add stuff until max capacity (8 pcs)
 	std::shared_ptr<Item> item1 = std::make_shared<HealthPackSmall>(HealthPackSmall());
-	std::shared_ptr<Item> item2 = std::make_shared<HealthPackSmall>(HealthPackSmall());
+	std::shared_ptr<Item> item2 = std::make_shared<Boots>(Boots());
 	std::shared_ptr<Item> item3 = std::make_shared<Pistol>(Pistol());
-	std::shared_ptr<Item> item4 = std::make_shared<HealthPackSmall>(HealthPackSmall());
+	std::shared_ptr<Item> item4 = std::make_shared<RocketLauncher>(RocketLauncher());
 	std::shared_ptr<Item> item5 = std::make_shared<AmmoShotgunShells>(AmmoShotgunShells());
 	std::shared_ptr<Item> item6 = std::make_shared<HealthPackLarge>(HealthPackLarge());
 	std::shared_ptr<Item> item7 = std::make_shared<Ammo9mmBullets>(Ammo9mmBullets());
