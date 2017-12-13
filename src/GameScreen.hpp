@@ -22,7 +22,7 @@ namespace MouseMode {
 	enum Mode { shoot, select };
 }
 
-struct playerViewInformation {
+struct PlayerViewInformation {
 	sf::Vector2f viewCenter;
 	float zoom;
 };
@@ -92,7 +92,7 @@ private:
 
 	sf::Text screenStatusMessage;
 
-	std::vector<playerViewInformation> playerViews;
+	std::vector<PlayerViewInformation> playerViews;
 
 	MouseMode::Mode mouseMode = MouseMode::select;
 };
