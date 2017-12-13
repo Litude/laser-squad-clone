@@ -2,6 +2,7 @@
 #define CONSTANTS_H
 
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Config.hpp>
 
 #define TILESIZE 32
 #define MENUSIZE 200
@@ -14,5 +15,11 @@
 
 #define MAX_ITEMS 8
 #define ITEMS_PER_ROW 4
+
+#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR <= 3
+#define setTextColor setColor
+#else
+#define setTextColor setFillColor
+#endif
 
 #endif

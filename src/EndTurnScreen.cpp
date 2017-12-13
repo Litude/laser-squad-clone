@@ -1,4 +1,5 @@
 #include "EndTurnScreen.hpp"
+#include "constants.hpp"
 
 EndTurnScreen::EndTurnScreen(void)
 {
@@ -136,7 +137,7 @@ bool EndTurnScreen::initComponents(sf::RenderWindow & App)
 
 	turnText.setFont(*font);
 	turnText.setCharacterSize(36);
-	turnText.setColor(sf::Color::White);
+	turnText.setTextColor(sf::Color::White);
 	turnText.setString("Player " + std::to_string(playerTurn) + " Turn");
 	turnText.setOrigin(turnText.getLocalBounds().left + turnText.getLocalBounds().width / 2.0f, turnText.getLocalBounds().top + turnText.getLocalBounds().height / 2.0f);
 
