@@ -58,6 +58,8 @@ add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
                        ${CMAKE_SOURCE_DIR}/levels $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>/levels
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_SOURCE_DIR}/sound $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>/sound
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
                        ${CMAKE_SOURCE_DIR}/font $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>/font)
 
 
