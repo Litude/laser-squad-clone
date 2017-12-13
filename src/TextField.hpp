@@ -25,12 +25,12 @@ public:
   void update(sf::Event e, sf::RenderWindow& window);
   void click();
 
-  std::string getString() const {return t_str;};
-  sf::Vector2f getPos() const {return t_pos;};
-  int getCursorPos() const {return t_index;};
-  bool getFocus() const {return t_isFocused;};
-  bool getStatus() const {return t_textEntered;};
-  const sf::FloatRect  getGlobalBounds();
+  const std::string &getString() const {return t_str;};
+  const sf::Vector2f &getPos() const {return t_pos;};
+  const size_t getCursorPos() const {return t_index;};
+  const bool getFocus() const {return t_isFocused;};
+  const bool getStatus() const {return t_textEntered;};
+  const sf::FloatRect getGlobalBounds() const;
 
 private:
     virtual void draw(sf::RenderTarget& target,sf::RenderStates states) const;
