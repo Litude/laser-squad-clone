@@ -34,6 +34,11 @@ class Item {
 public:
 	Item() : m_itemType(Type_None), m_itemIcon(Icon_None), m_stackable(false), m_amount(1) {};
 	virtual ~Item() {};
+	Item(const Item& copyFrom) = default;
+	Item& operator=(const Item& copyFrom) = default;
+	Item(Item &&) = default;
+	Item& operator=(Item &&) = default;
+
 	Item(ItemType type, ItemIcon icon, std::string name) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_consumable(false), m_stackable(false), m_amount(1) {};
 	Item(ItemType type, ItemIcon icon, std::string name, bool stackable, bool consumable, unsigned int amount) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_consumable(consumable), m_stackable(stackable), m_amount(amount) {};
 	ItemType getType() const { return m_itemType; };
