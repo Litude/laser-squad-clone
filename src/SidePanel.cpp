@@ -36,6 +36,8 @@ SidePanel::SidePanel(sf::RenderWindow &App, GameScreen &parent)
 	textHPLabel.setString("HPs");
 	textHPValue.setFont(*font);
 	textHPValue.setCharacterSize(24);
+	textEquipped.setFont(*font);
+	textEquipped.setCharacterSize(24);
 
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
@@ -145,8 +147,11 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 
 	//TODO: Process selected character attributes here and draw them on the interface...
 	if (game.getSelectedCharacter() != game.getCharacters().end()) {
-		textAPValue.setString(std::to_string(game.getSelectedCharacter()->getActionPoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxActionPoints()));
-		textHPValue.setString(std::to_string(game.getSelectedCharacter()->getHitpoints()) + '/' + std::to_string(game.getSelectedCharacter()->getMaxHitpoints()));
+		auto gc = game.getSelectedCharacter();
+		auto equipped = gc->getEquipped();
+		textAPValue.setString(std::to_string(gc->getActionPoints()) + '/' + std::to_string(gc->getMaxActionPoints()));
+		textHPValue.setString(std::to_string(gc->getHitpoints()) + '/' + std::to_string(gc->getMaxHitpoints()));
+		textEquipped.setString("Equipped: " + equipped->getName() + ", APCOST: " + std::to_string(equipped->apCost()));
 
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) {
 			unsigned int margin = 10;
@@ -170,6 +175,7 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 		App.draw(textAPValue);
 		App.draw(textHPLabel);
 		App.draw(textHPValue);
+		App.draw(textEquipped);
 		App.draw(buttonPickupItem);
 		App.draw(buttonDropItem);
 		App.draw(buttonEquipItem);
@@ -188,7 +194,8 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 				App.draw(inventoryItemTexts[i]);
 			}
 			if (game.getSelectedCharacter()->getSelectedItemIndex() == i) {
-				selectedInventoryItemName.setString(game.getSelectedCharacter()->getInventory()[game.getSelectedCharacter()->getSelectedItemIndex()]->getName());
+				auto item = game.getSelectedCharacter()->getInventory()[game.getSelectedCharacter()->getSelectedItemIndex()];
+				selectedInventoryItemName.setString(item->getName());
 				selectedInventoryItemName.setOrigin(selectedInventoryItemName.getLocalBounds().left + selectedInventoryItemName.getLocalBounds().width / 2.0f, selectedInventoryItemName.getLocalBounds().top + selectedInventoryItemName.getLocalBounds().height / 2.0f);
 				App.draw(selectedInventoryItemName);
 				selectedItem.setPosition(inventoryItems[i].getPosition());
@@ -292,6 +299,9 @@ void SidePanel::updateUIComponents(sf::RenderWindow & App)
 	// HP text
 	textHPLabel.setPosition(menuCenterX - menuSize / 2 + margin, 160);
 	textHPValue.setPosition(menuCenterX + menuSize / 2 - margin - textHPValue.getLocalBounds().left - textHPValue.getLocalBounds().width, 160);
+
+	// Equipped item text
+	textEquipped.setPosition(menuCenterX - menuSize / 2 + margin, 190);
 
 	// Turn number text
 	textTurnNoLabel.setPosition(menuCenterX - menuSize / 2 + margin, 25);
