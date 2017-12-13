@@ -344,6 +344,10 @@ void MapEditor::removeCharacter() {
 	game->setSelectedCharacter(game->getCharacters().end());
 }
 
+void MapEditor::setActiveTileset(ElementType element) {
+	sidePanel.setActiveTileset(element);
+}
+
 bool MapEditor::saveMap() {
 	return jreader::writeJSON(*game, sidePanel.getMapName());
 }
