@@ -72,12 +72,9 @@ private:
     
     sf::Clock fpsclock;
     sf::Clock clock;
-    float lastTime = 0;
-    float currentTime = 0;
-    double timeStep = 16000;
+
     double timeAccumulator = 0;
     
-    MouseMode2::Mode2 mouseMode = MouseMode2::select;
 };
 
 #endif /* MapEditor_hpp */

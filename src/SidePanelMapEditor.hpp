@@ -60,8 +60,7 @@ private:
 	sf::Clock clock;
 	float lastTime = 0;
 	float currentTime = 0;
-	int timeStep = 16000;
-	int timeAccumulator = 0;
+
 };
 
 #endif

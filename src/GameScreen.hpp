@@ -78,9 +78,6 @@ private:
 	std::vector<sf::Sprite> mapTiles;
 	sf::Clock fpsclock;
 	sf::Clock clock;
-	float lastTime = 0;
-	float currentTime = 0;
-	int timeStep = 16000;
 	int timeAccumulator = 0;
 	std::shared_ptr<sf::RenderTexture> renderTexture_visibleTiles;
 	sf::RectangleShape visibleTileShape;
