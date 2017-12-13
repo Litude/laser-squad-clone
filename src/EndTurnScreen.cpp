@@ -136,7 +136,7 @@ bool EndTurnScreen::initComponents(sf::RenderWindow & App)
 
 	turnText.setFont(*font);
 	turnText.setCharacterSize(36);
-	turnText.setFillColor(sf::Color::White);
+	turnText.setColor(sf::Color::White);
 	turnText.setString("Player " + std::to_string(playerTurn) + " Turn");
 	turnText.setOrigin(turnText.getLocalBounds().left + turnText.getLocalBounds().width / 2.0f, turnText.getLocalBounds().top + turnText.getLocalBounds().height / 2.0f);
 
