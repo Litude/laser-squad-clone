@@ -12,7 +12,7 @@ GameScreen::GameScreen(sf::RenderWindow &App, std::string mapName)
 
 	try {
 		//Game logic initialization
-		if (mapName.empty()) mapName = "debug_level";
+		if (mapName.empty()) mapName = "test_level";
 		game = jreader::loadJSON(mapName);
 		game->setSelectedCharacter(game->getCharacters().end());
 	}
