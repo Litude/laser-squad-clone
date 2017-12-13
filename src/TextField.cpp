@@ -1,16 +1,17 @@
 #include "TextField.hpp"
+#include "constants.hpp"
 
 TextField::TextField()
 {
 }
 
-TextField::TextField(int size, sf::RectangleShape Rshape, sf::Font& font)
+TextField::TextField(int size, sf::RectangleShape Rshape, sf::Font& font, tf_type t)
 {
-  t_text.setFillColor(sf::Color::Black);
+  t_text.setTextColor(sf::Color::Black);
   t_text.setCharacterSize(size);
   t_text.setFont(font);
 
-  t_defText.setFillColor(sf::Color::Black);
+  t_defText.setTextColor(sf::Color::Black);
   t_defText.setCharacterSize(size);
   t_defText.setFont(font);
 
@@ -27,6 +28,8 @@ TextField::TextField(int size, sf::RectangleShape Rshape, sf::Font& font)
 
   t_Rshape.setFillColor(sf::Color::White);
   t_Rshape.setOutlineColor(sf::Color::Black);
+
+  t_type = t;
 }
 
 TextField::~TextField()
@@ -54,7 +57,7 @@ void TextField::setPosition(sf::Vector2f v)
   t_Rshape.setPosition(t_pos);
 
   sf::Vector2f textPosition = sf::Vector2f(t_Rshape.getPosition().x, t_Rshape.getPosition().y + t_Rshape.getGlobalBounds().height / 8);
-  t_text.setOrigin(t_Rshape.getGlobalBounds().width / 2.3, t_Rshape.getGlobalBounds().height / 2);
+  t_text.setOrigin(t_Rshape.getGlobalBounds().width / 2.3f, t_Rshape.getGlobalBounds().height / 2);
   t_text.setPosition(textPosition);
 
   sf::Vector2f defTextPosition = sf::Vector2f(t_Rshape.getPosition().x, t_Rshape.getPosition().y - t_Rshape.getGlobalBounds().height / 8);
@@ -78,7 +81,6 @@ void TextField::setDefaultStr(std:: string defS)
 void TextField::update(sf::Event e, sf::RenderWindow& window)
 {
   sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-
 	sf::Vector2f objPos;
 	sf::FloatRect objGlobalBounds;
   objPos = t_Rshape.getPosition();
@@ -104,6 +106,11 @@ void TextField::update(sf::Event e, sf::RenderWindow& window)
       }
     }
 
+  if(!t_text.getString().isEmpty()) {
+    setStatus(true);
+    setCursor(t_text.getString().getSize());
+  }
+
   if(getFocus()) {
     if(e.type == sf::Event::TextEntered) {
       if(e.text.unicode == 8){ // Backspace pressed
@@ -125,6 +132,11 @@ void TextField::update(sf::Event e, sf::RenderWindow& window)
         }
         setFocus(false);
       }else{
+        if(getType() == number) {
+          if(!std::iswdigit(e.text.unicode)) {
+            return;
+          }
+        }
         if(t_str.length() < t_strMaxLength){  // Writing text
           t_inputChar = static_cast<char>(e.text.unicode);
           t_str.insert(t_index, 1, t_inputChar);
@@ -137,11 +149,16 @@ void TextField::update(sf::Event e, sf::RenderWindow& window)
     }else if(e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Right && t_index < t_str.size()){ // Right arrow
       ++t_index;
     }
+    if(t_text.getString().isEmpty()) {
+      setStatus(false);
+    }else{
+      setStatus(true);
+    }
     setCursor(t_index);
   }
 }
 
-const sf::FloatRect  TextField::getGlobalBounds()
+const sf::FloatRect TextField::getGlobalBounds() const
 {
   return t_Rshape.getGlobalBounds();
 }
@@ -181,6 +198,6 @@ void TextField::setCursor(size_t i) // Updates the position of the cursor
   if(i <= t_str.size())
   {
     t_index = i;
-    t_Cursor.setPosition(t_text.findCharacterPos(t_index).x + t_Rshape.getGlobalBounds().width / 2.3, t_text.findCharacterPos(t_index).y + t_Rshape.getGlobalBounds().height / 2);
+    t_Cursor.setPosition(t_text.findCharacterPos(t_index).x + t_Rshape.getGlobalBounds().width / 2.3f, t_text.findCharacterPos(t_index).y + t_Rshape.getGlobalBounds().height / 2);
   }
 }

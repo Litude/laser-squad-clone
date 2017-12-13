@@ -1,4 +1,5 @@
 #include "EndTurnScreen.hpp"
+#include "constants.hpp"
 
 EndTurnScreen::EndTurnScreen(void)
 {
@@ -48,15 +49,15 @@ ScreenResult EndTurnScreen::Run(sf::RenderWindow & App)
 		}
 
 		for (auto it = buttons.begin(); it != buttons.end(); ++it) {
-			it->setState(state::normal);
+			it->setState(Button::state::normal);
 			it->update(Event, App);
-			if(it->getState() == state::hovered){
+			if(it->getState() == Button::state::hovered){
 				selectedButtonItem = it;
 			}
 		}
 
-		if (selectedButtonItem->getState() != state::clicked) {
-			selectedButtonItem->setState(state::hovered);
+		if (selectedButtonItem->getState() != Button::state::clicked) {
+			selectedButtonItem->setState(Button::state::hovered);
 		}
 
 		drawUI(App);
@@ -136,7 +137,7 @@ bool EndTurnScreen::initComponents(sf::RenderWindow & App)
 
 	turnText.setFont(*font);
 	turnText.setCharacterSize(36);
-	turnText.setFillColor(sf::Color::White);
+	turnText.setTextColor(sf::Color::White);
 	turnText.setString("Player " + std::to_string(playerTurn) + " Turn");
 	turnText.setOrigin(turnText.getLocalBounds().left + turnText.getLocalBounds().width / 2.0f, turnText.getLocalBounds().top + turnText.getLocalBounds().height / 2.0f);
 

@@ -61,11 +61,10 @@ void AnimationManager::addAnim(Animation& anim)
 	this->animations.push_back(anim);
 }
 
-void AnimationManager::changeAnim(unsigned int animID)
+void AnimationManager::changeAnim(const unsigned int animID)
 {
 	// Check that animation is different from currently active one and that new animation exists
-	if (this->currentAnim == animID || animID >= this->animations.size() ||
-		animID < 0) return;
+	if (this->currentAnim == static_cast<int>(animID) || animID >= this->animations.size()) return;
 
 	// Set the current animation
 	this->currentAnim = animID;
@@ -76,7 +75,7 @@ void AnimationManager::changeAnim(unsigned int animID)
 	this->t = 0;
 }
 
-bool AnimationManager::isFinished()
+const bool AnimationManager::isFinished() const
 {
 	int duration = this->animations[currentAnim].duration;
 	unsigned int frame = static_cast<int>(t / duration);

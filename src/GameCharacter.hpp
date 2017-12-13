@@ -7,6 +7,7 @@
 #include "Inventory.hpp"
 #include "Weapon.hpp"
 #include "Health.hpp"
+#include "Powerup.hpp"
 #include "AnimationManager.hpp"
 #include "constants.hpp"
 
@@ -40,6 +41,9 @@ enum statuscode {
 	item_max_health,
 	item_unusable,
 	item_none_selected,
+	item_increase_ap,
+	item_increase_hp,
+	item_increase_los,
 	shoot_reload,
 	shoot_no_ammo,
 	shoot_success,
@@ -48,7 +52,7 @@ enum statuscode {
 
 class GameCharacter {
 public:
-	GameCharacter (sf::Vector2u position, unsigned int team) : currentPosition(position), previousPosition(position), team(team) { }
+	GameCharacter	(sf::Vector2u position, unsigned int team);
 	unsigned int	getActionPoints() const { return actionPoints; }
 	unsigned int	getMaxActionPoints() const { return maxActionPoints; }
 	unsigned int	getHitpoints() const { return health; }
@@ -76,7 +80,6 @@ public:
 	void			setSelectedWeaponIndex(int idx) {selectedWeaponIdx = idx; }
 	statuscode		useSelected();
 	void			unequipCharacter();
-	void			setAnimationManager(AnimationManager animationManager) { this->animationManager = animationManager; }
 	AnimationManager getAnimationManager() const { return animationManager;  }
 	unsigned int	getAmmoAmount(AmmoType ammotype, unsigned int neededAmount=0);
 	statuscode		reloadWeapon();

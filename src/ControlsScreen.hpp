@@ -28,6 +28,19 @@ private:
 	sf::Sprite logoSprite;
 	std::shared_ptr<sf::Font> font;
 	std::vector<Button> buttons;
+	std::vector<sf::Text> IGDescriptions;
+	std::vector<sf::Text> IGKeys;
+	std::vector<sf::Text> MEDescriptions;
+	std::vector<sf::Text> MEKeys;
+	std::vector<sf::Text> sfDescriptions;
+	std::vector<sf::Text> sfKeys;
+	int charSize = 40;
+	float spacing = charSize * 1.2f;
+	sf::Vector2f helperScale;
+	sf::Text IGtitle;
+	sf::Text MEtitle;
+	float maxIGkey = 0;
+	float maxMEkey = 0;
 };
 
 #endif

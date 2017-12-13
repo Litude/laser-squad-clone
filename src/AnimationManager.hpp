@@ -8,13 +8,13 @@
 class AnimationManager
 {
 public:
-	void addAnim(Animation& anim);
-	void update(const unsigned int dt);
-	void changeAnim(unsigned int animNum);
-	bool isFinished();
 	AnimationManager();
 	AnimationManager(const sf::IntRect& frameSize);
-	sf::IntRect getFrame() { return bounds; }
+	void addAnim(Animation& anim);
+	void update(const unsigned int dt);
+	void changeAnim(const unsigned int animNum);
+	const bool isFinished() const;
+	const sf::IntRect& getFrame() const { return bounds; }
 private:
 	std::vector<Animation> animations;
 	unsigned int t;

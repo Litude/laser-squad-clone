@@ -1,4 +1,5 @@
 #include "Button.hpp"
+#include "constants.hpp"
 
 Button::Button()
 {
@@ -16,7 +17,7 @@ Button::Button(std::string str, sf::Font& font, sf::Uint32 style, int size, sf::
   b_text.setStyle(style);
   b_text.setOrigin(b_text.getGlobalBounds().width / 2, b_text.getGlobalBounds().height / 2);
 
-  b_text.setFillColor(sf::Color(0, 0, 0, 100));
+  b_text.setTextColor(sf::Color(0, 0, 0, 100));
   b_hoveredColor = sf::Color(0, 0, 0, 255);
   setPosition(position);
   setStyle(style);
@@ -35,7 +36,7 @@ Button::Button(std::string str, sf::Font& font, sf::Uint32 style, int size, sf::
   b_text.setStyle(style);
   b_text.setOrigin(b_text.getGlobalBounds().width / 2, b_text.getGlobalBounds().height / 2);
 
-  b_text.setFillColor(sf::Color(0, 0, 0, 100));
+  b_text.setTextColor(sf::Color(0, 0, 0, 100));
   b_hoveredColor = sf::Color(0, 0, 0, 255);
   setStyle(style);
   setColor(sf::Color(0, 0, 0, 100));
@@ -60,7 +61,7 @@ Button::Button(std::string str, sf::Font& font, sf::Uint32 style, int size, sf::
   b_text.setStyle(style);
   b_text.setOrigin(b_text.getGlobalBounds().width / 2, b_text.getGlobalBounds().height / 2);
 
-  b_text.setFillColor(sf::Color(0, 0, 0, 100));
+  b_text.setTextColor(sf::Color(0, 0, 0, 100));
   b_hoveredColor = sf::Color(0, 0, 0, 255);
   setPosition(position);
   setStyle(style);
@@ -79,7 +80,7 @@ void Button::setRectangleShape(sf::RectangleShape Rshape)
 	setPosition(getPos());
 };
 
-const sf::FloatRect  Button::getGlobalBounds()
+const sf::FloatRect Button::getGlobalBounds() const
 {
 	switch (b_type) {
 	case text:
@@ -108,7 +109,7 @@ void Button::setState(sf::Uint32 st)
 	b_state = st;
 	switch (b_state) {
 	case normal: {
-		b_text.setFillColor(b_color);
+		b_text.setTextColor(b_color);
 		b_text.setStyle(b_style);
 	}
 	break;
@@ -117,7 +118,7 @@ void Button::setState(sf::Uint32 st)
 	}
 	break;
 	case hovered: {
-		b_text.setFillColor(b_hoveredColor);
+		b_text.setTextColor(b_hoveredColor);
 		b_text.setStyle(sf::Text::Bold);
 	}
 	break;

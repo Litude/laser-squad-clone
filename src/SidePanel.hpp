@@ -52,8 +52,7 @@ private:
 	sf::Clock clock;
 	float lastTime = 0;
 	float currentTime = 0;
-	int timeStep = 16000;
-	int timeAccumulator = 0;
+
 	sf::Text selectedInventoryItemName;
 	std::vector<sf::RectangleShape> inventoryItemBkg;
 	std::vector<sf::Sprite> inventoryItems;

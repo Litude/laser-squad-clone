@@ -2,95 +2,29 @@
 #include "constants.hpp"
 #include "Health.hpp"
 #include "Ammo.hpp"
+#include <SFML/Config.hpp>
 
 #define N(T) std::make_shared<T>()
 
-GameScreen::GameScreen(sf::RenderWindow &App)
+GameScreen::GameScreen(sf::RenderWindow &App, std::string mapName)
 {
 	m_screenResult = ScreenResult::GameScene;
 
-	//Game logic initialization
-	/*
-	game = Game();
-
-	game->initializeGrid(30, 30);
-	game->getGrid()(12, 12).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-	game->getGrid()(12, 13).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-	game->getGrid()(12, 14).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-
-	game->getGrid()(5, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-	game->getGrid()(6, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-	game->getGrid()(7, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-    game->getGrid()(8, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-    game->getGrid()(9, 5).setTile(TileGround::dirt, wall); //Add one solid block for collision testing
-
-	game->getGrid()(7, 4).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-	game->getGrid()(7, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-	game->getGrid()(6, 3).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-
-	game->getGrid()(6, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
-	game->getGrid()(5, 4).setTile(TileGround::dirt, TileBlock::air); //Add one solid block for collision testing
-
-	game->getGrid()(7, 2).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-
-	game->getGrid()(9, 7).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
-	game->getGrid()(12, 15).setTile(TileGround::dirt, TileBlock::bush); //Add one solid block for collision testing
-
-	game->getGrid()(3, 6).addItem(N(Ammo9mmBullets));
-	game->getGrid()(4, 6).addItem(N(Ammo9mmBullets));
-	game->getGrid()(4, 7).addItem(N(AmmoShotgunShells));
-	game->getGrid()(4, 7).addItem(N(AmmoShotgunShells));
-
-	game->getGrid()(7, 4).addItem(N(HealthPackSmall));
-	game->getGrid()(2, 2).addItem(N(Uzi));
-	game->getGrid()(7, 6).addItem(N(Pistol));
-	game->getGrid()(9, 6).addItem(N(Shotgun));
-	game->getGrid()(3, 2).addItem(N(Rifle));
-	game->getGrid()(15, 6).addItem(N(HealthPackLarge));
-	game->getGrid()(15, 6).addItem(N(HealthPackLarge));
-
-	//Add 9 pcs to test full inventory
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-	game->getGrid()(3, 3).addItem(N(HealthPackLarge));
-
-	// Test put walls on the edges of the map
-	for (unsigned int i = 0; i < game->getGrid().getWidth(); ++i)
-	{
-		for (unsigned int j = 0; j < game->getGrid().getHeight(); ++j)
-		{
-			if (i == 0 || j == 0 || i == game->getGrid().getWidth() - 1 || j == game->getGrid().getHeight() - 1) {
-				game->getGrid()(i, j).setTile(TileGround::dirt, TileBlock::wall); //Add one solid block for collision testing
-			}
-		}
+	try {
+		//Game logic initialization
+		if (mapName.empty()) mapName = "debug_level";
+		game = jreader::loadJSON(mapName);
+		game->setSelectedCharacter(game->getCharacters().end());
+	}
+	catch (JSONLoadException) {
+		m_screenResult = ScreenResult::NewGameScene;
+		return;
+	}
+	catch (JSONWriteException) {
+		m_screenResult = ScreenResult::NewGameScene;
+		return;
 	}
 
-	// Test updating tile after tilemap has already been created
-	game->getGrid()(12, 16).setTile(TileGround::dirt, TileBlock::tree); //Add one solid block for collision testing
-
-	game->addCharacter(sf::Vector2u(1, 1), 1);
-	game->addCharacter(sf::Vector2u(4, 4), 1);
-	game->addCharacter(sf::Vector2u(8, 8), 2);
-	game->addCharacter(sf::Vector2u(10, 10), 2);
-
-	game->setSelectedCharacter(game->getCharacters().end());
-
-	game->getCharacters()[0].addItem(N(DoubleBarrel));
-	
-	jreader::writeJSON(game, "test_level");
-	*/
-	game = jreader::loadJSON("debug_level");
-	
-	//Need to call this magic function after loading, otherwise the program segfaults.
-	//Don't ask me.
-	game->setSelectedCharacter(game->getCharacters().end());
-		
 	//Interface drawing initialization
 	font = std::make_shared<sf::Font>(sf::Font());
 	if (!font->loadFromFile("font/Pixellari.ttf")) {
@@ -126,23 +60,6 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	texPlayer2 = std::make_shared<sf::Texture>(sf::Texture());
 	if (!texPlayer2->loadFromFile("img/character2_sheet.png")) {
 		std::cout << "Could not load 'img/character2_sheet.png'\n";
-	}
-
-	// Set up animations
-	Animation animation_walk_left(9, 0, 8, 62000);
-	Animation animation_walk_right(11, 0, 8, 62000);
-	Animation animation_walk_down(10, 0, 8, 62000);
-	Animation animation_walk_up(8, 0, 8, 62000);
-	Animation animation_die(20, 0, 5, 125000, false);
-	AnimationManager animManager(sf::IntRect(0, 0, 32, 32));
-	animManager.addAnim(animation_walk_left);
-	animManager.addAnim(animation_walk_right);
-	animManager.addAnim(animation_walk_down);
-	animManager.addAnim(animation_walk_up);
-	animManager.addAnim(animation_die);
-	animManager.changeAnim(animations::walk_down); // Initial animation
-	for (auto &character : game->getCharacters()) {
-		character.setAnimationManager(animManager);
 	}
 
 	//Ray tracing line for shooting
@@ -184,12 +101,32 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	//Status message stuff
 	screenStatusMessage.setFont(*font);
 	screenStatusMessage.setCharacterSize(20);
+
+#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
 	screenStatusMessage.setOutlineThickness(2);
+	screenStatusMessage.setOutlineColor(sf::Color::Black);
+#endif
 
 	// Create graphical tilemap presentation from the Map
 	tileMap = std::make_shared<TileMap>(TileMap(game->getGrid()));
 	if (!tileMap->load("img/tileset_grounds.png", "img/tileset_blocks.png", "img/tileset_items.png", sf::Vector2u(TILESIZE, TILESIZE))) {
 		std::cout << "Could not load tilemap\n";
+	}
+
+	playerViews.resize(2);
+
+	for (unsigned int i = 0; i < 2; ++i) {
+		playerViews[i].viewCenter = gameView.getCenter(); //Fall-back in case we can't find any characters for the player
+		playerViews[i].zoom = 1.0f;
+
+		//Search for the first character owned by the player and center view on it
+		for (auto it = game->getCharacters().begin(); it != game->getCharacters().end(); ++it) {
+			if (it->getTeam() != i + 1) continue;
+			playerViews[i].viewCenter = sf::Vector2f(it->getRenderPosition());
+			break;
+		}
+
+	gameView.setCenter(playerViews[0].viewCenter);
 	}
 }
 
@@ -223,7 +160,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 					if (mouseMode == MouseMode::shoot && game->getSelectedCharacter() != game->getCharacters().end()) {
 						auto gc = game->getSelectedCharacter();
 						auto weapon = gc->getEquipped();
-						auto tiles = game->characterShoot(gc, getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView));
+						auto tiles = game->characterShoot(gc, getClickedTilePosition(App));
 						int k = 0;
 						for (auto dest : tiles) {
 							addProjectile(weapon, gc->getPosition(), dest, k*(weapon->getDelay()));
@@ -239,8 +176,9 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 					//In select mode
 					else {
 						for (auto it = game->getCharacters().begin(); it != game->getCharacters().end(); ++it) {
-							if (it->getTeam() == game->getCurrentPlayer() && !(it->isDead()) && it->getPosition() == getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView)) {
+							if (it->getTeam() == game->getCurrentPlayer() && !(it->isDead()) && it->getPosition() == getClickedTilePosition(App)) {
 								game->setSelectedCharacter(it); //Select clicked character
+								centerCharacter = true;
 								break;
 							}
 							else {
@@ -254,7 +192,7 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 				updateLayout(App);
 			}
 			if (game->getGameState() == GameState::match_ended) {
-				gameOverPanel.update(event, App, *game);
+				gameOverPanel.update(event, App);
 			} else {
 				sidePanel.update(event, App, *game);
 			}
@@ -265,10 +203,11 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 		float y = (float)mousePos_old.y - mousePos.y;
 		mousePos_old = mousePos;
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
+			centerCharacter = false;
 			gameView.move(x, y);
 		}
 
-		//Handle time delta dependent actions
+		// Handle time delta dependent actions
 		int delta = static_cast<int>(clock.restart().asMicroseconds());
 		timeAccumulator += delta;
 
@@ -294,21 +233,25 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 	case sf::Keyboard::Left:
 		if (game->getSelectedCharacter() != game->getCharacters().end() && game->getSelectedCharacter()->isMoving() == false) {
 			game->characterMoveLeft(game->getSelectedCharacter());
+			centerCharacter = true;
 		}
 		break;
 	case sf::Keyboard::Right:
 		if (game->getSelectedCharacter() != game->getCharacters().end() && game->getSelectedCharacter()->isMoving() == false) {
 			game->characterMoveRight(game->getSelectedCharacter());
+			centerCharacter = true;
 		}
 		break;
 	case sf::Keyboard::Down:
 		if (game->getSelectedCharacter() != game->getCharacters().end() && game->getSelectedCharacter()->isMoving() == false) {
 			game->characterMoveDown(game->getSelectedCharacter());
+			centerCharacter = true;
 		}
 		break;
 	case sf::Keyboard::Up:
 		if (game->getSelectedCharacter() != game->getCharacters().end() && game->getSelectedCharacter()->isMoving() == false) {
 			game->characterMoveUp(game->getSelectedCharacter());
+			centerCharacter = true;
 		}
 		break;
 
@@ -316,18 +259,22 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 
 	case sf::Keyboard::A:
 		if (gameView.getCenter().x - (App.getSize().x - MENUSIZE) / 2 > 0) gameView.move(-TILESIZE, 0);
+		centerCharacter = false;
 		break;
 	case sf::Keyboard::D:
 		if (gameView.getCenter().x + (App.getSize().x - MENUSIZE) / 2 < game->getGrid().getWidth() * TILESIZE) gameView.move(TILESIZE, 0);
+		centerCharacter = false;
 		break;
 	case sf::Keyboard::S:
 		if (gameView.getCenter().y + App.getSize().y / 2 < game->getGrid().getHeight() * TILESIZE) gameView.move(0, TILESIZE);
+		centerCharacter = false;
 		break;
 	case sf::Keyboard::W:
 		if (gameView.getCenter().y - App.getSize().y / 2 > 0) gameView.move(0, -TILESIZE);
+		centerCharacter = false;
 		break;
 	case sf::Keyboard::Numpad0:
-		gameView.setSize(sf::Vector2f(App.getSize().x - (App.getSize().x / 4), App.getSize().y));
+		gameView.setSize(sf::Vector2f(static_cast<float>(App.getSize().x - (App.getSize().x / 4)), static_cast<float>(App.getSize().y)));
 		break;
 		//enter shooting mode
 	case sf::Keyboard::Q:
@@ -342,7 +289,7 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 
 	App.setView(gameView);
 	// Center the camera on the selected player (linear interpolation)
-	if (game->getSelectedCharacter() != game->getCharacters().end()) {
+	if (game->getSelectedCharacter() != game->getCharacters().end() && centerCharacter == true) {
 		float factor = 0.01f;
 		gameView.setCenter(sf::Vector2f(gameView.getCenter().x + (game->getSelectedCharacter()->getRenderPosition().x - gameView.getCenter().x) * factor, gameView.getCenter().y + (game->getSelectedCharacter()->getRenderPosition().y - gameView.getCenter().y) * factor));
 	}
@@ -407,7 +354,7 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 
 	if (mouseMode == MouseMode::shoot && game->getSelectedCharacter() != game->getCharacters().end() && game->getGameState() == GameState::active) {
 		auto gc = game->getSelectedCharacter();
-		auto target = getClickedTilePosition(App, sf::Mouse::getPosition(App), gameView);
+		auto target = getClickedTilePosition(App);
 		auto origin = gc->getRenderPosition();
 		rayLine.setPositionPoint1(sf::Vector2f(static_cast<float>(origin.x + TILESIZE / 2), static_cast<float>(origin.y + TILESIZE / 2)));
 		rayLine.setPositionPoint2(Util::mapToPixels(game->traceFromCharacter(gc, target, true)));
@@ -431,10 +378,10 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 }
 
 // Draw visible area for the selected game character
-void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles) {
+void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> tiles) {
 
 	renderTexture_visibleTiles->clear(sf::Color(0, 0, 0, 0));
-	for (auto it = visibleTiles.begin(); it != visibleTiles.end(); ++it) {
+	for (auto it = tiles.begin(); it != tiles.end(); ++it) {
 		visibleTileShape.setPosition(static_cast<float>(it->x * TILESIZE), static_cast<float>(it->y * TILESIZE));
 		renderTexture_visibleTiles->draw(visibleTileShape); // or any other drawable
 	}
@@ -449,8 +396,6 @@ void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u
 }
 
 void GameScreen::drawUI(sf::RenderWindow &App) {
-	unsigned int menuSize = App.getSize().x / 4;
-
 	updateUIComponents(App);
 
 	//Draw elements
@@ -458,7 +403,7 @@ void GameScreen::drawUI(sf::RenderWindow &App) {
 	App.draw(backgroundSprite);
 
 	if (game->getGameState() == GameState::match_ended) {
-		gameOverPanel.draw(App, *game, *this);
+		gameOverPanel.draw(App, *game);
 	}
 	else {
 		sidePanel.draw(App, *game, *this);
@@ -476,13 +421,16 @@ void GameScreen::drawGameUI(sf::RenderWindow &App) {
 
 	switch (game->getStatusMessage().getSeverity()) {
 	case SEVERITY_INFORMATION:
-		screenStatusMessage.setFillColor(sf::Color::White);
+		screenStatusMessage.setTextColor(sf::Color::White);
 		break;
 	case SEVERITY_CRITICAL:
-		screenStatusMessage.setFillColor(sf::Color::Red);
+		screenStatusMessage.setTextColor(sf::Color::Red);
+		break;
+	case SEVERITY_BOOST:
+		screenStatusMessage.setTextColor(sf::Color::Green);
 		break;
 	default:
-		screenStatusMessage.setFillColor(sf::Color::White);
+		screenStatusMessage.setTextColor(sf::Color::White);
 	}
 
 	App.draw(screenStatusMessage);
@@ -493,23 +441,11 @@ void GameScreen::drawGameUI(sf::RenderWindow &App) {
 void GameScreen::updateLayout(sf::RenderWindow & App)
 {
 	unsigned int menuSize = App.getSize().x / 4;
-	unsigned int menuCenterX = App.getSize().x - menuSize / 2;
-	unsigned int margin = 10;
 
 	/** Game View */
 
 	gameView.setSize(static_cast<float>(App.getSize().x - menuSize), static_cast<float>(App.getSize().y));
-	gameView.setCenter(static_cast<float>(App.getSize().x - menuSize / 2), static_cast<float>(App.getSize().y / 2));
 	gameView.setViewport(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x - menuSize) / static_cast<float>(App.getSize().x), 1));
-
-	// Center the camera
-	if (game->getSelectedCharacter() != game->getCharacters().end()) {
-		gameView.setCenter(sf::Vector2f(static_cast<float>(game->getSelectedCharacter()->getRenderPosition().x), static_cast<float>(game->getSelectedCharacter()->getRenderPosition().y)));
-	} else {
-		float zoomFactor = static_cast<float>(game->getGrid().getHeight() * TILESIZE) / gameView.getSize().y;
-		zoomViewAt(sf::Vector2i(static_cast<int>(gameView.getCenter().x), static_cast<int>(gameView.getCenter().y)), App, gameView, zoomFactor);
-		gameView.setCenter(sf::Vector2f(static_cast<float>(game->getGrid().getWidth() / 2 * TILESIZE), static_cast<float>(game->getGrid().getHeight() / 2 * TILESIZE)));
-	}
 	
 	/** UI View */
 
@@ -534,12 +470,23 @@ void GameScreen::endTurn(sf::RenderWindow &App) {
 	mouseMode = MouseMode::select;
 	rayLine.setPositionPoint1(sf::Vector2f(0, 0));
 	rayLine.setPositionPoint2(sf::Vector2f(0, 0));
+
+	// Store view information for the current player
+	playerViews.at(game->getCurrentPlayer() - 1).viewCenter = gameView.getCenter();
+	playerViews.at(game->getCurrentPlayer() - 1).zoom = gameView.getSize().y / App.getSize().y;
+
 	game->endTurn();
+	
+	if (game->getTurnNumber() > game->getMaxTurns()) return;
+
 	EndTurnScreen endTurnScr;
 	endTurnScr.setTurn(game->getCurrentPlayer());
 	m_screenResult = endTurnScr.Run(App);
-	// Reset view for the next player
-	updateLayout(App);
+
+	// Retrieve view for the next player
+	gameView.setCenter(playerViews[game->getCurrentPlayer() - 1].viewCenter);
+	gameView.setSize(static_cast<float>(App.getSize().x - (App.getSize().x / 4)) * playerViews[game->getCurrentPlayer() - 1].zoom, static_cast<float>(App.getSize().y * playerViews[game->getCurrentPlayer() - 1].zoom));
+
 }
 
 void GameScreen::pickupItem() {
@@ -569,11 +516,15 @@ void GameScreen::toggleAttackMode() {
 	std::cout << "mousemode changed to " << mouseMode << std::endl;
 }
 
-sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const {
-	sf::Vector2u clickedTile = sf::Vector2u(App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView));
+sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App) const {
+	sf::Vector2i clickedTile = sf::Vector2i(App.mapPixelToCoords(sf::Mouse::getPosition(App), gameView));
 	clickedTile.x /= TILESIZE;
 	clickedTile.y /= TILESIZE;
-	return clickedTile;
+	clickedTile.x = (clickedTile.x < 0 ? 0 : clickedTile.x);
+	clickedTile.y = (clickedTile.y < 0 ? 0 : clickedTile.y);
+	clickedTile.x = (clickedTile.x > static_cast<int>(game->getGrid().getWidth() - 1) ? static_cast<int>(game->getGrid().getWidth() - 1) : clickedTile.x);
+	clickedTile.y = (clickedTile.y > static_cast<int>(game->getGrid().getHeight() - 1) ? static_cast<int>(game->getGrid().getHeight() - 1) : clickedTile.y);
+	return sf::Vector2u(clickedTile.x, clickedTile.y);
 }
 
 void GameScreen::addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination, int delay) {

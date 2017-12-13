@@ -1,8 +1,26 @@
 #include "GameCharacter.hpp"
 #include <iostream>
 
-const int animationFrameTime = 125000; // animation frame time in ms
+
 const int moveSpeed = 500000; // time it takes in ms to move from one tile to another
+
+GameCharacter::GameCharacter(sf::Vector2u position, unsigned int team) : 
+	currentPosition(position), previousPosition(position), team(team)
+{
+	// Setup animations
+	Animation animation_walk_left(9, 0, 8, 55556);
+	Animation animation_walk_right(11, 0, 8, 55556);
+	Animation animation_walk_down(10, 0, 8, 55556);
+	Animation animation_walk_up(8, 0, 8, 55556);
+	Animation animation_die(20, 0, 5, 125000, false);
+	animationManager  =AnimationManager(sf::IntRect(0, 0, 32, 32));
+	animationManager.addAnim(animation_walk_left);
+	animationManager.addAnim(animation_walk_right);
+	animationManager.addAnim(animation_walk_down);
+	animationManager.addAnim(animation_walk_up);
+	animationManager.addAnim(animation_die);
+	animationManager.changeAnim(animations::walk_down); // Initial animation
+}
 
 void GameCharacter::setHitpoints(unsigned hp) {
 	if (hp > maxHealth) {
@@ -71,7 +89,6 @@ bool GameCharacter::moveTo(sf::Vector2i target_dir) {
 			default:
 				return false;
 			}
-			return false;
 		}
 	}
 	return false;
@@ -182,6 +199,28 @@ statuscode GameCharacter::useSelected()
 			actionPoints -= AP_COST_USE;
 			status = item_healed;
 			break;
+		case Type_Powerup:
+			switch (std::dynamic_pointer_cast<Powerup>(inventory[selectedItemIdx])->getStatType()) {
+			case Powerup_ActionPoints:
+				maxActionPoints += std::dynamic_pointer_cast<Powerup>(inventory[selectedItemIdx])->getIncreaseAmount();
+				actionPoints += std::dynamic_pointer_cast<Powerup>(inventory[selectedItemIdx])->getIncreaseAmount();
+				status = item_increase_ap;
+				break;
+			case Powerup_Health:
+				maxHealth += std::dynamic_pointer_cast<Powerup>(inventory[selectedItemIdx])->getIncreaseAmount();
+				health += std::dynamic_pointer_cast<Powerup>(inventory[selectedItemIdx])->getIncreaseAmount();
+				status = item_increase_hp;
+				break;
+			case Powerup_LineOfSight:
+				lengthofSight += std::dynamic_pointer_cast<Powerup>(inventory[selectedItemIdx])->getIncreaseAmount();
+				status = item_increase_los;
+				break;
+			default:
+				break;
+			}
+			actionPoints -= AP_COST_USE;
+			break;
+
 		default:
 			status = item_unusable;
 			break;

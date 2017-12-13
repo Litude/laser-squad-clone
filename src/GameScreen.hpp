@@ -22,10 +22,15 @@ namespace MouseMode {
 	enum Mode { shoot, select };
 }
 
+struct PlayerViewInformation {
+	sf::Vector2f viewCenter;
+	float zoom;
+};
+
 class GameScreen : public Screen
 {
 public:
-	GameScreen(sf::RenderWindow &App);
+	GameScreen(sf::RenderWindow &App, std::string mapName);
 	virtual ScreenResult Run(sf::RenderWindow &App);
 public:
 	void exitToMainMenu();
@@ -45,8 +50,8 @@ private:
 	void updateLayout(sf::RenderWindow & App);
 	void updateUIComponents(sf::RenderWindow & App);
 	void handleKeyPress(sf::Event& event, sf::RenderWindow& App);
-	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
-	void DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> visibleTiles);
+	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App) const;
+	void DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> tiles);
 	void addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination, int delay=0);
 
 	std::shared_ptr<Game> game;
@@ -67,15 +72,12 @@ private:
 	sf::RectangleShape healthbarBkg;
 	sf::RectangleShape healthbar;
 
-	int rayIncr = 1;
+	int8_t rayIncr = 1;
 	sf::Line rayLine;
 
 	std::vector<sf::Sprite> mapTiles;
 	sf::Clock fpsclock;
 	sf::Clock clock;
-	float lastTime = 0;
-	float currentTime = 0;
-	int timeStep = 16000;
 	int timeAccumulator = 0;
 	std::shared_ptr<sf::RenderTexture> renderTexture_visibleTiles;
 	sf::RectangleShape visibleTileShape;
@@ -83,7 +85,11 @@ private:
 	std::vector<Projectile> activeProjectiles;
 	std::vector<sf::Vector2u> visibleTiles;
 
+	bool centerCharacter = false;
+
 	sf::Text screenStatusMessage;
+
+	std::vector<PlayerViewInformation> playerViews;
 
 	MouseMode::Mode mouseMode = MouseMode::select;
 };

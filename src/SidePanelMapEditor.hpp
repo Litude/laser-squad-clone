@@ -15,15 +15,25 @@
 
 class MapEditor;
 
+enum ElementType {
+	Grounds,
+	Blocks,
+	Items,
+	Characters,
+};
+
 class SidePanelMapEditor
 {
 public:
 	SidePanelMapEditor() {}
 	SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor);
-	void draw(sf::RenderWindow &App, Game &game, MapEditor& editor);
-	void update(sf::Event& event, sf::RenderWindow& App, Game &game);
+	void draw(sf::RenderWindow &App);
+	void update(sf::Event& event, sf::RenderWindow& App);
 	void updateLayout(sf::RenderWindow & App);
 	void updateUIComponents(sf::RenderWindow & App);
+	const std::string getMapName();
+	void setMapName(const std::string &name);
+	void setActiveTileset(ElementType element);
 private:
 	std::shared_ptr<sf::Font> font;
 	std::shared_ptr<sf::Texture> texGrounds;
@@ -31,19 +41,24 @@ private:
 	std::shared_ptr<sf::Texture> texItems;
 	std::shared_ptr<sf::Texture> texPlayer1;
 	std::shared_ptr<sf::Texture> texPlayer2;
+	std::shared_ptr<sf::Texture> texRemoveIcon;
 	sf::View interfaceView;
 
 	void saveMap(MapEditor &editor);
 
 
+	std::vector<Button> buttons_tilesets;
 	std::vector<Button> buttons_grounds;
 	std::vector<Button> buttons_blocks;
 	std::vector<Button> buttons_items;
 	std::vector<Button> buttons_characters;
 
+	Button createTilesetButton(ElementType element, MapEditor &editor);
 	Button createGroundTileButton(TileGround tileGround, MapEditor &editor);
 	Button createBlockTileButton(TileBlock tileBlock, MapEditor &editor);
+	Button createRemoveBlockTileButton(MapEditor &editor);
 	Button createItemButton(Item item, MapEditor &editor);
+	Button createRemoveItemButton(MapEditor &editor);
 	Button createCharacterButton(unsigned int team, MapEditor &editor);
 	Button createRemoveCharacterButton(MapEditor &editor);
 	
@@ -53,13 +68,17 @@ private:
 	sf::Text textFPS;
 	TextField mapNameField;
 	Button buttonSaveMap;
+	sf::Text textTilesets;
+	sf::Text textActiveElement;
 
 	sf::Clock fpsclock;
 	sf::Clock clock;
 	float lastTime = 0;
 	float currentTime = 0;
-	int timeStep = 16000;
-	int timeAccumulator = 0;
+	
+	sf::RectangleShape selectedTileset;
+	ElementType activeElements = Grounds;
+
 };
 
 #endif

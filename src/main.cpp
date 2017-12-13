@@ -15,7 +15,7 @@
 #include "ControlsScreen.hpp"
 #include "GridLoader.hpp"
 
-int main(int argc, char* argv[]) {
+int main() {
 
 	sf::RenderWindow App(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Laser Squad");
 
@@ -37,9 +37,11 @@ int main(int argc, char* argv[]) {
 			result = screen->Run(App);
 			break;
 		case GameScene:
-			// TODO: Pass NewGameScreen parameters to GameScreen here
-			screen.reset(new GameScreen(App));
+		{
+			auto newGameScreen = dynamic_cast<NgMenuScreen*>(screen.get());
+			screen.reset(new GameScreen(App, newGameScreen->getMapName()));
 			result = screen->Run(App);
+		}
 			break;
 		case NewMapMenuScene:
 			screen.reset(new NewMapMenuScreen());
@@ -47,7 +49,6 @@ int main(int argc, char* argv[]) {
 			break;
         case EditorScene:
 		{
-			// TODO: Pass NewMapMenuScene parameters to MapEditor here
 			auto mapScreen = dynamic_cast<NewMapMenuScreen*>(screen.get());
 			if (mapScreen->getMapInitType() == MapInitType::new_map) {
 				screen.reset(new MapEditor(App, mapScreen->getMapSizeX(), mapScreen->getMapSizeY()));

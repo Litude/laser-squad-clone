@@ -17,7 +17,7 @@ enum ItemIcon {
 	Icon_Health_Small,
 	Icon_Health_Large,
 	Icon_Powerup_Armor,
-	Icon_Powerup_Accuracy,
+	Icon_Powerup_Sight,
 	Icon_Weapon_Pistol,
 	Icon_Weapon_Shotgun,
 	Icon_Weapon_Uzi,
@@ -27,6 +27,7 @@ enum ItemIcon {
 	Icon_Ammo_12mm,
 	Icon_Ammo_Shells,
 	Icon_Ammo_Rockets,
+	Icon_Powerup_Boots,
 	Icon_Weapon_Knife,
 	Icon_Weapon_Sword,
 	Icon_Weapon_Grenade,
@@ -36,9 +37,14 @@ enum ItemIcon {
 class Item {
 public:
 	Item() : m_itemType(Type_None), m_itemIcon(Icon_None), m_stackable(false), m_amount(1) {};
+	virtual ~Item() {};
+	Item(const Item& copyFrom) = default;
+	Item& operator=(const Item& copyFrom) = default;
+	Item(Item &&) = default;
+	Item& operator=(Item &&) = default;
+
 	Item(ItemType type, ItemIcon icon, std::string name) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_consumable(false), m_stackable(false), m_amount(1) {};
 	Item(ItemType type, ItemIcon icon, std::string name, bool stackable, bool consumable, unsigned int amount) : m_itemType(type), m_itemIcon(icon), m_itemName(name), m_consumable(consumable), m_stackable(stackable), m_amount(amount) {};
-	virtual ~Item() {};
 	ItemType getType() const { return m_itemType; };
 	ItemIcon getIcon() const { return m_itemIcon; };
 	std::string getName() const {return m_itemName; };

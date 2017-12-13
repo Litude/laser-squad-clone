@@ -39,7 +39,7 @@ public:
 	void removeItem();
 	void addCharacter(unsigned int team);
 	void removeCharacter();
-	bool saveMap(std::string name);
+	bool saveMap();
 private:
     ScreenResult m_screenResult;
 private:
@@ -50,12 +50,12 @@ private:
     void updateLayout(sf::RenderWindow & App);
     void updateUIComponents(sf::RenderWindow & App);
 	void handleKeyPress(sf::Event& event, sf::RenderWindow& App);
-    sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App, const sf::Vector2i& point, const sf::View& view) const;
+    sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App) const;
 	sf::Vector2u selectToolCoord;
 
 	SidePanelMapEditor sidePanel;
     
-    Game game;
+	std::shared_ptr<Game> game;
     std::shared_ptr<TileMap> tileMap;
     std::shared_ptr<sf::Font> font;
     std::shared_ptr<sf::Texture> texPlayer1;
@@ -72,12 +72,9 @@ private:
     
     sf::Clock fpsclock;
     sf::Clock clock;
-    float lastTime = 0;
-    float currentTime = 0;
-    double timeStep = 16000;
+
     double timeAccumulator = 0;
     
-    MouseMode2::Mode2 mouseMode = MouseMode2::select;
 };
 
 #endif /* MapEditor_hpp */
