@@ -25,7 +25,8 @@ TextField::TextField(int size, sf::RectangleShape Rshape, sf::Font& font, tf_typ
   setFocus(false);
   setStatus(false);
   t_Rshape = Rshape;
-
+  t_width = Rshape.getSize().x;
+  t_height = Rshape.getSize().y;
   t_Rshape.setFillColor(sf::Color::White);
   t_Rshape.setOutlineColor(sf::Color::Black);
 

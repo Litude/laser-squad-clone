@@ -78,6 +78,14 @@ void NgMenuScreen::drawUI(sf::RenderWindow &App)
 		App.draw(button);
 	}
 	App.draw(tField);
+	if(errorMessage){
+		float errorTime = errorClock.getElapsedTime().asSeconds();
+		if(errorTime < 1.5f){
+			App.draw(screenStatusMessage);
+	}else{
+		errorMessage = false;
+		}
+	}
 	App.display();
 }
 
@@ -89,6 +97,7 @@ void NgMenuScreen::updateLayout(sf::RenderWindow & App)
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
 	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, App.getView().getSize().y * 0.5f - logoSprite.getGlobalBounds().height * 1.f });
 	tField.setPosition({ App.getView().getSize().x * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f});
+	screenStatusMessage.setPosition(sf::Vector2f(0 , App.getSize().y - screenStatusMessage.getGlobalBounds().height * 1.2));
 	unsigned int i = 1;
 	for (auto &button : buttons) {
 		button.setPosition({ App.getView().getSize().x * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + button.getGlobalBounds().height * 1.5f * i });
@@ -126,7 +135,7 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	rs.setSize(sf::Vector2f(170,40));
 
 	Button launchgame("Launch game", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f), rs);
-	launchgame.setCallback([&] {this->openScreen(ScreenResult::GameScene); });
+	launchgame.setCallback([&] {this->checkMap(getMapName()); });
 	buttons.push_back(launchgame);
 
 	TextField loadmap(25, rs, *font);
@@ -139,8 +148,15 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
 	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
 	                buttons.push_back(back);
-
-
+	#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
+	screenStatusMessage.setOutlineThickness(4);
+	screenStatusMessage.setOutlineColor(sf::Color::Black);
+	#endif
+	screenStatusMessage.setTextColor(sf::Color::Red);
+	screenStatusMessage.setString("Map not found!");
+	screenStatusMessage.setCharacterSize(40);
+	screenStatusMessage.setFont(*font);
+	errorMessage = false;
 
 
 	updateLayout(App);
@@ -150,4 +166,14 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 
 std::string NgMenuScreen::getMapName() {
 	return tField.getString();
+}
+
+void NgMenuScreen::checkMap(const std::string& mapname) {
+	std::ifstream f("levels/" + mapname + ".json");
+	if(f.good()) {
+		openScreen(ScreenResult::GameScene);
+	}else{
+		errorMessage = true;
+		errorClock.restart();
+	}
 }
