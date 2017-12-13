@@ -85,14 +85,17 @@ public:
 
 class Knife : public Weapon {
 public:
-	Knife() : Weapon(Icon_Weapon_Knife, "Throwing Knife", 5, 500, 22, 1, 1, 0, 6, Ammo_Knife) {
-		loadedAmmo = 5;
-	}
+	Knife() : Weapon(Icon_Weapon_Knife, "Throwing Knife", 5, 500, 22, 1, 1, 0, 6, Ammo_Knife) { loadedAmmo = 5; }
 };
 
 class RocketLauncher : public Weapon {
 public:
 	RocketLauncher(): Weapon(Icon_Weapon_Launcher, "Rocket Launcher", 8, 2, 25, 1, 2, 20, 12, Ammo_Rockets, 0, 2) {}
+};
+
+class Grenade : public Weapon {
+public:
+	Grenade(): Weapon(Icon_Weapon_Grenade, "Grenade", 6, 500, 20, 1, 1, 0, 7, Ammo_Grenades, 0, 1) { loadedAmmo = 2; }
 };
 	
 
