@@ -16,6 +16,7 @@
 #include "Health.hpp"
 #include "Weapon.hpp"
 #include "Ammo.hpp"
+#include "Powerup.hpp"
 
 namespace jreader {
 
@@ -48,6 +49,12 @@ namespace jreader {
 			return std::make_shared<AmmoRockets>();
 		} else if (item_str == "Shotgun Shells") {
 			return std::make_shared<AmmoShotgunShells>();
+		} else if (item_str == "Armor") {
+			return std::make_shared<Armor>();
+		} else if (item_str == "Bionic Sight") {
+			return std::make_shared<Sight>();
+		} else if (item_str == "Boots of Running Urgently") {
+			return std::make_shared<Boots>();
 		} else {
 			return nullptr;
 		}
