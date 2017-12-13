@@ -85,7 +85,7 @@ GameScreen::GameScreen(sf::RenderWindow &App)
 	
 	jreader::writeJSON(game, "test_level");
 	*/
-	game = jreader::loadJSON("test_level");
+	game = jreader::loadJSON("debug_level");
 	
 	//Need to call this magic function after loading, otherwise the program segfaults.
 	//Don't ask me.
