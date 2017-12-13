@@ -96,13 +96,23 @@ void NgMenuScreen::updateLayout(sf::RenderWindow & App)
 		App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 		App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
 	logoSprite.setPosition({ App.getView().getSize().x * 0.5f - logoSprite.getGlobalBounds().width * 0.5f, App.getView().getSize().y * 0.5f - logoSprite.getGlobalBounds().height * 1.f });
-	tField.setPosition({ App.getView().getSize().x * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f});
-	screenStatusMessage.setPosition(sf::Vector2f(0 , App.getSize().y - screenStatusMessage.getGlobalBounds().height * 1.2));
-	unsigned int i = 1;
-	for (auto &button : buttons) {
-		button.setPosition({ App.getView().getSize().x * 0.5f, logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + button.getGlobalBounds().height * 1.5f * i });
-		i++;
-	}
+	screenStatusMessage.setPosition(sf::Vector2f(0 , App.getSize().y - screenStatusMessage.getGlobalBounds().height * 1.2f));
+
+	float margin = 10.f;
+
+	tField.setPosition({ App.getSize().x * 0.5f - buttons[0].getGlobalBounds().width / 2 - margin / 2,
+		logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + buttons[0].getGlobalBounds().height * 1.5f});
+	buttons[0].setPosition({ App.getView().getSize().x * 0.5f + buttons[0].getGlobalBounds().width / 2 + margin / 2,
+		logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + buttons[0].getGlobalBounds().height * 1.5f});
+	buttons[1].setPosition({ App.getView().getSize().x * 0.5f,
+		logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + buttons[1].getGlobalBounds().height * 3.0f });
+
+	float componentOffsetY = logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f;
+	float menuCenterX = App.getView().getSize().x / 2;
+
+	buttons[2].setPosition(sf::Vector2f(menuCenterX - buttons[3].getGlobalBounds().width / 2 - buttons[2].getGlobalBounds().width / 2 - margin, componentOffsetY));
+	buttons[3].setPosition(sf::Vector2f(menuCenterX, componentOffsetY));
+	buttons[4].setPosition(sf::Vector2f(menuCenterX + buttons[3].getGlobalBounds().width / 2 + buttons[4].getGlobalBounds().width / 2 + margin, componentOffsetY));
 }
 
 bool NgMenuScreen::initComponents(sf::RenderWindow & App)
@@ -134,20 +144,32 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	rs.setFillColor(sf::Color::White);
 	rs.setSize(sf::Vector2f(170,40));
 
-	Button launchgame("Launch game", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 250.f), rs);
+	Button launchgame("Launch game", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	launchgame.setCallback([&] {this->checkMap(getMapName()); });
 	buttons.push_back(launchgame);
 
 	TextField loadmap(25, rs, *font);
-	loadmap.setPosition(sf::Vector2f(300.f,450.f));
 	loadmap.setFont(*font);
 	loadmap.setSize(170, 40);
 	loadmap.setDefaultStr("Load map..");
 	tField = loadmap;
 
-	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
+	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
-	                buttons.push_back(back);
+	buttons.push_back(back);
+
+	Button map1("Map 1", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map1.setCallback([&] {this->checkMap("map1"); });
+	buttons.push_back(map1);
+
+	Button map2("Map 2", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map2.setCallback([&] {this->checkMap("map2"); });
+	buttons.push_back(map2);
+
+	Button map3("Map3", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map3.setCallback([&] {this->checkMap("map3"); });
+	buttons.push_back(map3);
+
 	#if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
 	screenStatusMessage.setOutlineThickness(4);
 	screenStatusMessage.setOutlineColor(sf::Color::Black);
@@ -157,7 +179,6 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	screenStatusMessage.setCharacterSize(40);
 	screenStatusMessage.setFont(*font);
 	errorMessage = false;
-
 
 	updateLayout(App);
 
@@ -169,8 +190,9 @@ std::string NgMenuScreen::getMapName() {
 }
 
 void NgMenuScreen::checkMap(const std::string& mapname) {
+	tField.setString(mapname);
 	std::ifstream f("levels/" + mapname + ".json");
-	if(f.good()) {
+	if(f.good() && !tField.getString().empty()) {
 		openScreen(ScreenResult::GameScene);
 	}else{
 		errorMessage = true;
