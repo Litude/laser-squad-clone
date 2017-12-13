@@ -134,6 +134,16 @@ void Game::characterUseItem(gc_iterator it) {
 	case item_none_selected:
 		statusMessage.setStatusMessage(MSG_ITEM_NONE_SELECTED, SEVERITY_INFORMATION);
 		break;
+	case item_increase_ap:
+		statusMessage.setStatusMessage(MSG_ITEM_INCREASE_AP, SEVERITY_BOOST);
+		break;
+	case item_increase_hp:
+		statusMessage.setStatusMessage(MSG_ITEM_INCREASE_HP, SEVERITY_BOOST);
+		break;
+	case item_increase_los:
+		statusMessage.setStatusMessage(MSG_ITEM_INCREASE_LOS, SEVERITY_BOOST);
+		recalculateLOS = true;
+		break;
 	default:
 		break;
 	}
