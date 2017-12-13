@@ -11,7 +11,13 @@ enum ScreenResult {
 class Screen
 {
 public:
-	virtual ~Screen() = 0;
+	virtual ~Screen() {}
+
+	Screen() = default;
+	Screen(const Screen& copyFrom) = default;
+	Screen& operator=(const Screen& copyFrom) = default;
+	Screen(Screen &&) = default;
+	Screen& operator=(Screen &&) = default;
 	virtual ScreenResult Run(sf::RenderWindow &App) = 0;
 private:
 };
