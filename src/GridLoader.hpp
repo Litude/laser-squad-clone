@@ -16,14 +16,15 @@
 #include "Health.hpp"
 #include "Weapon.hpp"
 #include "Ammo.hpp"
+#include "Powerup.hpp"
 
 namespace jreader {
 
 	typedef Item* (*item_create)();
-	static std::map<std::string, TileBlock> block = {{"wall", wall}, {"tree", tree}, {"bush", bush}, {"air", air}};
+	static std::map<std::string, TileBlock> block = { {"wall", wall}, {"tree", tree}, {"bush", bush}, {"air", air}, {"trophy", trophy}, {"small_tree", small_tree}, {"cherry_tree", cherry_tree}, {"rock", rock} };
 	static std::map<std::string, TileGround> ground = {{"grass", grass}, {"dirt", dirt}, {"wood", wood}, {"stone", stone}, {"metal", metal}, {"black", black}};
 	static std::vector<std::string> ground_str = {"black", "dirt", "grass", "wood", "stone", "metal"};
-	static std::vector<std::string> block_str = {"air", "wall", "tree", "bush"};
+	static std::vector<std::string> block_str = {"air", "wall", "tree", "bush", "trophy", "small_tree", "cherry_tree", "rock" };
 
 	inline std::shared_ptr<Item> create_item(std::string item_str) {
 		if (item_str == "Small Health Pack") {
@@ -48,6 +49,12 @@ namespace jreader {
 			return std::make_shared<AmmoRockets>();
 		} else if (item_str == "Shotgun Shells") {
 			return std::make_shared<AmmoShotgunShells>();
+		} else if (item_str == "Armor") {
+			return std::make_shared<Armor>();
+		} else if (item_str == "Bionic Sight") {
+			return std::make_shared<Sight>();
+		} else if (item_str == "Boots of Running Urgently") {
+			return std::make_shared<Boots>();
 		} else {
 			return nullptr;
 		}

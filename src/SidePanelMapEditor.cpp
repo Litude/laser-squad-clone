@@ -3,6 +3,7 @@
 #include "Health.hpp"
 #include "Ammo.hpp"
 #include "MapEditor.hpp"
+#include "Powerup.hpp"
 
 SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 {
@@ -80,6 +81,14 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	buttons_blocks.push_back(button);
 	button = createBlockTileButton(TileBlock::wall, editor);
 	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::trophy, editor);
+	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::small_tree, editor);
+	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::cherry_tree, editor);
+	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::rock, editor);
+	buttons_blocks.push_back(button);
 
 	// Item buttons
 	button = createItemButton(Item(), editor);
@@ -105,6 +114,12 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	button = createItemButton(AmmoShotgunShells(), editor);
 	buttons_items.push_back(button);
 	button = createItemButton(AmmoRockets(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Armor(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Sight(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(Boots(), editor);
 	buttons_items.push_back(button);
 
 	// Character buttons

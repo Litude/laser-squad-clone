@@ -10,7 +10,7 @@
 
 enum TileGround { black = 0, dirt = 1, grass = 2, wood = 3, stone = 4, metal = 5 };
 
-enum TileBlock { air = 0, wall = 1, tree = 2, bush = 3 };
+enum TileBlock { air = 0, wall = 1, tree = 2, bush = 3, trophy = 4, small_tree = 5, cherry_tree = 6, rock = 7 };
 
 class Tile {
 public:
