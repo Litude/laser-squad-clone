@@ -239,7 +239,7 @@ void SidePanelMapEditor::update(sf::Event& event, sf::RenderWindow& App)
 		}
 		break;
 	}
-	if (event.type == sf::Event::Resized || event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonReleased) {
+	if (event.type == sf::Event::Resized || event.type == sf::Event::KeyPressed || event.type == sf::Event::MouseButtonPressed) {
 		updateLayout(App);
 	}
 
