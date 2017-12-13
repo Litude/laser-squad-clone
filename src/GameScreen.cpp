@@ -346,11 +346,21 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 			App.draw((*proj).drawable());
 		}
 		if (proj->reachedDestination()) {
+			addExplosion(*proj);
 			proj = activeProjectiles.erase(proj);
 		} else {
 			++proj;
 		}
 	}
+	//Draw explosions
+	for (auto expl = activeExplosions.begin(); expl != activeExplosions.end(); ) {
+		if (expl->isActive()) {
+			App.draw((*expl).drawable());
+			++expl;
+		} else {
+			expl = activeExplosions.erase(expl);
+		}
+	} 
 
 	if (mouseMode == MouseMode::shoot && game->getSelectedCharacter() != game->getCharacters().end() && game->getGameState() == GameState::active) {
 		auto gc = game->getSelectedCharacter();
@@ -531,6 +541,11 @@ void GameScreen::addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u worl
 	AmmoType wt = weapon->getAmmoType();
 	Projectile p(wt, Util::mapToPixels(world_origin), Util::mapToPixels(world_destination), delay);
 	activeProjectiles.push_back(p);
+}
+
+void GameScreen::addExplosion(Projectile& proj) {
+	Explosion expl(proj);
+	activeExplosions.push_back(expl);
 }
 
 void GameScreen::zoomViewAt(sf::Vector2i pixel, sf::RenderWindow& window, sf::View &view, float zoom)

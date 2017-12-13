@@ -12,6 +12,7 @@
 #include "Util.hpp"
 #include "Weapon.hpp"
 #include "Projectile.hpp"
+#include "Explosion.hpp"
 #include "SidePanel.hpp"
 #include "GameOverPanel.hpp"
 #include "Line.hpp"
@@ -47,12 +48,14 @@ private:
 	void drawGame(sf::RenderWindow &App);
 	void drawUI(sf::RenderWindow &App);
 	void drawGameUI(sf::RenderWindow &App);
+
 	void updateLayout(sf::RenderWindow & App);
 	void updateUIComponents(sf::RenderWindow & App);
 	void handleKeyPress(sf::Event& event, sf::RenderWindow& App);
 	sf::Vector2u getClickedTilePosition(const sf::RenderWindow& App) const;
 	void DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> tiles);
 	void addProjectile(std::shared_ptr<Weapon> weapon, sf::Vector2u world_origin, sf::Vector2u world_destination, int delay=0);
+	void addExplosion(Projectile& proj);
 
 	std::shared_ptr<Game> game;
 	std::shared_ptr<TileMap> tileMap;
@@ -83,6 +86,7 @@ private:
 	sf::RectangleShape visibleTileShape;
 	sf::Shader* shader;
 	std::vector<Projectile> activeProjectiles;
+	std::vector<Explosion> activeExplosions;
 	std::vector<sf::Vector2u> visibleTiles;
 
 	bool centerCharacter = false;
