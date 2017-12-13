@@ -111,6 +111,14 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	buttons_blocks.push_back(button);
 	button = createBlockTileButton(TileBlock::rock, editor);
 	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::barrels, editor);
+	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::stove, editor);
+	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::stone_head, editor);
+	buttons_blocks.push_back(button);
+	button = createBlockTileButton(TileBlock::toilet, editor);
+	buttons_blocks.push_back(button);
 
 	// Item buttons
 	button = createRemoveItemButton(editor);
