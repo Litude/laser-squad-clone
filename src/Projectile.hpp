@@ -13,7 +13,7 @@
 class Projectile {
 public:
 	//origin and destination in pixels
-	Projectile(AmmoType weaponType, sf::Vector2f origin, sf::Vector2f destination, int delay=0) : m_origin(origin), m_destination(destination), delay(delay) {
+	Projectile(AmmoType weaponType, sf::Vector2f origin, sf::Vector2f destination, int delay=0) : atype(weaponType), m_origin(origin), m_destination(destination), delay(delay) {
 		proj.setTexture(*PROJ_TEXTURES);
 		sf::Vector2i defSize(32, 32);
 		sf::IntRect rect(sf::Vector2i(0, 0), defSize);
@@ -68,14 +68,15 @@ public:
 
 	bool isActive();
 	bool reachedDestination() const;
-	void draw(sf::RenderTarget&, sf::RenderStates) const { }
-	const sf::Vector2f& getOrigin() const { return m_origin; }
-	const sf::Vector2f& getDestination() const { return m_destination; }
+	AmmoType getType() const { return atype; }
+	sf::Vector2f getOrigin() const { return m_origin; }
+	sf::Vector2f getDestination() const { return m_destination; }
 
 	sf::Sprite drawable();
 	operator sf::Sprite() { return drawable(); }
 
 private:
+	AmmoType atype;
 	sf::Vector2f m_origin;
 	sf::Vector2f m_destination;
 	// How many ticks to wait before launching projectile
@@ -88,7 +89,7 @@ private:
 	float distance;
 
 	static std::shared_ptr<sf::Texture> loadTextures();
-	static std::shared_ptr<sf::Texture> PROJ_TEXTURES;	
+	static std::shared_ptr<sf::Texture> PROJ_TEXTURES;
 };
 
 std::ostream& operator<<(std::ostream& out, const Projectile& t);

@@ -5,6 +5,7 @@ std::shared_ptr<sf::Texture> Projectile::loadTextures() {
 	if (!proj_textures->loadFromFile("img/projectiles.png")) {
 		std::cout << "Could not load 'img/projectiles.png'" << std::endl;
 	}
+	std::cout << "PROJS LOADED" << std::endl;
 	return proj_textures;
 }
 
