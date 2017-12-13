@@ -40,6 +40,12 @@ namespace jreader {
 			return std::make_shared<Rifle>();
 		} else if (item_str == "Double Barrel") {
 			return std::make_shared<DoubleBarrel>();
+		} else if (item_str == "Throwing Knife") {
+			return std::make_shared<Knife>();
+		} else if (item_str == "Sword") {
+			return std::make_shared<Sword>();
+		} else if (item_str == "Rocket Launcher") {
+			return std::make_shared<RocketLauncher>();
 		} else if (item_str == "9mm Bullets") {
 			return std::make_shared<Ammo9mmBullets>();
 		} else if (item_str == "12mm Bullets") {
