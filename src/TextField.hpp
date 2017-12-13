@@ -33,7 +33,7 @@ public:
 
   const std::string &getString() const {return t_str;};
   const sf::Vector2f &getPos() const {return t_pos;};
-  const sf::Vector2f &getSize() const {return sf::Vector2f(t_width, t_height);};
+  const sf::Vector2f getSize() const {return sf::Vector2f(t_width, t_height);};
   size_t getCursorPos() const {return t_index;};
   bool getFocus() const {return t_isFocused;};
   bool getStatus() const {return t_textEntered;};

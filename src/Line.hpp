@@ -21,13 +21,13 @@ namespace sf
 		const sf::Vector2f& getPositionPoint2() { return point2; }
 		void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 	private:
-		void calculateVertices();
+		sf::Color color1;
+		sf::Color color2;
+		float thickness;		
 		sf::Vector2f point1;
 		sf::Vector2f point2;
 		sf::Vertex vertices[4];
-		float thickness;
-		sf::Color color1;
-		sf::Color color2;
+		void calculateVertices();
 	};
 }
 

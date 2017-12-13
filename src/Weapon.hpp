@@ -29,6 +29,7 @@ public:
 private:
 	//WeaponType wt
 	unsigned ap;
+	unsigned loadedAmmo;
 	unsigned maxAmmo;
 	unsigned damage;
 	unsigned shots;
@@ -42,8 +43,6 @@ private:
 	// area of effect, 0 for single target
 	unsigned aoe;
 
-protected:
-	unsigned loadedAmmo;
 };
 
 class Hands : public Weapon {

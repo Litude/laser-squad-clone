@@ -38,8 +38,8 @@ public:
 	bool                                    characterMoveDown(gc_iterator it);
 	bool                                    characterMove(gc_iterator it, sf::Vector2i direction);
 	const std::vector<sf::Vector2u>         characterShoot(gc_iterator gc, sf::Vector2u target);
-	bool									characterPickUpItem(gc_iterator it);
-	bool									characterDropItem(gc_iterator it);
+	bool									characterPickUpItem();
+	bool									characterDropItem();
 	void									characterUseItem(gc_iterator it);
 	void									characterDropAllItems(GameCharacter& gc);
 	const sf::Vector2u                      traceFromCharacter(gc_iterator gc, sf::Vector2u target, bool ignoreCharacters=false);

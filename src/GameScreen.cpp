@@ -501,7 +501,7 @@ void GameScreen::endTurn(sf::RenderWindow &App) {
 
 void GameScreen::pickupItem() {
 	if (game->getSelectedCharacter() != game->getCharacters().end()) {
-		if (game->characterPickUpItem(game->getSelectedCharacter())) {
+		if (game->characterPickUpItem()) {
 			tileMap->updateTile(game->getSelectedCharacter()->getPosition());
 		}
 	}
@@ -509,7 +509,7 @@ void GameScreen::pickupItem() {
 
 void GameScreen::dropItem() {
 	if (game->getSelectedCharacter() != game->getCharacters().end()) {
-		if (game->characterDropItem(game->getSelectedCharacter())) {;
+		if (game->characterDropItem()) {;
 			tileMap->updateTile(game->getSelectedCharacter()->getPosition());
 		}
 	}

@@ -1,7 +1,7 @@
 #include "Line.hpp"
 
 sf::Line::Line() :
-	point1(sf::Vector2f(0.f, 0.f)), point2(sf::Vector2f(0.f, 0.f)), color1(sf::Color::Yellow), color2(sf::Color::Blue), thickness(3.f)
+	color1(sf::Color::Yellow), color2(sf::Color::Blue), thickness(3.f), point1(sf::Vector2f(0.f, 0.f)), point2(sf::Vector2f(0.f, 0.f))
 {
 }
 

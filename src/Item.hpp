@@ -59,8 +59,8 @@ private:
 	ItemType m_itemType;
 	ItemIcon m_itemIcon;
 	std::string m_itemName;
-	bool m_stackable;
 	bool m_consumable; //Items that should be "consumed" when used from inventory
+	bool m_stackable;
 	unsigned int m_amount;
 };
 
