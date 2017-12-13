@@ -51,10 +51,10 @@ MapEditor::MapEditor(sf::RenderWindow &App, std::string mapName)
 ScreenResult MapEditor::Run(sf::RenderWindow & App)
 {
     sf::Vector2i mousePos_old = sf::Mouse::getPosition(App);
-    int menuSize = App.getSize().x / 4;
-	int menuStartX = App.getSize().x - menuSize;
     while (App.isOpen() && m_screenResult == ScreenResult::GameScene) {
         sf::Event event;
+		int menuSize = App.getSize().x / 4;
+		int menuStartX = App.getSize().x - menuSize;
         while (App.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 App.close();
