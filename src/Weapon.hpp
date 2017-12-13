@@ -10,7 +10,7 @@
 
 class Weapon : public Item {
 public:
-	Weapon(ItemIcon icon, std::string name, unsigned ap, unsigned loadedAmmo, unsigned damage, unsigned shots, unsigned deviation, int accuracy, unsigned range, AmmoType ammoType, unsigned shot_delay=100) : Item(Type_Weapon, icon, name), ap(ap), loadedAmmo(loadedAmmo), maxAmmo(loadedAmmo), damage(damage), shots(shots), deviation(deviation), accuracy(accuracy), range(range), ammoType(ammoType), shot_delay(shot_delay) {};
+	Weapon(ItemIcon icon, std::string name, unsigned ap, unsigned loadedAmmo, unsigned damage, unsigned shots, unsigned deviation, int accuracy, unsigned range, AmmoType ammoType, unsigned shot_delay=100, unsigned area=0) : Item(Type_Weapon, icon, name), ap(ap), loadedAmmo(loadedAmmo), maxAmmo(loadedAmmo), damage(damage), shots(shots), deviation(deviation), accuracy(accuracy), range(range), ammoType(ammoType), shot_delay(shot_delay), aoe(area) {};
 	bool 		reload(unsigned numberOfAmmo);
 	bool		canFire() const;
 	//TODO: combine fire and deviate into single function
@@ -23,11 +23,11 @@ public:
 	unsigned	getLoadedAmmo() const { return loadedAmmo; };
 	AmmoType	getAmmoType() const { return ammoType; };
 	unsigned	getReloadAmount() const { return maxAmmo - loadedAmmo; };
+	unsigned	getArea() const { return aoe; }
 
 private:
 	//WeaponType wt
 	unsigned ap;
-	unsigned loadedAmmo;
 	unsigned maxAmmo;
 	unsigned damage;
 	unsigned shots;
@@ -38,6 +38,11 @@ private:
 	AmmoType ammoType;
 	// delay between shots, used for rendering only
 	unsigned shot_delay;
+	// area of effect, 0 for single target
+	unsigned aoe;
+
+protected:
+	unsigned loadedAmmo;
 };
 
 class Hands : public Weapon {
