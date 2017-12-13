@@ -182,9 +182,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 	std::cout << "===================" << std::endl;
 	std::cout << "character origin: (" << it->getPosition().x << ", " << it->getPosition().y << ")" << std::endl;
 	std::cout << "shoot called with coords: (" << target.x << ", " << target.y << ")" << std::endl;
-	// TODO:
-	// get weapon behavior from equipped weapon, ie. simple, explosive, several shots
-	// get error on target tile from weapon behavior, ie how much actual target tile deviates from selected tile
+
 	std::vector<sf::Vector2u> endTiles;
 	int numberOfShots = 0;
 	switch (it->shoot(numberOfShots)) {
@@ -206,16 +204,17 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 	for (int i = 0; i < numberOfShots; ++i) {
 		auto deviated = weapon->deviate(target);
 		auto endTile = traceFromCharacter(it, deviated);
+        auto affectedTiles = getAffected(endTile, weapon->getArea());
 		std::cout << "landed at tile at coords: (" << endTile.x << ", " << endTile.y << ")" << std::endl;
 		for (auto &gc : characters) {
-			if (gc.getPosition() == endTile) {
+			if (std::find(affectedTiles.begin(), affectedTiles.end(), gc.getPosition()) != affectedTiles.end()) {
 				int dmg = weapon->getDamage();
 				if (gc.sufferDamage(dmg)) {
 					characterDropAllItems(gc);
 					recalculateLOS = true;
 				}
 				std::cout << "character suffered " << dmg << " damage" << std::endl;
-				break;
+				//break;
 			}
 		}
 		endTiles.push_back(endTile);
@@ -239,6 +238,26 @@ const sf::Vector2u Game::getEndTile(coord_iterator coords_begin, coord_iterator 
 			[it](GameCharacter gc) { return gc.getPosition() == *it; })) return *it;
 	}
 	return *(--coords_end);
+}
+
+// Get affected tiles around coordinate coord
+// If area is 0, only the original tile is returned.
+const std::vector<sf::Vector2u> Game::getAffected(sf::Vector2u& coord, int area) {
+    std::vector<sf::Vector2u> affected;
+    if (area == 0) {
+        affected.push_back(coord);
+    } else {
+        for (int y = -area; y <= area; ++y) {
+            for (int x = -area; x <= area; ++x) {
+                int sx = ((int) coord.x) + x;
+                int sy = ((int) coord.y) + y;
+                sf::Vector2i single(sx, sy);
+                if (grid.within_bounds(single))
+                    affected.push_back(static_cast<sf::Vector2u>(single));
+            }
+        }
+    }
+    return affected;
 }
 
 std::vector<sf::Vector2u> Game::seenCoordinates(gc_iterator it) {
@@ -381,14 +400,11 @@ void Game::removeDeadCharacters()
 
 bool Game::matchEnded()
 {
-	return isWinner(1) || isWinner(2);
+	return isWinner(1) || isWinner(2) || turnNo > maxTurns;
 }
 
 bool Game::isWinner(unsigned int playerIdx)
 {
-	//check if number of turns has been exceeded
-	if (playerIdx == 2 && turnNo > maxTurns) return true;
-
 	//check for characters alive
 	unsigned int numCharacters = 0;
 	for (auto &character : getCharacters()) {

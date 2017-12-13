@@ -17,6 +17,7 @@ public:
 		proj.setTexture(*PROJ_TEXTURES);
 		sf::Vector2i defSize(32, 32);
 		sf::IntRect rect(sf::Vector2i(0, 0), defSize);
+		m_spin = 0;
 		switch (weaponType) {
 			case Ammo_None:
 				proj.setTextureRect(rect);
@@ -36,6 +37,20 @@ public:
 			case Ammo_Rockets:
 				rect.left = 128;
 				proj.setTextureRect(rect);
+				break;
+			case Ammo_Knife:
+				rect.left = 160;
+				m_spin = 15;
+				proj.setTextureRect(rect);
+				break;
+			case Ammo_Sword:
+				rect.left = 192;
+				proj.setTextureRect(rect);
+				break;
+			case Ammo_Grenades:
+				rect.left = 224;
+				proj.setTextureRect(rect);
+				m_spin = 5;
 				break;
 			default:
 				std::cout << "Unknown weapontype, default texture chosen." << std::endl;
@@ -63,7 +78,10 @@ public:
 private:
 	sf::Vector2f m_origin;
 	sf::Vector2f m_destination;
+	// How many ticks to wait before launching projectile
 	int delay;
+	// How much to degrees spin projectile each tick 
+	int m_spin;
 	sf::Vector2f m_offset;
 	sf::Sprite proj;
 	int ticks = 0;

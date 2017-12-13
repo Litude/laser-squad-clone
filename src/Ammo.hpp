@@ -9,6 +9,9 @@ enum AmmoType {
 	Ammo_12mm_Bullets,
 	Ammo_Shotgun_Shells,
 	Ammo_Rockets,
+	Ammo_Knife,
+	Ammo_Sword,
+	Ammo_Grenades,
 };
 
 class Ammo : public Item {

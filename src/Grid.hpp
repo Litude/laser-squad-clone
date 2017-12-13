@@ -43,6 +43,7 @@ public:
 	bool addTile( Tile t );
 	void setWidth(unsigned n);
 	bool within_bounds(sf::Vector2u coords);
+	bool within_bounds(sf::Vector2i coords);
 
 private:
 	unsigned width;

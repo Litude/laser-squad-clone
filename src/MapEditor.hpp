@@ -35,6 +35,7 @@ public:
 	void exitToMainMenu();
 	void setGroundTile(TileGround tileGround);
 	void setBlockTile(TileBlock tileBlock);
+	void setActiveTileset(ElementType element);
 	void addItem(Item item);
 	void removeItem();
 	void addCharacter(unsigned int team);

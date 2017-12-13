@@ -16,6 +16,7 @@ bool Projectile::reachedDestination() const {
 
 sf::Sprite Projectile::drawable() {
 	proj.move(m_offset);
+	proj.rotate(m_spin);
 	return proj;
 }
 
