@@ -476,6 +476,9 @@ void GameScreen::endTurn(sf::RenderWindow &App) {
 	playerViews.at(game->getCurrentPlayer() - 1).zoom = gameView.getSize().y / App.getSize().y;
 
 	game->endTurn();
+	
+	if (game->getTurnNumber() > game->getMaxTurns()) return;
+
 	EndTurnScreen endTurnScr;
 	endTurnScr.setTurn(game->getCurrentPlayer());
 	m_screenResult = endTurnScr.Run(App);
