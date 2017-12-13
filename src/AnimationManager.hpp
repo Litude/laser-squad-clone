@@ -13,7 +13,7 @@ public:
 	void addAnim(Animation& anim);
 	void update(const unsigned int dt);
 	void changeAnim(const unsigned int animNum);
-	const bool isFinished() const;
+	bool isFinished() const;
 	const sf::IntRect& getFrame() const { return bounds; }
 private:
 	std::vector<Animation> animations;

@@ -33,11 +33,11 @@ public:
 
   const std::string &getString() const {return t_str;};
   const sf::Vector2f &getPos() const {return t_pos;};
-  const size_t getCursorPos() const {return t_index;};
-  const bool getFocus() const {return t_isFocused;};
-  const bool getStatus() const {return t_textEntered;};
+  size_t getCursorPos() const {return t_index;};
+  bool getFocus() const {return t_isFocused;};
+  bool getStatus() const {return t_textEntered;};
   const sf::FloatRect getGlobalBounds() const;
-  const tf_type getType() const {return t_type;};
+  tf_type getType() const {return t_type;};
 
 private:
     virtual void draw(sf::RenderTarget& target,sf::RenderStates states) const;

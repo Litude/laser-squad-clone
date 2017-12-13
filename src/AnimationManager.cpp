@@ -75,7 +75,7 @@ void AnimationManager::changeAnim(const unsigned int animID)
 	this->t = 0;
 }
 
-const bool AnimationManager::isFinished() const
+bool AnimationManager::isFinished() const
 {
 	int duration = this->animations[currentAnim].duration;
 	unsigned int frame = static_cast<int>(t / duration);

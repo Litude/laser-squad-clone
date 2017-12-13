@@ -12,7 +12,7 @@ public:
 		this->duration = duration;
 		this->loop = loop;
 	}
-	const unsigned int getLength() const { return endFrame - startFrame + 1; }
+	unsigned int getLength() const { return endFrame - startFrame + 1; }
 	unsigned int offset;
 	unsigned int startFrame;
 	unsigned int endFrame;
