@@ -190,8 +190,10 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 				inventoryItemTexts[i].setString(std::to_string(game.getSelectedCharacter()->getInventory()[i]->getAmount()));
 				App.draw(inventoryItemTexts[i]);
 			} else if (game.getSelectedCharacter()->getInventory()[i]->getType() == Type_Weapon){
-				inventoryItemTexts[i].setString(std::to_string(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getLoadedAmmo()) + '-' + std::to_string(game.getSelectedCharacter()->getAmmoAmount(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getAmmoType())));
-				App.draw(inventoryItemTexts[i]);
+				if (std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getRange() > 1) {
+					inventoryItemTexts[i].setString(std::to_string(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getLoadedAmmo()) + '-' + std::to_string(game.getSelectedCharacter()->getAmmoAmount(std::dynamic_pointer_cast<Weapon>(game.getSelectedCharacter()->getInventory()[i])->getAmmoType())));
+					App.draw(inventoryItemTexts[i]);
+				}
 			}
 			if (game.getSelectedCharacter()->getSelectedItemIndex() == static_cast<int>(i)) {
 				selectedInventoryItemName.setString(game.getSelectedCharacter()->getInventory()[game.getSelectedCharacter()->getSelectedItemIndex()]->getName());

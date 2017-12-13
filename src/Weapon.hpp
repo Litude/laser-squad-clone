@@ -80,7 +80,7 @@ public:
 
 class Sword: public Weapon {
 public:
-	Sword() : Weapon(Icon_Weapon_Sword, "Sword", 10, 1, 20, 1, 1, 50, 2, Ammo_Sword) {}
+	Sword() : Weapon(Icon_Weapon_Sword, "Sword", 10, 1, 20, 1, 1, 50, 1, Ammo_Sword) {}
 	virtual int fire() { return 1; }
 };
 
