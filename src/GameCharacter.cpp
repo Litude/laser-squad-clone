@@ -8,10 +8,10 @@ GameCharacter::GameCharacter(sf::Vector2u position, unsigned int team) :
 	currentPosition(position), previousPosition(position), team(team)
 {
 	// Setup animations
-	Animation animation_walk_left(9, 0, 8, 62000);
-	Animation animation_walk_right(11, 0, 8, 62000);
-	Animation animation_walk_down(10, 0, 8, 62000);
-	Animation animation_walk_up(8, 0, 8, 62000);
+	Animation animation_walk_left(9, 0, 8, 55556);
+	Animation animation_walk_right(11, 0, 8, 55556);
+	Animation animation_walk_down(10, 0, 8, 55556);
+	Animation animation_walk_up(8, 0, 8, 55556);
 	Animation animation_die(20, 0, 5, 125000, false);
 	animationManager  =AnimationManager(sf::IntRect(0, 0, 32, 32));
 	animationManager.addAnim(animation_walk_left);
