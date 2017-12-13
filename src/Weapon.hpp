@@ -75,7 +75,7 @@ public:
 
 class DoubleBarrel : public Weapon {
 public:
-	DoubleBarrel() : Weapon(Icon_Weapon_Shotgun, "Double Barrel", 8, 16, 5, 8, 2, 0, 8, Ammo_Shotgun_Shells, 0) {}
+	DoubleBarrel() : Weapon(Icon_Weapon_DoubleBarrel, "Double Barrel", 8, 16, 5, 8, 2, 0, 8, Ammo_Shotgun_Shells, 0) {}
 };
 
 class Sword: public Weapon {
