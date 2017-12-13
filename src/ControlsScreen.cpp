@@ -42,11 +42,7 @@ ScreenResult ControlsScreen::Run(sf::RenderWindow & App)
   				}
   			}
 		}
-
     selectedButtonItem->update(Event, App);
-    selectedButtonItem->setState(Button::state::hovered);
-
-
 		drawUI(App);
 	}
 
@@ -171,13 +167,13 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 
 	// Menu text
 	IGtitle.setString("In-game controls");
-	IGtitle.setFillColor(sf::Color(0, 0, 200, 255));
+	IGtitle.setFillColor(sf::Color(153, 204, 255, 225));
 	IGtitle.setFont(*font);
 	IGtitle.setCharacterSize(40);
 	IGtitle.setOrigin(IGtitle.getGlobalBounds().width/2, 0);
 
 	MEtitle.setString("Map editor controls");
-	MEtitle.setFillColor(sf::Color(0, 200, 0, 255));
+	MEtitle.setFillColor(sf::Color(153, 255, 153, 225));
 	MEtitle.setFont(*font);
 	MEtitle.setCharacterSize(40);
 	MEtitle.setOrigin(MEtitle.getGlobalBounds().width/2, 0);
@@ -234,11 +230,15 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 	for(size_t i = 0; i < IGdes.size(); i++) {
 		IGDescriptions.push_back(sf::Text(IGdes[i], *font, charSize));
 		IGKeys.push_back(sf::Text(IGk[i], *font, charSize));
+		IGDescriptions[i].setFillColor(sf::Color(153, 204, 255, 225));
+		IGKeys[i].setFillColor(sf::Color(153, 204, 255, 225));
 	}
 
 	for(size_t i = 0; i < MEdes.size(); i++) {
 		MEDescriptions.push_back(sf::Text(MEdes[i], *font, charSize));
 		MEKeys.push_back(sf::Text(MEk[i], *font, charSize));
+		MEDescriptions[i].setFillColor(sf::Color(153, 255, 153, 225));
+		MEKeys[i].setFillColor(sf::Color(153, 255, 153, 225));
 	}
 
 	 // Find the largest width for in-game keys
@@ -255,6 +255,7 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 			}
 		}
 
+	// Center keys
 	for(auto &key : IGKeys) {
 		key.setOrigin(key.getGlobalBounds().width/2, 0);
 	}
