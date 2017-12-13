@@ -15,8 +15,6 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 
 	//Interface element attributes that won't change during execution
 	interfaceBkg.setFillColor(sf::Color(0, 0, 0, 200));
-	textFPS.setFont(*font);
-	textFPS.setCharacterSize(12);
 
 	textActiveElement.setFont(*font);
 	textActiveElement.setCharacterSize(16);
@@ -246,18 +244,13 @@ void SidePanelMapEditor::update(sf::Event& event, sf::RenderWindow& App)
 }
 
 void SidePanelMapEditor::draw(sf::RenderWindow &App) {
+	// Update components that need to be updated every iteration
 	updateUIComponents(App);
-
-	currentTime = fpsclock.getElapsedTime().asMicroseconds() / 1000000.0f;
-	float fps = 1.f / (currentTime - lastTime);
-	textFPS.setString("FPS: " + std::to_string(fps));
-	lastTime = currentTime;
 
 	//Draw elements
 	App.setView(interfaceView);
-	App.draw(interfaceBkg); //Must always be first since it covers the whole area and will hide anything "under" it
+	App.draw(interfaceBkg);
 
-	//App.draw(textFPS);
 	App.draw(textTilesets);
 	App.draw(textActiveElement);
 	App.draw(buttonExit);
@@ -293,8 +286,6 @@ void SidePanelMapEditor::draw(sf::RenderWindow &App) {
 	default:
 		break;
 	}
-
-	//std::cout << activeElements << std::endl;
 }
 
 void SidePanelMapEditor::updateLayout(sf::RenderWindow & App)
@@ -393,9 +384,6 @@ void SidePanelMapEditor::updateUIComponents(sf::RenderWindow & App)
 		textActiveElement.setString("");
 		break;
 	}
-
-	// FPS counter text
-	textFPS.setPosition(menuCenterX - menuSize / 2 + margin, 0);
 }
 
 Button SidePanelMapEditor::createTilesetButton(ElementType element, MapEditor &editor) {
@@ -533,7 +521,7 @@ Button SidePanelMapEditor::createRemoveCharacterButton(MapEditor &editor) {
 	return button;
 }
 
-const std::string SidePanelMapEditor::getMapName() {
+const std::string SidePanelMapEditor::getMapName() const {
 	return mapNameField.getString();
 }
 

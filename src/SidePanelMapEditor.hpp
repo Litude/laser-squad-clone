@@ -31,7 +31,7 @@ public:
 	void update(sf::Event& event, sf::RenderWindow& App);
 	void updateLayout(sf::RenderWindow & App);
 	void updateUIComponents(sf::RenderWindow & App);
-	const std::string getMapName();
+	const std::string getMapName() const;
 	void setMapName(const std::string &name);
 	void setActiveTileset(ElementType element);
 private:
@@ -44,14 +44,13 @@ private:
 	std::shared_ptr<sf::Texture> texRemoveIcon;
 	sf::View interfaceView;
 
-	void saveMap(MapEditor &editor);
-
-
 	std::vector<Button> buttons_tilesets;
 	std::vector<Button> buttons_grounds;
 	std::vector<Button> buttons_blocks;
 	std::vector<Button> buttons_items;
 	std::vector<Button> buttons_characters;
+
+	void saveMap(MapEditor &editor);
 
 	Button createTilesetButton(ElementType element, MapEditor &editor);
 	Button createGroundTileButton(TileGround tileGround, MapEditor &editor);
@@ -62,23 +61,16 @@ private:
 	Button createCharacterButton(unsigned int team, MapEditor &editor);
 	Button createRemoveCharacterButton(MapEditor &editor);
 	
-	sf::RectangleShape interfaceBkg;
 	Button buttonExit;
-	sf::RectangleShape selectedItem;
-	sf::Text textFPS;
-	TextField mapNameField;
 	Button buttonSaveMap;
+	sf::RectangleShape selectedItem;
+	sf::RectangleShape interfaceBkg;
+	TextField mapNameField;
 	sf::Text textTilesets;
 	sf::Text textActiveElement;
-
-	sf::Clock fpsclock;
-	sf::Clock clock;
-	float lastTime = 0;
-	float currentTime = 0;
 	
 	sf::RectangleShape selectedTileset;
 	ElementType activeElements = Grounds;
-
 };
 
 #endif
