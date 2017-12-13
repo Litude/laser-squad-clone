@@ -39,8 +39,10 @@ void GameOverPanel::update(sf::Event& event, sf::RenderWindow& App)
 void GameOverPanel::draw(sf::RenderWindow &App, Game &game) {
 	if (game.isWinner(1)) {
 		textGameOverLabel.setString("Player 1 wins!");
-	} else {
+	} else if (game.isWinner(2)) {
 		textGameOverLabel.setString("Player 2 wins!");
+	} else {
+		textGameOverLabel.setString("Draw!");
 	}
 
 	updateUIComponents(App);

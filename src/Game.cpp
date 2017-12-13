@@ -381,14 +381,11 @@ void Game::removeDeadCharacters()
 
 bool Game::matchEnded()
 {
-	return isWinner(1) || isWinner(2);
+	return isWinner(1) || isWinner(2) || turnNo > maxTurns;
 }
 
 bool Game::isWinner(unsigned int playerIdx)
 {
-	//check if number of turns has been exceeded
-	if (playerIdx == 2 && turnNo > maxTurns) return true;
-
 	//check for characters alive
 	unsigned int numCharacters = 0;
 	for (auto &character : getCharacters()) {
