@@ -369,6 +369,10 @@ void Game::updateGameState()
 
 void Game::removeDeadCharacters()
 {
+	//Remove only one character per loop so that indexes stay sane
+	//This function is called once per each frame, so characters should still be removed
+	//very rapidly
+
 	//Find out selected character index
 	int selectedCharIndex = -1;
 
@@ -392,6 +396,7 @@ void Game::removeDeadCharacters()
 			} else {
 				setSelectedCharacter(characters.begin() + (selectedCharIndex));
 			}
+			break;
 		} else {
 			++it;
 		}
