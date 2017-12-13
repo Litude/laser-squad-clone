@@ -56,7 +56,9 @@ private:
 	Button createTilesetButton(ElementType element, MapEditor &editor);
 	Button createGroundTileButton(TileGround tileGround, MapEditor &editor);
 	Button createBlockTileButton(TileBlock tileBlock, MapEditor &editor);
+	Button createRemoveBlockTileButton(MapEditor &editor);
 	Button createItemButton(Item item, MapEditor &editor);
+	Button createRemoveItemButton(MapEditor &editor);
 	Button createCharacterButton(unsigned int team, MapEditor &editor);
 	Button createRemoveCharacterButton(MapEditor &editor);
 	

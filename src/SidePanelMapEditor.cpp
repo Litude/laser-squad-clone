@@ -95,7 +95,7 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	buttons_grounds.push_back(button);
 
 	// Block buttons
-	button = createBlockTileButton(TileBlock::air, editor);
+	button = createRemoveBlockTileButton(editor);
 	buttons_blocks.push_back(button);
 	button = createBlockTileButton(TileBlock::bush, editor);
 	buttons_blocks.push_back(button);
@@ -113,7 +113,7 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	buttons_blocks.push_back(button);
 
 	// Item buttons
-	button = createItemButton(Item(), editor);
+	button = createRemoveItemButton(editor);
 	buttons_items.push_back(button);
 	button = createItemButton(HealthPackLarge(), editor);
 	buttons_items.push_back(button);
@@ -449,6 +449,14 @@ Button SidePanelMapEditor::createBlockTileButton(TileBlock tileBlock, MapEditor 
 	return button;
 }
 
+Button SidePanelMapEditor::createRemoveBlockTileButton(MapEditor &editor) {
+	sf::Sprite buttonSprite;
+	buttonSprite.setTexture(*texRemoveIcon);
+	Button button = Button("", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), buttonSprite);
+	button.setCallback([&] { editor.setBlockTile(TileBlock::air); });
+	return button;
+}
+
 Button SidePanelMapEditor::createItemButton(Item item, MapEditor &editor) {
 	sf::Sprite buttonSprite;
 	buttonSprite.setTexture(*texItems);
@@ -471,6 +479,14 @@ Button SidePanelMapEditor::createItemButton(Item item, MapEditor &editor) {
 	else {
 		button.setCallback([&, item] { editor.addItem(item); });
 	}
+	return button;
+}
+
+Button SidePanelMapEditor::createRemoveItemButton(MapEditor &editor) {
+	sf::Sprite buttonSprite;
+	buttonSprite.setTexture(*texRemoveIcon);
+	Button button = Button("", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), buttonSprite);
+	button.setCallback([&] { editor.removeItem(); });
 	return button;
 }
 
