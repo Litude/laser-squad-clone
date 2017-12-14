@@ -62,6 +62,7 @@ public:
 				m_spin = 5;
 				break;
 			case Ammo_Laser_Pack:
+				sound.setBuffer(*SOUND_LASER);
 				rect.left = 0;
 				rect.top = 32;
 				proj.setTextureRect(rect);
@@ -120,6 +121,7 @@ private:
 	static std::shared_ptr<sf::SoundBuffer> SOUND_PUNCH;
 	static std::shared_ptr<sf::SoundBuffer> SOUND_KNIFE;
 	static std::shared_ptr<sf::SoundBuffer> SOUND_SWORD;
+	static std::shared_ptr<sf::SoundBuffer> SOUND_LASER;
 };
 
 std::ostream& operator<<(std::ostream& out, const Projectile& t);
