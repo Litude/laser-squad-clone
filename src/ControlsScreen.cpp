@@ -311,18 +311,42 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 
 	// Action AP costs
 		Actiondes = {
-			"Move"
+			"Move",
+			"Pick up item",
+			"Drop item",
+			"Reload",
 		};
 		Actionk = {
-			"1"
+			"1",
+			"1",
+			"1",
+			"1",
 		};
 
 	// Item AP costs
 		Itemdes = {
-			"Rocket Launcher"
+			"Hands",
+			"Pistol",
+			"Shotgun",
+			"Uzi",
+			"Rifle",
+			"Double Barrel",
+			"Sword",
+			"Throwing Knife",
+			"Rocket Launcher",
+			"Heavy Laser"
 		};
 		Itemk = {
-			"8"
+			"1",
+			"5",
+			"5",
+			"4",
+			"8",
+			"5",
+			"10",
+			"5",
+			"8",
+			"6"
 		};
 
 	if(IGdes.size() != IGk.size() || MEdes.size() != MEk.size()) {
