@@ -58,12 +58,12 @@ public:
 
 class Pistol : public Weapon {
 public:
-	Pistol() : Weapon(Icon_Weapon_Pistol, "Pistol", 5, 6, 7, 2, 1, 60, 10, Ammo_9mm_Bullets) {};
+	Pistol() : Weapon(Icon_Weapon_Pistol, "Pistol", 4, 6, 7, 2, 1, 65, 10, Ammo_9mm_Bullets) {};
 };
 
 class Shotgun : public Weapon {
 public:
-	Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 5, 25, 5, 5, 1, 0, 9, Ammo_Shotgun_Shells, 0) {};
+	Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 5, 25, 5, 5, 1, 0, 7, Ammo_Shotgun_Shells, 0) {};
 };
 
 class Uzi : public Weapon {
@@ -73,12 +73,12 @@ public:
 
 class Rifle : public Weapon {
 public:
-	Rifle() : Weapon(Icon_Weapon_Rifle, "Rifle", 5, 12, 6, 3, 1, 70, 12, Ammo_12mm_Bullets) {}
+	Rifle() : Weapon(Icon_Weapon_Rifle, "Rifle", 6, 12, 6, 3, 1, 70, 12, Ammo_12mm_Bullets) {}
 };
 
 class DoubleBarrel : public Weapon {
 public:
-	DoubleBarrel() : Weapon(Icon_Weapon_DoubleBarrel, "Double Barrel", 8, 16, 5, 8, 2, 0, 8, Ammo_Shotgun_Shells, 0) {}
+	DoubleBarrel() : Weapon(Icon_Weapon_DoubleBarrel, "Double Barrel", 8, 16, 5, 8, 2, 0, 6, Ammo_Shotgun_Shells, 0) {}
 };
 
 class Sword: public Weapon {
