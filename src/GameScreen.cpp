@@ -378,7 +378,7 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 		auto target = getClickedTilePosition(App);
 		auto origin = gc->getRenderPosition();
 		rayLine.setPositionPoint1(sf::Vector2f(static_cast<float>(origin.x + TILESIZE / 2), static_cast<float>(origin.y + TILESIZE / 2)));
-		rayLine.setPositionPoint2(Util::mapToPixels(game->traceFromCharacter(gc, target, true)));
+		rayLine.setPositionPoint2(Util::mapToPixels(game->traceLineWithWeapon(gc, target)));
 		//"animate" rayline
 		if (rayLine.getColorPoint1().r == 255 || rayLine.getColorPoint1().r == 0) rayIncr *= -1;
 		sf::Color color1 = rayLine.getColorPoint1();

@@ -4,9 +4,12 @@
 #include <string>
 #include <cstdlib>
 #include <iostream>
+#include <cmath>
+#include <memory>
 #include <SFML/System/Vector2.hpp>
 #include "Item.hpp"
 #include "Ammo.hpp"
+#include "Util.hpp"
 
 class Weapon : public Item {
 public:
@@ -17,6 +20,7 @@ public:
 	//TODO: combine fire and deviate into single function
 	virtual int	fire();
 	const sf::Vector2u deviate(sf::Vector2u target) const;
+	void clampToMaxRange(const sf::Vector2u& origin, sf::Vector2u& target) const;
 	unsigned	getDamage() const;
 	unsigned 	getDelay() const;
 	int			getRange() const { return (int) range; }
@@ -53,7 +57,7 @@ public:
 
 class Pistol : public Weapon {
 public:
-	Pistol() : Weapon(Icon_Weapon_Pistol, "Pistol", 5, 6, 9, 2, 1, 70, 10, Ammo_9mm_Bullets) {};
+	Pistol() : Weapon(Icon_Weapon_Pistol, "Pistol", 5, 6, 7, 2, 1, 60, 10, Ammo_9mm_Bullets) {};
 };
 
 class Shotgun : public Weapon {

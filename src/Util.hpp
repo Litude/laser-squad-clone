@@ -104,8 +104,8 @@ namespace Util {
 
 		float slope = ((float) target.y - origin.y) / (target.x - origin.x);
 
-		for (int x = 0; x <= abs(target.x - origin.x); x += x_sign) {//+= x_sign) {
-			for (int y = 0; y <= abs(target.y - origin.y); y += y_sign) {// += y_sign) {
+		for (int x = 0; abs(x) <= abs(target.x - origin.x); x += x_sign) {//+= x_sign) {
+			for (int y = 0; abs(y) <= abs(target.y - origin.y); y += y_sign) {// += y_sign) {
 				float xf = (float) y / slope;
 				if ( ((int) (xf + (x_sign * 0.5))) == x ) {
 					std::cout << "adding coord: (" << x + origin.x << ", " << y + origin.y << ")" << std::endl; 

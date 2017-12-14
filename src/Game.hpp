@@ -43,6 +43,7 @@ public:
 	void									characterUseItem(gc_iterator it);
 	void									characterDropAllItems(GameCharacter& gc);
 	const sf::Vector2u                      traceFromCharacter(gc_iterator gc, sf::Vector2u target, bool ignoreCharacters=false);
+	const sf::Vector2u                      traceLineWithWeapon(gc_iterator gc, sf::Vector2u target);
     std::vector<sf::Vector2u>               seenCoordinates(gc_iterator it);
     bool                                    lineofSight(int x1,int y1,int x2,int y2);
 	bool									calculateLineofSight() {return recalculateLOS;}
@@ -64,7 +65,7 @@ private:
 	StatusMessage							statusMessage;
 	unsigned int							turnNo = 1;
 	unsigned int							maxTurns = 20;
-	const sf::Vector2u                      getEndTile(coord_iterator coord_begin, coord_iterator coord_end, bool ignoreCharacters, int maxRange=12);
+	const sf::Vector2u                      getEndTile(coord_iterator coord_begin, coord_iterator coord_end, bool ignoreCharacters);
 	const std::vector<sf::Vector2u>         getAffected(sf::Vector2u& coord, int area);
 };
 
