@@ -73,6 +73,12 @@ public:
 				rect.top = 32;
 				proj.setTextureRect(rect);
 				break;
+			case Ammo_Crossbow:
+				sound.setBuffer(*SOUND_CROSSBOW);
+				rect.left = 64;
+				rect.top = 32;
+				proj.setTextureRect(rect);
+				break;
 			default:
 				std::cout << "Unknown weapontype, default texture chosen." << std::endl;
 				proj.setTextureRect(rect);
@@ -128,6 +134,7 @@ private:
 	static std::shared_ptr<sf::SoundBuffer> SOUND_KNIFE;
 	static std::shared_ptr<sf::SoundBuffer> SOUND_SWORD;
 	static std::shared_ptr<sf::SoundBuffer> SOUND_LASER;
+	static std::shared_ptr<sf::SoundBuffer> SOUND_CROSSBOW;
 };
 
 std::ostream& operator<<(std::ostream& out, const Projectile& t);

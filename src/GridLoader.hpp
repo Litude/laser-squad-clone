@@ -57,6 +57,8 @@ namespace jreader {
 			return std::make_shared<Ammo50calBullets>();
 		} else if (item_str == "Rockets") {
 			return std::make_shared<AmmoRockets>();
+		} else if (item_str == "Crossbow Bolts") {
+			return std::make_shared<AmmoCrossbow>();
 		} else if (item_str == "Shotgun Shells") {
 			return std::make_shared<AmmoShotgunShells>();
 		} else if (item_str == "Armor") {
@@ -73,6 +75,8 @@ namespace jreader {
 			return std::make_shared<AmmoLaserPack>();
 		} else if (item_str == "Sniper") {
 			return std::make_shared<Sniper>();
+		} else if (item_str == "Crossbow") {
+			return std::make_shared<Crossbow>();
 		} else {
 			return nullptr;
 		}
