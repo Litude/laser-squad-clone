@@ -52,6 +52,9 @@ void NewMapMenuScreen::openScreen(ScreenResult res)
 				}
 			}
 			catch (std::invalid_argument) {
+				screenStatusMessage.setString("Invalid dimensions!");
+				errorMessage = true;
+				errorClock.restart();
 			}
 			catch (std::out_of_range) {
 			}
