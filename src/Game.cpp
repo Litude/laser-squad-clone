@@ -159,6 +159,13 @@ void Game::characterDropAllItems(GameCharacter& gc) {
 	}
 }
 
+// Trace line with weapon max range
+const sf::Vector2u Game::traceLineWithWeapon(gc_iterator gc, sf::Vector2u target) {
+	auto weapon = gc->getEquipped();
+	weapon->clampToMaxRange(gc->getPosition(), target);
+	return traceFromCharacter(gc, target, true);
+}
+
 // Trace line from gamecharacter location to target, returning
 // first tile that blocks tracing
 const sf::Vector2u Game::traceFromCharacter(gc_iterator gc, sf::Vector2u target, bool ignoreCharacters) {
@@ -169,7 +176,7 @@ const sf::Vector2u Game::traceFromCharacter(gc_iterator gc, sf::Vector2u target,
 	std::vector<sf::Vector2u> pierced = Util::traceLine(static_cast<sf::Vector2i>(gc->getPosition()), static_cast<sf::Vector2i>(within_bounds));
 	sf::Vector2u endTile;
 	if (pierced.size() > 1) {
-		endTile = getEndTile(++pierced.begin(), pierced.end(), ignoreCharacters, gc->getEquipped()->getRange() - 1);
+		endTile = getEndTile(++pierced.begin(), pierced.end(), ignoreCharacters);//gc->getEquipped()->getRange() - 1);
 	} else {
 		endTile = gc->getPosition();
 	}
@@ -202,6 +209,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 	auto weapon = it->getEquipped();
 
 	for (int i = 0; i < numberOfShots; ++i) {
+		weapon->clampToMaxRange(it->getPosition(), target);
 		auto deviated = weapon->deviate(target);
 		auto endTile = traceFromCharacter(it, deviated);
         auto affectedTiles = getAffected(endTile, weapon->getArea());
@@ -232,9 +240,9 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 //
 // Blocking elements: game characters and tile blocks
 // NOTE: iterator must point to at least one valid element
-const sf::Vector2u Game::getEndTile(coord_iterator coords_begin, coord_iterator coords_end, bool ignoreCharacters, int maxRange) {
+const sf::Vector2u Game::getEndTile(coord_iterator coords_begin, coord_iterator coords_end, bool ignoreCharacters) {
 	for (auto it = coords_begin; it != coords_end; ++it) {
-		if (grid(*it).isSolid() || std::distance(coords_begin, it) == maxRange) return *it;
+		if (grid(*it).isSolid()) return *it;
 		if (!ignoreCharacters && std::any_of(characters.begin(), characters.end(),
 			[it](GameCharacter gc) { return gc.getPosition() == *it; })) return *it;
 	}
