@@ -11,11 +11,11 @@
 #include "AnimationManager.hpp"
 #include "constants.hpp"
 
-#define AP_COST_MOVEMENT 1
+#define AP_COST_MOVEMENT 2
 #define AP_COST_PICK_ITEM 1
 #define AP_COST_DROP_ITEM 1
-#define AP_COST_USE 1
-#define AP_COST_RELOAD 1
+#define AP_COST_USE 2
+#define AP_COST_RELOAD 2
 
 enum direction {
 	left,
