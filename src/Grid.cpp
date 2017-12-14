@@ -1,13 +1,5 @@
 #include "Grid.hpp"
 
-/*const Tile Grid::operator()(int x, int y) const {
-	if (x < 0 || y < 0) {
-		return Tile(black, wall);
-	} else {
-		return (*this)((unsigned) x, (unsigned) y);
-	}
-}*/
-
 const Tile Grid::operator()(sf::Vector2i loc) const {
 	if (loc.x < 0 || loc.y < 0 || loc.x >= (int) width || loc.y >= (int) getHeight()) {
 		return Tile(black, wall);
@@ -15,14 +7,6 @@ const Tile Grid::operator()(sf::Vector2i loc) const {
 		return (*this)(loc.x, loc.y);
 	}
 }
-
-/*const Tile Grid::operator()(unsigned x, unsigned y) const {
-	if (x >= width || y >= getHeight()) {
-		return Tile(black, wall);
-	} else {
-		return grid[y*width + x];
-	}
-}*/
 
 const Tile& Grid::operator()(sf::Vector2u loc) const {
 	return (*this)(loc.x, loc.y);
