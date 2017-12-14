@@ -306,7 +306,6 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 			auto newVisibleTiles = game->seenCoordinates(it);
 			visibleTiles.insert(visibleTiles.end(), newVisibleTiles.begin(), newVisibleTiles.end());
 		}
-		game->lineofSightCalculated();
 	}
 
 	//Draw characters
@@ -395,12 +394,15 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 // Draw visible area for the selected game character
 void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u> tiles) {
 
-	renderTexture_visibleTiles->clear(sf::Color(0, 0, 0, 0));
-	for (auto it = tiles.begin(); it != tiles.end(); ++it) {
-		visibleTileShape.setPosition(static_cast<float>(it->x * TILESIZE), static_cast<float>(it->y * TILESIZE));
-		renderTexture_visibleTiles->draw(visibleTileShape); // or any other drawable
+	if (game->calculateLineofSight()) {
+		renderTexture_visibleTiles->clear(sf::Color(0, 0, 0, 0));
+		for (auto it = tiles.begin(); it != tiles.end(); ++it) {
+			visibleTileShape.setPosition(static_cast<float>(it->x * TILESIZE), static_cast<float>(it->y * TILESIZE));
+			renderTexture_visibleTiles->draw(visibleTileShape); // or any other drawable
+		}
+		renderTexture_visibleTiles->display();
+		game->lineofSightCalculated();
 	}
-	renderTexture_visibleTiles->display();
 
 	// get the target texture (where the stuff has been drawn)
 	const sf::Texture& texture = renderTexture_visibleTiles->getTexture();
