@@ -5,6 +5,8 @@
 #include <vector>
 #include <cmath>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <stdlib.h>
 #include "constants.hpp"
 
@@ -74,6 +76,25 @@ namespace Util {
 			return (180/PI) * (2*PI - std::acos(dot/dist));
 		}
 	}
+
+	inline std::shared_ptr<sf::Texture> loadTextures(std::string filepath) {
+		auto textures = std::make_shared<sf::Texture>();
+		if (!textures->loadFromFile(filepath)) {
+			std::cout << "Could not load texture from " << filepath << std::endl;
+		}
+		std::cout << "TEXTURES from " << filepath << " LOADED" << std::endl;
+		return textures;
+	}
+
+	inline std::shared_ptr<sf::SoundBuffer> loadSound(std::string filepath) {
+		auto buffer = std::make_shared<sf::SoundBuffer>();
+		if (!buffer->loadFromFile(filepath)) {
+			std::cout << "Could not load sound from " << filepath << std::endl;
+		}
+		std::cout << "SOUND from " << filepath << " LOADED" << std::endl;
+		return buffer;
+	}
+
 
 	/*inline const std::vector<sf::Vector2u> traceLine(sf::Vector2i origin, sf::Vector2i target) {
 		//return all square coordinates pierced by line

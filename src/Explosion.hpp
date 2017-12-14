@@ -5,16 +5,19 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Projectile.hpp"
+#include "Util.hpp"
 
 class Explosion {
 public:
 	Explosion(Projectile& proj) {
 		switch(proj.getType()) {
 			case Ammo_Grenades:
+				sound.setBuffer(*SOUND_EXPL_SMALL);
 				explosion.setTexture(*EXPL_SMALL_TEXTURES);
 				framesize = sf::Vector2i(96, 96);
 				break;
 			case Ammo_Rockets:
+				sound.setBuffer(*SOUND_EXPL_BIG);
 				explosion.setTexture(*EXPL_BIG_TEXTURES);
 				framesize = sf::Vector2i(160, 160);
 				break;
@@ -32,10 +35,12 @@ public:
 	}
 
 	bool isActive() const { return active; }
+	bool soundPlaying() const;
 	sf::Sprite drawable();
 	operator sf::Sprite() { return drawable(); }
 
 private:
+	sf::Sound sound;
 	sf::Sprite explosion;
 	sf::Vector2i framesize;
 	sf::IntRect rect;
@@ -46,10 +51,11 @@ private:
 	void changeFrame();
 	void setFrame();
 
-	static std::shared_ptr<sf::Texture> loadTextures(std::string filepath);
 	static std::shared_ptr<sf::Texture> EXPL_SMOKE_TEXTURES;
 	static std::shared_ptr<sf::Texture> EXPL_SMALL_TEXTURES; 
 	static std::shared_ptr<sf::Texture> EXPL_BIG_TEXTURES;
+	static std::shared_ptr<sf::SoundBuffer> SOUND_EXPL_SMALL;
+	static std::shared_ptr<sf::SoundBuffer> SOUND_EXPL_BIG;
 };
 
 

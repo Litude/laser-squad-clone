@@ -2,26 +2,26 @@
 #define FRAME_DURATION 25
 #define NUMBER_OF_FRAMES 40
 
-std::shared_ptr<sf::Texture> Explosion::loadTextures(std::string filepath) {
-	auto expl_textures = std::make_shared<sf::Texture>();
-	if (!expl_textures->loadFromFile(filepath)) {
-		std::cout << "Could not load " << filepath << std::endl;
-	}
-	std::cout << "EXPLOSIONS LOADED" << std::endl;
-	return expl_textures;
-}
-
-std::shared_ptr<sf::Texture> Explosion::EXPL_SMOKE_TEXTURES = loadTextures("img/smoke.png");
-std::shared_ptr<sf::Texture> Explosion::EXPL_SMALL_TEXTURES = loadTextures("img/explosion_small.png");
-std::shared_ptr<sf::Texture> Explosion::EXPL_BIG_TEXTURES = loadTextures("img/explosion_big.png");
+std::shared_ptr<sf::Texture> Explosion::EXPL_SMOKE_TEXTURES = Util::loadTextures("img/smoke.png");
+std::shared_ptr<sf::Texture> Explosion::EXPL_SMALL_TEXTURES = Util::loadTextures("img/explosion_small.png");
+std::shared_ptr<sf::Texture> Explosion::EXPL_BIG_TEXTURES = Util::loadTextures("img/explosion_big.png");
+std::shared_ptr<sf::SoundBuffer> Explosion::SOUND_EXPL_SMALL = Util::loadSound("sound/explosion_small.ogg");
+std::shared_ptr<sf::SoundBuffer> Explosion::SOUND_EXPL_BIG = Util::loadSound("sound/explosion_big.ogg");
 
 sf::Sprite Explosion::drawable() {
+	if (active && !soundPlaying()) {
+		sound.play();
+	}
 	int delta = clock.getElapsedTime().asMilliseconds();
 	if (delta > FRAME_DURATION) {
 		changeFrame();
 		clock.restart();
 	}
 	return explosion;
+}
+
+bool Explosion::soundPlaying() const {
+	return sound.getStatus() == sf::SoundSource::Playing;
 }
 
 void Explosion::changeFrame() {

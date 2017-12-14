@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <list>
+#include <deque>
 #include "Screen.hpp"
 #include "Game.hpp"
 #include "TileMap.hpp"
@@ -85,8 +86,8 @@ private:
 	std::shared_ptr<sf::RenderTexture> renderTexture_visibleTiles;
 	sf::RectangleShape visibleTileShape;
 	sf::Shader* shader;
-	std::vector<Projectile> activeProjectiles;
-	std::vector<Explosion> activeExplosions;
+	std::deque<Projectile> activeProjectiles;
+	std::deque<Explosion> activeExplosions;
 	std::vector<sf::Vector2u> visibleTiles;
 
 	bool centerCharacter = false;

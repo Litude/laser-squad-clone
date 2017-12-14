@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cmath>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "constants.hpp"
 #include "Item.hpp"
 #include "Util.hpp"
@@ -23,18 +24,22 @@ public:
 				proj.setTextureRect(rect);
 				break;
 			case Ammo_9mm_Bullets:
+				sound.setBuffer(*SOUND_PISTOL);
 				rect.left = 32;
 				proj.setTextureRect(rect);
 				break;
 			case Ammo_12mm_Bullets:
+				sound.setBuffer(*SOUND_RIFLE);
 				rect.left = 64;
 				proj.setTextureRect(rect);
 				break;
 			case Ammo_Shotgun_Shells:
+				sound.setBuffer(*SOUND_SHOTGUN);
 				rect.left = 96;
 				proj.setTextureRect(rect);
 				break;
 			case Ammo_Rockets:
+				sound.setBuffer(*SOUND_LAUNCHER);
 				rect.left = 128;
 				proj.setTextureRect(rect);
 				break;
@@ -48,6 +53,7 @@ public:
 				proj.setTextureRect(rect);
 				break;
 			case Ammo_Grenades:
+				sound.setBuffer(*SOUND_GRENADE);
 				rect.left = 224;
 				proj.setTextureRect(rect);
 				m_spin = 5;
@@ -66,12 +72,14 @@ public:
 		proj.rotate(Util::vecAngle(path));
 	}
 
-	bool isActive();
+	bool hasDeparted();
 	bool reachedDestination() const;
 	AmmoType getType() const { return atype; }
 	sf::Vector2f getOrigin() const { return m_origin; }
 	sf::Vector2f getDestination() const { return m_destination; }
-
+	bool soundPlaying() const;
+	bool hasExploded() const;
+	void explode();
 	sf::Sprite drawable();
 	operator sf::Sprite() { return drawable(); }
 
@@ -87,9 +95,20 @@ private:
 	sf::Sprite proj;
 	int ticks = 0;
 	float distance;
+	sf::Sound sound;
+	bool soundPlayed = false;
+	bool exploded = false;
 
-	static std::shared_ptr<sf::Texture> loadTextures();
+	void playSound();
+
 	static std::shared_ptr<sf::Texture> PROJ_TEXTURES;
+
+	static std::shared_ptr<sf::SoundBuffer> SOUND_PISTOL;
+	static std::shared_ptr<sf::SoundBuffer> SOUND_RIFLE;
+	static std::shared_ptr<sf::SoundBuffer> SOUND_SHOTGUN;
+	static std::shared_ptr<sf::SoundBuffer> SOUND_LAUNCHER;
+	static std::shared_ptr<sf::SoundBuffer> SOUND_GRENADE;
+	static std::shared_ptr<sf::SoundBuffer> SOUND_SNIPER;
 };
 
 std::ostream& operator<<(std::ostream& out, const Projectile& t);

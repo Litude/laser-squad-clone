@@ -342,24 +342,29 @@ void GameScreen::drawGame(sf::RenderWindow &App) {
 
 	//Draw projectiles
 	for (auto proj = activeProjectiles.begin(); proj != activeProjectiles.end(); ) {
-		if (proj->isActive()) {
+		bool reached = proj->reachedDestination();
+		if (proj->hasDeparted() && !reached) {
 			App.draw((*proj).drawable());
-		}
-		if (proj->reachedDestination()) {
+		} else if (reached && !proj->hasExploded()) {
+			proj->explode();
 			addExplosion(*proj);
+		} else if (reached && !proj->soundPlaying()) {
+			// Cleanup if sound has finished playing and destination has been reached
 			proj = activeProjectiles.erase(proj);
-		} else {
-			++proj;
+			continue;
 		}
+		++proj;
 	}
 	//Draw explosions
 	for (auto expl = activeExplosions.begin(); expl != activeExplosions.end(); ) {
 		if (expl->isActive()) {
 			App.draw((*expl).drawable());
-			++expl;
-		} else {
+		} else if (!expl->soundPlaying()) {
+			// Cleanup if sound has finished
 			expl = activeExplosions.erase(expl);
+			continue;
 		}
+		++expl;
 	} 
 
 	if (mouseMode == MouseMode::shoot && game->getSelectedCharacter() != game->getCharacters().end() && game->getGameState() == GameState::active) {
