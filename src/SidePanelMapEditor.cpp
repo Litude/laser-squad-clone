@@ -185,6 +185,10 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	buttons_items.push_back(button);
 	button = createItemButton(Ammo50calBullets(), editor);
 	buttons_items.push_back(button);
+	button = createItemButton(Crossbow(), editor);
+	buttons_items.push_back(button);
+	button = createItemButton(AmmoCrossbow(), editor);
+	buttons_items.push_back(button);
 
 	// Character buttons
 	button = createRemoveCharacterButton(editor);
