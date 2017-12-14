@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <memory>
-#include <list>
 #include <deque>
 #include "Screen.hpp"
 #include "Game.hpp"

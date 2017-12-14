@@ -103,8 +103,8 @@ private:
 
 	unsigned int actionPoints = maxActionPoints;
 	Inventory inventory;
-	unsigned int health = 10;
-	unsigned int maxHealth = 10;
+	unsigned int health = 40;
+	unsigned int maxHealth = 40;
 	std::shared_ptr<Weapon> equippedWeapon = std::make_shared<Hands>();
 	unsigned int team;
     unsigned int lengthofSight = 9;

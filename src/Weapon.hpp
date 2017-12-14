@@ -104,6 +104,11 @@ class Laser : public Weapon {
 public:
 	Laser(): Weapon(Icon_Weapon_Laser, "Heavy Laser", 6, 9, 5, 3, 0, 100, 15, Ammo_Laser_Pack, 50) {}
 };
+
+class Sniper : public Weapon {
+public:
+	Sniper() : Weapon(Icon_Weapon_Sniper, "Sniper", 9, 5, 22, 1, 1, 90, 20, Ammo_50cal_Bullets) {}
+};
 	
 
 #endif
