@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <memory>
-#include <list>
 #include <deque>
 #include "Screen.hpp"
 #include "Game.hpp"
@@ -19,6 +18,7 @@
 #include "Line.hpp"
 #include "GridLoader.hpp"
 #include "EndTurnScreen.hpp"
+#include "ControlsScreen.hpp"
 
 namespace MouseMode {
 	enum Mode { shoot, select };
