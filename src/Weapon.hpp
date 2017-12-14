@@ -14,7 +14,7 @@
 class Weapon : public Item {
 public:
 	Weapon(ItemIcon icon, std::string name, unsigned ap, unsigned loadedAmmo, unsigned damage, unsigned shots, unsigned deviation, int accuracy, unsigned range, AmmoType ammoType, unsigned shot_delay = 100, unsigned area = 0) : Item(Type_Weapon, icon, name), ap(ap), loadedAmmo(loadedAmmo), maxAmmo(loadedAmmo), damage(damage), shots(shots), deviation(deviation), accuracy(accuracy), range(range), ammoType(ammoType), shot_delay(shot_delay), aoe(area) {};
-	Weapon(ItemIcon icon, std::string name, bool stackable, bool consumable, unsigned amount, unsigned ap, unsigned loadedAmmo, unsigned damage, unsigned shots, unsigned deviation, int accuracy, unsigned range, AmmoType ammoType, unsigned shot_delay = 100, unsigned area = 0) : Item(Type_Weapon, icon, name, stackable, consumable, amount), ap(ap), loadedAmmo(loadedAmmo), maxAmmo(loadedAmmo), damage(damage), shots(shots), deviation(deviation), accuracy(accuracy), range(range), ammoType(ammoType), shot_delay(shot_delay), aoe(area) {};
+	Weapon(ItemIcon icon, std::string name, bool stackable, bool consumable, unsigned amount, unsigned ap, unsigned damage, unsigned shots, unsigned deviation, int accuracy, unsigned range, AmmoType ammoType, unsigned shot_delay = 100, unsigned area = 0) : Item(Type_Weapon, icon, name, stackable, consumable, amount), ap(ap), loadedAmmo(1), maxAmmo(loadedAmmo), damage(damage), shots(shots), deviation(deviation), accuracy(accuracy), range(range), ammoType(ammoType), shot_delay(shot_delay), aoe(area) {};
 	bool 		reload(unsigned numberOfAmmo);
 	bool		canFire() const;
 	//TODO: combine fire and deviate into single function
@@ -62,7 +62,7 @@ public:
 
 class Shotgun : public Weapon {
 public:
-	Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 5, 6, 5, 3, 1, 0, 8, Ammo_Shotgun_Shells, 0) {};
+	Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 5, 8, 5, 4, 2, 0, 8, Ammo_Shotgun_Shells, 0) {};
 };
 
 class Uzi : public Weapon {
@@ -82,13 +82,13 @@ public:
 
 class Sword: public Weapon {
 public:
-	Sword() : Weapon(Icon_Weapon_Sword, "Sword", 10, 1, 20, 1, 1, 50, 1, Ammo_Sword) {}
+	Sword() : Weapon(Icon_Weapon_Sword, "Sword", 3, 1, 20, 1, 1, 50, 1, Ammo_Sword) {}
 	virtual int fire() { return 1; }
 };
 
 class Knife : public Weapon {
 public:
-	Knife() : Weapon(Icon_Weapon_Knife, "Throwing Knife", true, false, 5, 5, 500, 22, 1, 1, 0, 6, Ammo_Knife) {}
+	Knife() : Weapon(Icon_Weapon_Knife, "Throwing Knife", true, false, 5, 5, 22, 1, 1, 0, 6, Ammo_Knife) {}
 	virtual int fire() { if (this->getAmount() >= 1) { this->removeAmount(1); } return 1; };
 };
 
@@ -99,7 +99,7 @@ public:
 
 class Grenade : public Weapon {
 public:
-	Grenade(): Weapon(Icon_Weapon_Grenade, "Grenade", true, false, 2, 6, 500, 20, 1, 1, 0, 7, Ammo_Grenades, 0, 1) {}
+	Grenade(): Weapon(Icon_Weapon_Grenade, "Grenade", true, false, 2, 6, 20, 1, 1, 0, 7, Ammo_Grenades, 0, 1) {}
 	virtual int fire() { if (this->getAmount() >= 1) { this->removeAmount(1); } return 1;} ;
 };
 
