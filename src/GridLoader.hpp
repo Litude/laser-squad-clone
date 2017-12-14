@@ -53,6 +53,8 @@ namespace jreader {
 			return std::make_shared<Ammo9mmBullets>();
 		} else if (item_str == "12mm Bullets") {
 			return std::make_shared<Ammo12mmBullets>();
+		} else if (item_str == "50cal Bullets") {
+			return std::make_shared<Ammo50calBullets>();
 		} else if (item_str == "Rockets") {
 			return std::make_shared<AmmoRockets>();
 		} else if (item_str == "Shotgun Shells") {
@@ -69,6 +71,8 @@ namespace jreader {
 			return std::make_shared<Laser>();
 		} else if (item_str == "Laser Pack") {
 			return std::make_shared<AmmoLaserPack>();
+		} else if (item_str == "Sniper") {
+			return std::make_shared<Sniper>();
 		} else {
 			return nullptr;
 		}
@@ -212,6 +216,10 @@ namespace jreader {
 		game.setGrid(g);
 
 		loadCharacters(game, jloader["characters"]);
+
+		// End turn to make sure characters have full action points
+		// and next turn dialog appears
+		//game.endTurn();
 
 		return std::make_shared<Game>(game);
 	}

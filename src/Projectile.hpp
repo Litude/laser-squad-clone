@@ -34,6 +34,12 @@ public:
 				rect.left = 64;
 				proj.setTextureRect(rect);
 				break;
+			case Ammo_50cal_Bullets:
+				sound.setBuffer(*SOUND_SNIPER);
+				rect.left = 32;
+				rect.top = 32;
+				proj.setTextureRect(rect);
+				break;
 			case Ammo_Shotgun_Shells:
 				sound.setBuffer(*SOUND_SHOTGUN);
 				rect.left = 96;
