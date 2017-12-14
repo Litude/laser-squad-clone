@@ -51,6 +51,7 @@ public:
 				proj.setTextureRect(rect);
 				break;
 			case Ammo_Sword:
+				sound.setBuffer(*SOUND_SWORD);
 				rect.left = 192;
 				proj.setTextureRect(rect);
 				break;
@@ -118,6 +119,7 @@ private:
 	static std::shared_ptr<sf::SoundBuffer> SOUND_SNIPER;
 	static std::shared_ptr<sf::SoundBuffer> SOUND_PUNCH;
 	static std::shared_ptr<sf::SoundBuffer> SOUND_KNIFE;
+	static std::shared_ptr<sf::SoundBuffer> SOUND_SWORD;
 };
 
 std::ostream& operator<<(std::ostream& out, const Projectile& t);
