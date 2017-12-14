@@ -14,13 +14,13 @@ private:
 
 class HealthPackSmall : public Health {
 public:
-	HealthPackSmall() : Health(2, Icon_Health_Small, "Small Health Pack", true, 1) {};
+	HealthPackSmall() : Health(10, Icon_Health_Small, "Small Health Pack", true, 1) {};
 };
 
 
 class HealthPackLarge : public Health {
 public:
-	HealthPackLarge() : Health(5, Icon_Health_Large, "Large Health Pack", false, 1) {};
+	HealthPackLarge() : Health(20, Icon_Health_Large, "Large Health Pack", false, 1) {};
 };
 
 #endif

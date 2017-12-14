@@ -49,9 +49,10 @@ private:
 
 };
 
+// init (Icon, name, ap, loadedAmmo, damage, shots, deviation, accuracy, range, AmmoType, kwarg shot_delay, kwarg areaofeffect)
 class Hands : public Weapon {
 public:
-	Hands() : Weapon(Icon_None, "Hands", 1, 1, 3, 1, 1, 100, 1, Ammo_None) {};
+	Hands() : Weapon(Icon_None, "Hands", 2, 1, 2, 1, 1, 100, 1, Ammo_None) {};
 	virtual int fire() { return 1; };
 };
 

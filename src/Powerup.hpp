@@ -22,19 +22,19 @@ private:
 
 class Armor : public Powerup {
 public:
-	Armor() : Powerup(Powerup_Health, 5, Icon_Powerup_Armor, "Armor") {};
+	Armor() : Powerup(Powerup_Health, 20, Icon_Powerup_Armor, "Armor") {};
 };
 
 
 class Sight : public Powerup {
 public:
-	Sight() : Powerup(Powerup_LineOfSight, 4, Icon_Powerup_Sight, "Bionic Sight") {};
+	Sight() : Powerup(Powerup_LineOfSight, 8, Icon_Powerup_Sight, "Bionic Sight") {};
 };
 
 
 class Boots : public Powerup {
 public:
-	Boots() : Powerup(Powerup_ActionPoints, 5, Icon_Powerup_Boots, "Boots of Running Urgently") {};
+	Boots() : Powerup(Powerup_ActionPoints, 6, Icon_Powerup_Boots, "Boots of Running Urgently") {};
 };
 
 #endif
