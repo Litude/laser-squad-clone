@@ -36,8 +36,6 @@ SidePanel::SidePanel(sf::RenderWindow &App, GameScreen &parent)
 	textHPLabel.setString("HPs");
 	textHPValue.setFont(*font);
 	textHPValue.setCharacterSize(24);
-	textEquipped.setFont(*font);
-	textEquipped.setCharacterSize(24);
 
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
@@ -94,6 +92,12 @@ SidePanel::SidePanel(sf::RenderWindow &App, GameScreen &parent)
 		inventoryItemTexts[i].setFont(*font);
 		inventoryItemTexts[i].setCharacterSize(10);
 	}
+
+	textEquipped.setFont(*font);
+	textEquipped.setCharacterSize(14);
+	textEquippedAP.setFont(*font);
+	textEquippedAP.setCharacterSize(14);
+
 	updateLayout(App);
 }
 
@@ -148,7 +152,10 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 		auto equipped = gc->getEquipped();
 		textAPValue.setString(std::to_string(gc->getActionPoints()) + '/' + std::to_string(gc->getMaxActionPoints()));
 		textHPValue.setString(std::to_string(gc->getHitpoints()) + '/' + std::to_string(gc->getMaxHitpoints()));
-		textEquipped.setString("Equipped: " + equipped->getName() + ", APCOST: " + std::to_string(equipped->apCost()));
+		textEquipped.setString("Equipped: " + equipped->getName());
+		textEquipped.setOrigin(textEquipped.getLocalBounds().left + textEquipped.getLocalBounds().width / 2, textEquipped.getLocalBounds().top + textEquipped.getLocalBounds().height / 2);
+		textEquippedAP.setString("Attacking costs " + std::to_string(equipped->apCost()) + " AP(s)");
+		textEquippedAP.setOrigin(textEquippedAP.getLocalBounds().left + textEquippedAP.getLocalBounds().width / 2, textEquippedAP.getLocalBounds().top + textEquippedAP.getLocalBounds().height / 2);
 
 		if (game.getSelectedCharacter()->getSelectedWeaponIndex() != -1) {
 			unsigned int margin = 10;
@@ -173,6 +180,7 @@ void SidePanel::draw(sf::RenderWindow &App, Game &game, GameScreen& gameScreen) 
 		App.draw(textHPLabel);
 		App.draw(textHPValue);
 		App.draw(textEquipped);
+		App.draw(textEquippedAP);
 		App.draw(buttonPickupItem);
 		App.draw(buttonDropItem);
 		App.draw(buttonEquipItem);
@@ -299,7 +307,8 @@ void SidePanel::updateUIComponents(sf::RenderWindow & App)
 	textHPValue.setPosition(menuCenterX + menuSize / 2 - margin - textHPValue.getLocalBounds().left - textHPValue.getLocalBounds().width, 160);
 
 	// Equipped item text
-	textEquipped.setPosition(menuCenterX - menuSize / 2 + margin, 190);
+	textEquipped.setPosition(menuCenterX, 204);
+	textEquippedAP.setPosition(menuCenterX, 220);
 
 	// Turn number text
 	textTurnNoLabel.setPosition(menuCenterX - menuSize / 2 + margin, 25);
