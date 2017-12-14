@@ -230,25 +230,25 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 
 void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 	switch (event.key.code) {
-	case sf::Keyboard::Left:
+	case sf::Keyboard::A:
 		if (game->getSelectedCharacter() != game->getCharacters().end() && game->getSelectedCharacter()->isMoving() == false) {
 			game->characterMoveLeft(game->getSelectedCharacter());
 			centerCharacter = true;
 		}
 		break;
-	case sf::Keyboard::Right:
+	case sf::Keyboard::D:
 		if (game->getSelectedCharacter() != game->getCharacters().end() && game->getSelectedCharacter()->isMoving() == false) {
 			game->characterMoveRight(game->getSelectedCharacter());
 			centerCharacter = true;
 		}
 		break;
-	case sf::Keyboard::Down:
+	case sf::Keyboard::S:
 		if (game->getSelectedCharacter() != game->getCharacters().end() && game->getSelectedCharacter()->isMoving() == false) {
 			game->characterMoveDown(game->getSelectedCharacter());
 			centerCharacter = true;
 		}
 		break;
-	case sf::Keyboard::Up:
+	case sf::Keyboard::W:
 		if (game->getSelectedCharacter() != game->getCharacters().end() && game->getSelectedCharacter()->isMoving() == false) {
 			game->characterMoveUp(game->getSelectedCharacter());
 			centerCharacter = true;
@@ -257,19 +257,19 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 
 
 
-	case sf::Keyboard::A:
+	case sf::Keyboard::Left:
 		gameView.move(-TILESIZE, 0);
 		centerCharacter = false;
 		break;
-	case sf::Keyboard::D:
+	case sf::Keyboard::Right:
 		gameView.move(TILESIZE, 0);
 		centerCharacter = false;
 		break;
-	case sf::Keyboard::S:
+	case sf::Keyboard::Down:
 		gameView.move(0, TILESIZE);
 		centerCharacter = false;
 		break;
-	case sf::Keyboard::W:
+	case sf::Keyboard::Up:
 		gameView.move(0, -TILESIZE);
 		centerCharacter = false;
 		break;
@@ -286,6 +286,9 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 		//enter shooting mode
 	case sf::Keyboard::Q:
 		toggleAttackMode();
+		break;
+	case sf::Keyboard::E:
+		endTurn(App);
 		break;
 	default:
 		break;
