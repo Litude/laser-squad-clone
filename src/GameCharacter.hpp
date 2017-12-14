@@ -109,7 +109,7 @@ private:
 	unsigned int maxHealth = 40;
 	std::shared_ptr<Weapon> equippedWeapon = std::make_shared<Hands>();
 	unsigned int team;
-    unsigned int lengthofSight = 9;
+    unsigned int lengthofSight = 15;
 	int selectedItemIdx = -1;
 	int selectedWeaponIdx = -1;
 	bool remove = false;
