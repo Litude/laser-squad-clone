@@ -368,7 +368,7 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 	buttons.push_back(apcosts);
 
 	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
-	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
+	back.setCallback([&] {this->openScreen(backScene); });
 	buttons.push_back(back);
 
 	switchView(controls, App);

@@ -19,6 +19,7 @@
 #include "Line.hpp"
 #include "GridLoader.hpp"
 #include "EndTurnScreen.hpp"
+#include "ControlsScreen.hpp"
 
 namespace MouseMode {
 	enum Mode { shoot, select };

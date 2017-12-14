@@ -18,6 +18,7 @@ public:
 	ControlsScreen(void);
 	virtual ScreenResult Run(sf::RenderWindow &App);
 	void openScreen(ScreenResult res);
+	void setBackScreen(ScreenResult newScene) { backScene = newScene; };
 private:
 	ScreenResult m_screenResult;
 private:
@@ -58,6 +59,7 @@ private:
 	float maxIGkey = 0;
 	float maxMEkey = 0;
 	instructionView v = controls;
+	ScreenResult backScene = ScreenResult::MainMenuScene;
 };
 
 #endif
