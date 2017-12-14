@@ -62,8 +62,7 @@ public:
 
 class Shotgun : public Weapon {
 public:
-	Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 0, 10000, 5, 5, 1, 0, 10, Ammo_Shotgun_Shells, 0) {};
-	//Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 5, 3, 5, 2, 1, 70, 10, Ammo_Shotgun_Shells) {};
+	Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 5, 6, 5, 3, 1, 0, 8, Ammo_Shotgun_Shells, 0) {};
 };
 
 class Uzi : public Weapon {

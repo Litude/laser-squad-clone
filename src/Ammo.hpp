@@ -42,7 +42,7 @@ public:
 
 class AmmoShotgunShells : public Ammo {
 public:
-	AmmoShotgunShells() : Ammo(Icon_Ammo_Shells, "Shotgun Shells", true, 20, Ammo_Shotgun_Shells) {};
+	AmmoShotgunShells() : Ammo(Icon_Ammo_Shells, "Shotgun Shells", true, 24, Ammo_Shotgun_Shells) {};
 };
 
 class AmmoLaserPack : public Ammo {
