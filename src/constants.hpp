@@ -16,10 +16,14 @@
 #define MAX_ITEMS 8
 #define ITEMS_PER_ROW 4
 
+
+// Macros for SFML 2.3 and 2.4 compatiblity without depreciation warnings
 #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR <= 3
 #define setTextColor setColor
+#define setShaderUniform setParameter
 #else
 #define setTextColor setFillColor
+#define setShaderUniform setUniform
 #endif
 
 #endif
