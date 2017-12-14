@@ -53,7 +53,7 @@ public:
 
 class Pistol : public Weapon {
 public:
-	Pistol() : Weapon(Icon_Weapon_Pistol, "Pistol", 5, 6, 9, 2, 1, 70, 10, Ammo_9mm_Bullets) {};
+	Pistol() : Weapon(Icon_Weapon_Pistol, "Pistol", 5, 6, 7, 2, 1, 60, 10, Ammo_9mm_Bullets) {};
 };
 
 class Shotgun : public Weapon {
