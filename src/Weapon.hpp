@@ -113,6 +113,11 @@ class Sniper : public Weapon {
 public:
 	Sniper() : Weapon(Icon_Weapon_Sniper, "Sniper", 9, 5, 22, 1, 1, 90, 20, Ammo_50cal_Bullets) {}
 };
+
+class Crossbow : public Weapon {
+public:
+	Crossbow() : Weapon(Icon_Weapon_Crossbow, "Crossbow", 15, 3, 20, 3, 3, 0, 12, Ammo_Crossbow, 0, 1) {}
+};
 	
 
 #endif

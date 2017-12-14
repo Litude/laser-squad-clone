@@ -5,8 +5,10 @@
 std::shared_ptr<sf::Texture> Explosion::EXPL_SMOKE_TEXTURES = Util::loadTextures("img/smoke.png");
 std::shared_ptr<sf::Texture> Explosion::EXPL_SMALL_TEXTURES = Util::loadTextures("img/explosion_small.png");
 std::shared_ptr<sf::Texture> Explosion::EXPL_BIG_TEXTURES = Util::loadTextures("img/explosion_big.png");
+std::shared_ptr<sf::Texture> Explosion::EXPL_RAY_TEXTURES = Util::loadTextures("img/explosion_ray.png");
 std::shared_ptr<sf::SoundBuffer> Explosion::SOUND_EXPL_SMALL = Util::loadSound("sound/explosion_small.ogg");
 std::shared_ptr<sf::SoundBuffer> Explosion::SOUND_EXPL_BIG = Util::loadSound("sound/explosion_big.ogg");
+std::shared_ptr<sf::SoundBuffer> Explosion::SOUND_EXPL_RAY = Util::loadSound("sound/explosion_ray.ogg");
 
 sf::Sprite Explosion::drawable() {
 	if (active && !soundPlaying()) {

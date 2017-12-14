@@ -11,6 +11,7 @@ std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_PUNCH = Util::loadSound("soun
 std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_KNIFE = Util::loadSound("sound/throwing_knife.wav");
 std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_SWORD = Util::loadSound("sound/sword.wav");
 std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_LASER = Util::loadSound("sound/laser.wav");
+std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_CROSSBOW = Util::loadSound("sound/raygun.wav");
 
 bool Projectile::reachedDestination() const {
 	return ticks > (distance + delay);

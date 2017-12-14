@@ -21,6 +21,11 @@ public:
 				explosion.setTexture(*EXPL_BIG_TEXTURES);
 				framesize = sf::Vector2i(160, 160);
 				break;
+			case Ammo_Crossbow:
+				sound.setBuffer(*SOUND_EXPL_RAY);
+				explosion.setTexture(*EXPL_RAY_TEXTURES);
+				framesize = sf::Vector2i(96, 96);
+				break;
 			default:
 				explosion.setTexture(*EXPL_SMOKE_TEXTURES);
 				framesize = sf::Vector2i(32, 32);
@@ -54,8 +59,10 @@ private:
 	static std::shared_ptr<sf::Texture> EXPL_SMOKE_TEXTURES;
 	static std::shared_ptr<sf::Texture> EXPL_SMALL_TEXTURES; 
 	static std::shared_ptr<sf::Texture> EXPL_BIG_TEXTURES;
+	static std::shared_ptr<sf::Texture> EXPL_RAY_TEXTURES;
 	static std::shared_ptr<sf::SoundBuffer> SOUND_EXPL_SMALL;
 	static std::shared_ptr<sf::SoundBuffer> SOUND_EXPL_BIG;
+	static std::shared_ptr<sf::SoundBuffer> SOUND_EXPL_RAY;
 };
 
 

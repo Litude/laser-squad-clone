@@ -13,7 +13,8 @@ enum AmmoType {
 	Ammo_Sword,
 	Ammo_Grenades,
 	Ammo_Laser_Pack,
-	Ammo_50cal_Bullets
+	Ammo_50cal_Bullets,
+	Ammo_Crossbow,
 };
 
 class Ammo : public Item {
@@ -52,6 +53,11 @@ public:
 class Ammo50calBullets : public Ammo {
 public:
 	Ammo50calBullets() : Ammo(Icon_Ammo_50cal, "50cal Bullets", true, 5, Ammo_50cal_Bullets) {};
+};
+
+class AmmoCrossbow : public Ammo {
+public:
+	AmmoCrossbow() : Ammo(Icon_Ammo_50cal, "Crossbow Bolts", true, 6, Ammo_Crossbow) {};
 };
 
 #endif
