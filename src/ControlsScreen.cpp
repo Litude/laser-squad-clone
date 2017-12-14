@@ -46,18 +46,19 @@ ScreenResult ControlsScreen::Run(sf::RenderWindow & App)
 					break;
 				}
 			}
-		}
-		for (auto it = buttons.begin(); it != buttons.end(); ++it) {
-			it->setState(Button::state::normal);
-			it->update(Event, App);
-			if (it->getState() == Button::state::hovered) {
-				selectedButtonItem = it;
+			for (auto it = buttons.begin(); it != buttons.end(); ++it) {
+				it->setState(Button::state::normal);
+				it->update(Event, App);
+				if (it->getState() == Button::state::hovered) {
+					selectedButtonItem = it;
+				}
+			}
+
+			if (selectedButtonItem->getState() != Button::state::clicked) {
+				selectedButtonItem->setState(Button::state::hovered);
 			}
 		}
 
-		if (selectedButtonItem->getState() != Button::state::clicked) {
-			selectedButtonItem->setState(Button::state::hovered);
-		}
 		drawUI(App);
 	}
 
@@ -190,7 +191,7 @@ void ControlsScreen::switchView(instructionView view, sf::RenderWindow & App)
 			IGtitle.setString("In-game controls");
 			MEtitle.setString("Map editor controls");
 			buttons[0].setCallback([&] {this->switchView(apCosts, App); });
-			buttons[0].setText("Ap costs");
+			buttons[0].setText("Show ap costs");
 			break;
 		case apCosts:
 			v = apCosts;
@@ -201,7 +202,7 @@ void ControlsScreen::switchView(instructionView view, sf::RenderWindow & App)
 			IGtitle.setString("Action ap costs");
 			MEtitle.setString("Item ap costs");
 			buttons[0].setCallback([&] {this->switchView(controls, App); });
-			buttons[0].setText("Controls");
+			buttons[0].setText("Show controls");
 			break;
 	}
 
@@ -334,7 +335,7 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 
 	sf::RectangleShape rs;
 	rs.setFillColor(sf::Color::White);
-	rs.setSize(sf::Vector2f(170, 40));
+	rs.setSize(sf::Vector2f(200, 40));
 
 	rec.setFillColor(sf::Color(0, 0, 0, 200));
 	rec.setSize(sf::Vector2f(500, 300));
