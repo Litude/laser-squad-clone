@@ -14,6 +14,7 @@ public:
 	void update(const unsigned int dt);
 	void changeAnim(const unsigned int animNum);
 	bool isFinished() const;
+	unsigned int getCurrentAnim() const { return currentAnim; }
 	const sf::IntRect& getFrame() const { return bounds; }
 private:
 	std::vector<Animation> animations;

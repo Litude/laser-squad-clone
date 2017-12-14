@@ -100,10 +100,13 @@ void ControlsScreen::drawUI(sf::RenderWindow &App)
 void ControlsScreen::updateLayout(sf::RenderWindow & App)
 {
 	App.setView(sf::View(sf::FloatRect(0, 0, static_cast<float>(App.getSize().x), static_cast<float>(App.getSize().y))));
+
 	helperScale = sf::Vector2f(App.getView().getSize().x / rec.getLocalBounds().width / 4,
 								App.getView().getSize().y / rec.getLocalBounds().height / 4);
+
 	backgroundSprite.setScale(App.getView().getSize().x / backgroundSprite.getLocalBounds().width,
 								App.getView().getSize().y / backgroundSprite.getLocalBounds().height);
+
 	rec.setScale(
 		App.getView().getSize().x / rec.getLocalBounds().width / 1.4f,
 		App.getView().getSize().y / rec.getLocalBounds().height / 1.4f);
@@ -164,6 +167,10 @@ void ControlsScreen::updateLayout(sf::RenderWindow & App)
 	}
 }
 
+/*
+	Switches between controls and apCosts views by changing the contents of drawn
+	components, descriptions and keys.
+*/
 void ControlsScreen::switchView(instructionView view, sf::RenderWindow & App)
 {
 	std::vector<std::string> Des1;
@@ -224,25 +231,24 @@ void ControlsScreen::switchView(instructionView view, sf::RenderWindow & App)
 	for(auto &key : IGKeys) {
 		key.setOrigin(key.getGlobalBounds().width/2, 0);
 	}
-
 	for(auto &key : MEKeys) {
 		key.setOrigin(key.getGlobalBounds().width/2, 0);
 	}
 
-	 // Find the largest width for in-game keys
-		for(auto &key : IGKeys) {
-			if (key.getLocalBounds().width > maxIGkey) {
-				maxIGkey = key.getLocalBounds().width;
-			}
+	// Find the largest width for in-game keys
+	for(auto &key : IGKeys) {
+		if (key.getLocalBounds().width > maxIGkey) {
+			maxIGkey = key.getLocalBounds().width;
 		}
+	}
 
-	 // Find the largest width for map editor keys
-		for(auto &key : MEKeys) {
-			if (key.getLocalBounds().width > maxMEkey) {
-				maxMEkey = key.getLocalBounds().width;
-			}
+	// Find the largest width for map editor keys
+	for(auto &key : MEKeys) {
+		if (key.getLocalBounds().width > maxMEkey) {
+			maxMEkey = key.getLocalBounds().width;
 		}
-		updateLayout(App);
+	}
+	updateLayout(App);
 }
 
 bool ControlsScreen::initComponents(sf::RenderWindow & App)
@@ -270,9 +276,10 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 		return false;
 	}
 
+	// Default view
 	v = controls;
 
-	// Menu text
+	// Menu texts
 	IGtitle.setString("In-game controls");
 	IGtitle.setTextColor(sf::Color(153, 204, 255, 225));
 	IGtitle.setFont(*font);
@@ -285,13 +292,15 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 	MEtitle.setCharacterSize(45);
 	MEtitle.setOrigin(MEtitle.getGlobalBounds().width/2, 0);
 
+	// Additional help text
 	help.setString("For detailed instructions on game features see the documentation.");
 	help.setTextColor(sf::Color::White);
 	help.setFont(*font);
 	help.setCharacterSize(charSize);
 	help.setOrigin(help.getGlobalBounds().width/2, 0);
 
-	// In-game texts
+	// Descriptions and keys for controls views
+	// In-game
 		IGdes = {
 			 "Scroll view",
 			 "Move character",
@@ -302,13 +311,13 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 			 "Arrow keys",
 			 "Q",
 			 };
-
-	// Map editor texts
+	// Map editor
 		MEdes = {
 			"Change tilesets"};
 		MEk = {
 			"Numbers 1-4"};
 
+	// Descriptions and keys for controls views
 	// Action AP costs
 		Actiondes = {
 			"Move",
@@ -341,14 +350,17 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 			"5",
 			"5",
 			"4",
-			"8",
 			"5",
+			"8",
 			"10",
 			"5",
 			"8",
 			"6"
 		};
 
+	/*
+		Check if there are same amount of descriptions and keys.
+	*/
 	if(IGdes.size() != IGk.size() || MEdes.size() != MEk.size()) {
 		std::cerr << "Description and key sizes do not match" << std::endl;
 	}
@@ -368,7 +380,7 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 	buttons.push_back(apcosts);
 
 	Button back("Back", *font, sf::Text::Regular, 25, sf::Vector2f(350.f, 300.f), rs);
-	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
+	back.setCallback([&] {this->openScreen(backScene); });
 	buttons.push_back(back);
 
 	switchView(controls, App);

@@ -273,6 +273,13 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 		gameView.move(0, -TILESIZE);
 		centerCharacter = false;
 		break;
+	case sf::Keyboard::F1:
+	{
+		ControlsScreen helpScreen;
+		helpScreen.setBackScreen(ScreenResult::GameScene);
+		m_screenResult = helpScreen.Run(App);
+		break;
+	}
 	case sf::Keyboard::Numpad0:
 		gameView.setSize(sf::Vector2f(static_cast<float>(App.getSize().x - (App.getSize().x / 4)), static_cast<float>(App.getSize().y)));
 		break;
