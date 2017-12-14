@@ -39,6 +39,7 @@ private:
 	sf::Vector2f helperScale;
 	sf::Text IGtitle;
 	sf::Text MEtitle;
+	sf::Text help;
 	float maxIGkey = 0;
 	float maxMEkey = 0;
 };

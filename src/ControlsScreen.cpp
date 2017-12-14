@@ -77,6 +77,8 @@ void ControlsScreen::drawUI(sf::RenderWindow &App)
 		App.draw(MEDescriptions[i]);
 		App.draw(MEKeys[i]);
 	}
+	App.draw(help);
+
 	App.display();
 }
 
@@ -115,6 +117,10 @@ void ControlsScreen::updateLayout(sf::RenderWindow & App)
 			rec.getPosition().y + rec.getGlobalBounds().height / 5 + spacing * helperScale.y * i});
 		i++;
 	}
+
+	help.setScale(helperScale);
+	help.setPosition({  App.getSize().x * 0.5f,
+		rec.getPosition().y + rec.getGlobalBounds().height - help.getGlobalBounds().height - spacing * helperScale.y});
 
 	i = 0;
 	for (auto &key : IGKeys) {
@@ -170,59 +176,38 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 	IGtitle.setString("In-game controls");
 	IGtitle.setTextColor(sf::Color(153, 204, 255, 225));
 	IGtitle.setFont(*font);
-	IGtitle.setCharacterSize(40);
+	IGtitle.setCharacterSize(45);
 	IGtitle.setOrigin(IGtitle.getGlobalBounds().width/2, 0);
 
 	MEtitle.setString("Map editor controls");
 	MEtitle.setTextColor(sf::Color(153, 255, 153, 225));
 	MEtitle.setFont(*font);
-	MEtitle.setCharacterSize(40);
+	MEtitle.setCharacterSize(45);
 	MEtitle.setOrigin(MEtitle.getGlobalBounds().width/2, 0);
+
+	help.setString("For detailed instructions on game features see the documentation.");
+	help.setTextColor(sf::Color::White);
+	help.setFont(*font);
+	help.setCharacterSize(charSize);
+	help.setOrigin(help.getGlobalBounds().width/2, 0);
 
 	// In-game texts
 		std::vector<std::string> IGdes = {
 			 "Scroll view",
 			 "Move character",
-			 "Switch between modes",
-			 "ActionX",
-			 "ActionX",
-			 "ActionX",
-			 "ActionX",
-			 "ActionX",
-			 "ActionX"};
+			 "Switch between modes"
+		 		};
 		std::vector<std::string> IGk = {
 			 "WASD",
 			 "Arrow keys",
-			 "Q",
-			 "WASD",
-			 "Q",
-			 "Q",
-			 "Q",
-			 "Q",
 			 "Q",
 			 };
 
 	// Map editor texts
 		std::vector<std::string> MEdes = {
-			"Grass tile",
-			"Ground tile",
-			"Tree",
-			"Wall",
-			"TileX",
-			"TileX",
-			"TileX",
-			"TileX",
-			"TileX"};
+			"Change tilesets"};
 		std::vector<std::string> MEk = {
-			"WASD",
-			"Arrow keys",
-			"Q",
-			"WASD",
-			"Q",
-			"Q",
-			"Q",
-			"Q",
-			"Q"};
+			"Numbers 1-4"};
 
 	if(IGdes.size() != IGk.size() || MEdes.size() != MEk.size()) {
 		std::cerr << "Description and key sizes do not match" << std::endl;
