@@ -364,6 +364,17 @@ void Game::updateGameState()
 {
 	if (matchEnded()) {
 		gameState = GameState::match_ended;
+		unsigned int winningPlayerIdx = 0;
+		if (isWinner(1)) {
+			winningPlayerIdx = 1;
+		} else {
+			winningPlayerIdx = 2;
+		}
+		for (auto &character : characters) {
+			if (character.getTeam() == winningPlayerIdx && !(character.isDead())) {
+				character.setCurrentAnimation(animations::win);
+			}
+		}
 		setSelectedCharacter(getCharacters().end());
 	}
 }

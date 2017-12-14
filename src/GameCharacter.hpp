@@ -29,7 +29,8 @@ enum animations {
 	walk_right,
 	walk_down,
 	walk_up,
-	die
+	die,
+	win
 };
 
 enum statuscode {
@@ -82,6 +83,7 @@ public:
 	statuscode		useSelected();
 	void			unequipCharacter();
 	AnimationManager getAnimationManager() const { return animationManager;  }
+	void			setCurrentAnimation(animations animation);
 	unsigned int	getAmmoAmount(AmmoType ammotype, unsigned int neededAmount=0);
 	statuscode		reloadWeapon();
 	bool			shouldBeRemoved() { return remove; };

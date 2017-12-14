@@ -13,12 +13,14 @@ GameCharacter::GameCharacter(sf::Vector2u position, unsigned int team) :
 	Animation animation_walk_down(10, 0, 8, 55556);
 	Animation animation_walk_up(8, 0, 8, 55556);
 	Animation animation_die(20, 0, 5, 125000, false);
-	animationManager  =AnimationManager(sf::IntRect(0, 0, 32, 32));
+	Animation animation_win(1, 0, 6, 45000, true);
+	animationManager = AnimationManager(sf::IntRect(0, 0, 32, 32));
 	animationManager.addAnim(animation_walk_left);
 	animationManager.addAnim(animation_walk_right);
 	animationManager.addAnim(animation_walk_down);
 	animationManager.addAnim(animation_walk_up);
 	animationManager.addAnim(animation_die);
+	animationManager.addAnim(animation_win);
 	animationManager.changeAnim(animations::walk_down); // Initial animation
 }
 
@@ -98,6 +100,8 @@ void GameCharacter::update(int delta_ms) {
 	if (isDead()) {
 		animationManager.update(delta_ms);
 		if (animationManager.isFinished()) remove = true;
+	} else if (animationManager.getCurrentAnim() == animations::win) {
+		animationManager.update(delta_ms);
 	}
 	if (moving) {
 		animationManager.update(delta_ms);
@@ -158,6 +162,11 @@ sf::Vector2u GameCharacter::getRenderPosition() const
 		renderPosition = sf::Vector2u(currentPosition.x * TILESIZE, currentPosition.y * TILESIZE);
 	}
 	return renderPosition;
+}
+
+void GameCharacter::setCurrentAnimation(animations animation)
+{
+	animationManager.changeAnim(animation);
 }
 
 statuscode GameCharacter::addItem(std::shared_ptr<Item> obj)
