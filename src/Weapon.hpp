@@ -4,9 +4,12 @@
 #include <string>
 #include <cstdlib>
 #include <iostream>
+#include <cmath>
+#include <memory>
 #include <SFML/System/Vector2.hpp>
 #include "Item.hpp"
 #include "Ammo.hpp"
+#include "Util.hpp"
 
 class Weapon : public Item {
 public:
@@ -17,6 +20,7 @@ public:
 	//TODO: combine fire and deviate into single function
 	virtual int	fire();
 	const sf::Vector2u deviate(sf::Vector2u target) const;
+	void clampToMaxRange(const sf::Vector2u& origin, sf::Vector2u& target) const;
 	unsigned	getDamage() const;
 	unsigned 	getDelay() const;
 	int			getRange() const { return (int) range; }

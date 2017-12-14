@@ -43,3 +43,14 @@ const sf::Vector2u Weapon::deviate(sf::Vector2u target) const {
 	return static_cast<sf::Vector2u>(deviated);
 }
 
+void Weapon::clampToMaxRange(const sf::Vector2u& origin, sf::Vector2u& target) const {
+	auto f_origin = static_cast<sf::Vector2f>(origin); 
+	auto f_target = static_cast<sf::Vector2f>(target);
+	auto path = f_target - f_origin;
+	if (Util::vecLength(path) > (float) range) {
+		//std::cout << "CLAMPED FROM: (" << target.x << ", " << target.y << ")" << std::endl;
+		path = Util::vecUnit(path) * (float) range;
+		target = origin + sf::Vector2u(std::round(path.x), std::round(path.y));
+		//std::cout << "TO: (" << target.x << ", " << target.y << ")" << std::endl;
+	}
+}
