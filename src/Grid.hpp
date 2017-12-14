@@ -20,9 +20,9 @@ public:
 
 	Grid(std::vector<Tile> grid, unsigned width) : width(width), grid(grid) { }
 
-	unsigned getSize() const { return grid.size(); }
+	unsigned getSize() const { return static_cast<unsigned int>(grid.size()); }
 	unsigned getWidth() const { return width; }
-	unsigned getHeight() const { return grid.size()/width; }
+	unsigned getHeight() const { return static_cast<unsigned int>(grid.size())/width; }
 
 	const Tile operator()(sf::Vector2i loc) const;
 	const Tile& operator()(sf::Vector2u loc) const;
