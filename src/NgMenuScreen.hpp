@@ -16,14 +16,14 @@ public:
 	NgMenuScreen(void);
 	virtual ScreenResult Run(sf::RenderWindow &App);
 	void openScreen(ScreenResult res);
-	std::string getMapName();
+	const std::string &getMapName();
 private:
 	ScreenResult m_screenResult;
 private:
 	void drawUI(sf::RenderWindow &App);
 	bool initComponents(sf::RenderWindow & App);
 	void updateLayout(sf::RenderWindow & App);
-	void checkMap(const std::string& mapname);
+	void startGameWithMap(const std::string& mapname);
 
 	// Components
 	std::shared_ptr<sf::Texture> backgroundTexture;
@@ -36,6 +36,7 @@ private:
 	sf::Text screenStatusMessage;
 	bool errorMessage;
 	sf::Clock errorClock;
+	std::string mapNameToOpen;
 };
 
 #endif

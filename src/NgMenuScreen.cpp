@@ -145,7 +145,7 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	rs.setSize(sf::Vector2f(170, 40));
 
 	Button launchgame("Launch game", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
-	launchgame.setCallback([&] {this->checkMap(getMapName()); });
+	launchgame.setCallback([&] {this->startGameWithMap(tField.getString()); });
 	buttons.push_back(launchgame);
 
 	TextField loadmap(25, rs, *font);
@@ -159,15 +159,15 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	buttons.push_back(back);
 
 	Button map1("Map 1", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
-	map1.setCallback([&] {this->checkMap("map1"); });
+	map1.setCallback([&] {this->startGameWithMap("default_level1"); });
 	buttons.push_back(map1);
 
 	Button map2("Map 2", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
-	map2.setCallback([&] {this->checkMap("map2"); });
+	map2.setCallback([&] {this->startGameWithMap("default_level2"); });
 	buttons.push_back(map2);
 
 	Button map3("Map3", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
-	map3.setCallback([&] {this->checkMap("map3"); });
+	map3.setCallback([&] {this->startGameWithMap("default_level3"); });
 	buttons.push_back(map3);
 
 #if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
@@ -185,14 +185,14 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	return true;
 }
 
-std::string NgMenuScreen::getMapName() {
-	return tField.getString();
+const std::string &NgMenuScreen::getMapName() {
+	return mapNameToOpen;
 }
 
-void NgMenuScreen::checkMap(const std::string& mapname) {
-	tField.setString(mapname);
+void NgMenuScreen::startGameWithMap(const std::string& mapname) {
 	std::ifstream f("levels/" + mapname + ".json");
-	if (f.good() && !tField.getString().empty()) {
+	if (f.good() && !mapname.empty()) {
+		mapNameToOpen = mapname;
 		openScreen(ScreenResult::GameScene);
 	}
 	else {
