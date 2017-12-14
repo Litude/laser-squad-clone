@@ -58,6 +58,11 @@ public:
 				proj.setTextureRect(rect);
 				m_spin = 5;
 				break;
+			case Ammo_Laser_Pack:
+				rect.left = 0;
+				rect.top = 32;
+				proj.setTextureRect(rect);
+				break;
 			default:
 				std::cout << "Unknown weapontype, default texture chosen." << std::endl;
 				proj.setTextureRect(rect);

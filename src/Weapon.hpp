@@ -99,6 +99,11 @@ public:
 	Grenade(): Weapon(Icon_Weapon_Grenade, "Grenade", true, false, 2, 6, 500, 20, 1, 1, 0, 7, Ammo_Grenades, 0, 1) {}
 	virtual int fire() { if (this->getAmount() >= 1) { this->removeAmount(1); } return 1;} ;
 };
+
+class Laser : public Weapon {
+public:
+	Laser(): Weapon(Icon_Weapon_Laser, "Heavy Laser", 6, 9, 5, 3, 0, 100, 15, Ammo_Laser_Pack, 50) {}
+};
 	
 
 #endif

@@ -65,6 +65,10 @@ namespace jreader {
 			return std::make_shared<Boots>();
 		} else if (item_str == "Grenade") {
 			return std::make_shared<Grenade>();
+		} else if (item_str == "Heavy Laser") {
+			return std::make_shared<Laser>();
+		} else if (item_str == "Laser Pack") {
+			return std::make_shared<AmmoLaserPack>();
 		} else {
 			return nullptr;
 		}
