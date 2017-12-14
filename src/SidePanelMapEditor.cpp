@@ -93,7 +93,7 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	buttons_grounds.push_back(button);
 	button = createGroundTileButton(TileGround::wooden_floor, editor);
 	buttons_grounds.push_back(button);
-	button = createGroundTileButton(TileGround::yellow_woodenfloor, editor);
+	button = createGroundTileButton(TileGround::yellow_woodfloor, editor);
 	buttons_grounds.push_back(button);
 	button = createGroundTileButton(TileGround::metal_floor, editor);
 	buttons_grounds.push_back(button);
