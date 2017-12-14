@@ -45,6 +45,10 @@ void NewMapMenuScreen::openScreen(ScreenResult res)
 			try {
 				if (getMapSizeX() > 0 && getMapSizeX() <= 1000 && getMapSizeY() > 0 && getMapSizeY() <= 1000) {
 					m_screenResult = res;
+				}else{
+					screenStatusMessage.setString("Invalid dimensions!");
+					errorMessage = true;
+					errorClock.restart();
 				}
 			}
 			catch (std::invalid_argument) {
@@ -158,8 +162,8 @@ bool NewMapMenuScreen::initComponents(sf::RenderWindow & App)
 	screenStatusMessage.setOutlineThickness(4);
 	screenStatusMessage.setOutlineColor(sf::Color::Black);
 #endif
-	screenStatusMessage.setTextColor(sf::Color::Red);
 	screenStatusMessage.setString("Map not found!");
+	screenStatusMessage.setTextColor(sf::Color::Red);
 	screenStatusMessage.setCharacterSize(40);
 	screenStatusMessage.setFont(*font);
 	errorMessage = false;
@@ -185,6 +189,7 @@ void NewMapMenuScreen::checkMap(const std::string& mapname) {
 	if (f.good() && !mapNameField.getString().empty()) {
 		openScreen(ScreenResult::EditorScene);
 	} else {
+		screenStatusMessage.setString("Map not found!");
 		errorMessage = true;
 		errorClock.restart();
 	}
