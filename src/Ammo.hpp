@@ -57,7 +57,7 @@ public:
 
 class AmmoCrossbow : public Ammo {
 public:
-	AmmoCrossbow() : Ammo(Icon_Ammo_50cal, "Crossbow Bolts", true, 6, Ammo_Crossbow) {};
+	AmmoCrossbow() : Ammo(Icon_Ammo_Crossbow, "Crossbow Bolts", true, 6, Ammo_Crossbow) {};
 };
 
 #endif
