@@ -19,7 +19,7 @@ public:
 	bool		canFire() const;
 	//TODO: combine fire and deviate into single function
 	virtual int	fire();
-	const sf::Vector2u deviate(sf::Vector2u target) const;
+	void deviate(sf::Vector2u& target) const;
 	void clampToMaxRange(const sf::Vector2u& origin, sf::Vector2u& target) const;
 	unsigned	getDamage() const;
 	unsigned 	getDelay() const;

@@ -210,8 +210,10 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 
 	for (int i = 0; i < numberOfShots; ++i) {
 		weapon->clampToMaxRange(it->getPosition(), target);
-		auto deviated = weapon->deviate(target);
-		auto endTile = traceFromCharacter(it, deviated);
+		auto endTile = traceFromCharacter(it, target);
+		weapon->deviate(endTile);
+		// Trace again in case of deviation
+		endTile = traceFromCharacter(it, endTile);
         auto affectedTiles = getAffected(endTile, weapon->getArea());
 		std::cout << "landed at tile at coords: (" << endTile.x << ", " << endTile.y << ")" << std::endl;
 		for (auto &gc : characters) {
