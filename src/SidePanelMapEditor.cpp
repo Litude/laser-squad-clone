@@ -339,7 +339,9 @@ void SidePanelMapEditor::updateLayout(sf::RenderWindow & App)
 	buttonExit.setRectangleShape(rs);
 
 	buttonSaveMap.setPosition(sf::Vector2f(static_cast<float>(menuCenterX), static_cast<float>(buttonExit.getGlobalBounds().top - buttonSaveMap.getGlobalBounds().height / 2 - margin)));
+	buttonSaveMap.setRectangleShape(rs);
 	mapNameField.setPosition(sf::Vector2f(static_cast<float>(menuCenterX), static_cast<float>(buttonSaveMap.getGlobalBounds().top - mapNameField.getGlobalBounds().height / 2 - margin)));
+	mapNameField.setRectangleShape(rs);
 
 	// Ground buttons
 	unsigned int tilesetsButtonsGroupY = 40;
