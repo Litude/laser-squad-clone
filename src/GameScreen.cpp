@@ -415,6 +415,7 @@ void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u
 	const sf::Texture& texture = renderTexture_visibleTiles->getTexture();
 
 	// Draw visible tiles
+	shader->setParameter("textureSize", sf::Vector2f(texture.getSize()));
 	sf::Sprite sprite(texture);
 	App.draw(sprite, shader);
 }
