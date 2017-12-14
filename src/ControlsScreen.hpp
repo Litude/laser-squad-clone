@@ -7,6 +7,11 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
+enum instructionView {
+	controls,
+	apCosts
+};
+
 class ControlsScreen : public Screen
 {
 public:
@@ -20,6 +25,7 @@ private:
 	void drawUI(sf::RenderWindow &App);
 	bool initComponents(sf::RenderWindow & App);
 	void updateLayout(sf::RenderWindow & App);
+	void switchView(instructionView view, sf::RenderWindow & App);
 
 	std::shared_ptr<sf::Texture> backgroundTexture;
 	sf::Sprite backgroundSprite;
@@ -34,6 +40,15 @@ private:
 	std::vector<sf::Text> MEKeys;
 	std::vector<sf::Text> sfDescriptions;
 	std::vector<sf::Text> sfKeys;
+	std::vector<std::string> IGdes;
+	std::vector<std::string> IGk;
+	std::vector<std::string> MEdes;
+	std::vector<std::string> MEk;
+	std::vector<std::string> Actiondes;
+	std::vector<std::string> Actionk;
+	std::vector<std::string> Itemdes;
+	std::vector<std::string> Itemk;
+
 	int charSize = 40;
 	float spacing = charSize * 1.2f;
 	sf::Vector2f helperScale;
@@ -42,6 +57,7 @@ private:
 	sf::Text help;
 	float maxIGkey = 0;
 	float maxMEkey = 0;
+	instructionView v = controls;
 };
 
 #endif
