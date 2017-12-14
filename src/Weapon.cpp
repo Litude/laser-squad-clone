@@ -29,19 +29,21 @@ bool Weapon::reload(unsigned ammo) {
 	return true;
 }
 
-void Weapon::deviate(sf::Vector2u& target) const {
-	sf::Vector2i deviated = static_cast<sf::Vector2i>(target);
+// Return true if deviation occurs.
+bool Weapon::deviate(sf::Vector2u& target) const {
 	if ((rand() % 100 + 1) > accuracy) {
+		sf::Vector2i deviated = static_cast<sf::Vector2i>(target);
 		int dx = rand() % (deviation*2 + 1) - deviation;
 		int dy = rand() % (deviation*2 + 1) - deviation;
 		deviated.x += dx;
 		deviated.y += dy;
 		std::cout << "Shot deviated by: (" << dx << ", " << dy << ")" << std::endl;
+		if (deviated.x < 0) deviated.x = 0;
+		if (deviated.y < 0) deviated.y = 0;
+		target = static_cast<sf::Vector2u>(deviated);
+		return true;
 	}
-	if (deviated.x < 0) deviated.x = 0;
-	if (deviated.y < 0) deviated.y = 0;
-	target = static_cast<sf::Vector2u>(deviated);
-	//return static_cast<sf::Vector2u>(deviated);
+	return false;
 }
 
 void Weapon::clampToMaxRange(const sf::Vector2u& origin, sf::Vector2u& target) const {
