@@ -17,7 +17,7 @@ enum TileGround {
 	metal = 5,
 	wooden_floor = 6,
 	metal_floor = 7,
-	yellow_woodenfloor = 8,
+	yellow_woodfloor = 8,
 	alienblood_floor = 9,
 	marble_floor = 10,
 	gold_floor = 11,

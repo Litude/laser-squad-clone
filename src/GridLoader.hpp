@@ -22,7 +22,7 @@ namespace jreader {
 
 	typedef Item* (*item_create)();
 	static std::map<std::string, TileBlock> block = { {"wall", wall}, {"tree", tree}, {"bush", bush}, {"air", air}, {"trophy", trophy}, {"small_tree", small_tree}, {"cherry_tree", cherry_tree}, {"rock", rock}, {"barrels", barrels}, {"stove", stove}, {"stone_head", stone_head}, {"toilet", toilet } };
-	static std::map<std::string, TileGround> ground = {{"grass", grass}, {"dirt", dirt}, {"wood", wood}, {"stone", stone}, {"metal", metal}, {"black", black}, {"wooden_floor", wooden_floor }, { "metal_floor", metal_floor },{ "yellow_woodenfloor", yellow_woodenfloor },{ "alienblood_floor", alienblood_floor },{ "marble_floor", marble_floor },{ "gold_floor", gold_floor },{ "gold_shape", gold_shape },{ "checkerboard", checkerboard },{ "road_rocky", road_rocky },{ "road_bricks", road_bricks } };
+	static std::map<std::string, TileGround> ground = {{"grass", grass}, {"dirt", dirt}, {"wood", wood}, {"stone", stone}, {"metal", metal}, {"black", black}, {"wooden_floor", wooden_floor }, { "metal_floor", metal_floor },{ "yellow_woodfloor", yellow_woodfloor },{ "alienblood_floor", alienblood_floor },{ "marble_floor", marble_floor },{ "gold_floor", gold_floor },{ "gold_shape", gold_shape },{ "checkerboard", checkerboard },{ "road_rocky", road_rocky },{ "road_bricks", road_bricks } };
 	
 	// Order must be same as in ground and block enum
 	static std::vector<std::string> ground_str = {"black", "dirt", "grass", "wood", "stone", "metal", "wooden_floor", "metal_floor", "yellow_woodfloor", "alienblood_floor", "marble_floor", "gold_floor", "gold_shape", "checkerboard", "road_rocky", "road_bricks"};
