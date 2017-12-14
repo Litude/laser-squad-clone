@@ -21,6 +21,7 @@ public:
 		m_spin = 0;
 		switch (weaponType) {
 			case Ammo_None:
+				sound.setBuffer(*SOUND_PUNCH);
 				proj.setTextureRect(rect);
 				break;
 			case Ammo_9mm_Bullets:
@@ -57,6 +58,11 @@ public:
 				rect.left = 224;
 				proj.setTextureRect(rect);
 				m_spin = 5;
+				break;
+			case Ammo_Laser_Pack:
+				rect.left = 0;
+				rect.top = 32;
+				proj.setTextureRect(rect);
 				break;
 			default:
 				std::cout << "Unknown weapontype, default texture chosen." << std::endl;
@@ -109,6 +115,7 @@ private:
 	static std::shared_ptr<sf::SoundBuffer> SOUND_LAUNCHER;
 	static std::shared_ptr<sf::SoundBuffer> SOUND_GRENADE;
 	static std::shared_ptr<sf::SoundBuffer> SOUND_SNIPER;
+	static std::shared_ptr<sf::SoundBuffer> SOUND_PUNCH;
 };
 
 std::ostream& operator<<(std::ostream& out, const Projectile& t);

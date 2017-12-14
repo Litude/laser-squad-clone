@@ -2,7 +2,8 @@ uniform sampler2D texture;
 
 void main()
 {	
-	vec2 texOffset = vec2(0.01, 0.01);
+	vec2 textureSize2D = textureSize(texture, 0);
+	vec2 texOffset = vec2(10 / textureSize2D.x, 10 / textureSize2D.y);
 	vec2 vertTexCoord = gl_TexCoord[0].xy;
 	vec2 tc0 = vertTexCoord.st + vec2(-texOffset.s, -texOffset.t);
 	vec2 tc1 = vertTexCoord.st + vec2(         0.0, -texOffset.t);
