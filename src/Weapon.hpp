@@ -62,7 +62,7 @@ public:
 
 class Shotgun : public Weapon {
 public:
-	Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 5, 8, 5, 4, 2, 0, 8, Ammo_Shotgun_Shells, 0) {};
+	Shotgun() : Weapon(Icon_Weapon_Shotgun, "Shotgun", 5, 25, 5, 5, 1, 0, 9, Ammo_Shotgun_Shells, 0) {};
 };
 
 class Uzi : public Weapon {
@@ -115,7 +115,7 @@ public:
 
 class Crossbow : public Weapon {
 public:
-	Crossbow() : Weapon(Icon_Weapon_Crossbow, "Crossbow", 15, 3, 20, 3, 3, 0, 12, Ammo_Crossbow, 0, 1) {}
+	Crossbow() : Weapon(Icon_Weapon_Crossbow, "Crossbow", 12, 6, 30, 3, 3, 0, 12, Ammo_Crossbow, 0, 1) {}
 };
 	
 
