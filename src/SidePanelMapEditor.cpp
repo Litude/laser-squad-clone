@@ -91,6 +91,26 @@ SidePanelMapEditor::SidePanelMapEditor(sf::RenderWindow &App, MapEditor &editor)
 	buttons_grounds.push_back(button);
 	button = createGroundTileButton(TileGround::wood, editor);
 	buttons_grounds.push_back(button);
+	button = createGroundTileButton(TileGround::wooden_floor, editor);
+	buttons_grounds.push_back(button);
+	button = createGroundTileButton(TileGround::yellow_woodenfloor, editor);
+	buttons_grounds.push_back(button);
+	button = createGroundTileButton(TileGround::metal_floor, editor);
+	buttons_grounds.push_back(button);
+	button = createGroundTileButton(TileGround::alienblood_floor, editor);
+	buttons_grounds.push_back(button);
+	button = createGroundTileButton(TileGround::marble_floor, editor);
+	buttons_grounds.push_back(button);
+	button = createGroundTileButton(TileGround::gold_floor, editor);
+	buttons_grounds.push_back(button);
+	button = createGroundTileButton(TileGround::gold_shape, editor);
+	buttons_grounds.push_back(button);
+	button = createGroundTileButton(TileGround::checkerboard, editor);
+	buttons_grounds.push_back(button);
+	button = createGroundTileButton(TileGround::road_rocky, editor);
+	buttons_grounds.push_back(button);
+	button = createGroundTileButton(TileGround::road_bricks, editor);
+	buttons_grounds.push_back(button);
 
 	// Block buttons
 	button = createRemoveBlockTileButton(editor);
@@ -434,8 +454,10 @@ Button SidePanelMapEditor::createGroundTileButton(TileGround tileGround, MapEdit
 	buttonSpriteRect.top = 0;
 	buttonSpriteRect.left = 0;
 	int tileNumber_x = tileGround;
-	int tu = tileNumber_x * TILESIZE;
+	int tu = (tileNumber_x * TILESIZE) % texItems->getSize().x;
 	buttonSpriteRect.left = tu;
+	int tv = ((tileNumber_x * TILESIZE) / texItems->getSize().x) * TILESIZE;
+	buttonSpriteRect.top = tv;
 	buttonSprite.setTextureRect(buttonSpriteRect);
 
 	Button button = Button("", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), buttonSprite);
