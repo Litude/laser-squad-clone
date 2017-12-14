@@ -21,6 +21,7 @@ public:
 		m_spin = 0;
 		switch (weaponType) {
 			case Ammo_None:
+				sound.setBuffer(*SOUND_PUNCH);
 				proj.setTextureRect(rect);
 				break;
 			case Ammo_9mm_Bullets:
@@ -114,6 +115,7 @@ private:
 	static std::shared_ptr<sf::SoundBuffer> SOUND_LAUNCHER;
 	static std::shared_ptr<sf::SoundBuffer> SOUND_GRENADE;
 	static std::shared_ptr<sf::SoundBuffer> SOUND_SNIPER;
+	static std::shared_ptr<sf::SoundBuffer> SOUND_PUNCH;
 };
 
 std::ostream& operator<<(std::ostream& out, const Projectile& t);
