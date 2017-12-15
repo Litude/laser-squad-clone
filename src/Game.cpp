@@ -443,3 +443,19 @@ bool Game::isWinner(unsigned int playerIdx)
 	}
 	return numCharacters == 0;
 }
+
+void Game::selectNextCharacter()
+{
+	if (selectedCharacter == characters.end()) return;
+	auto it = selectedCharacter;
+
+	while(true) {
+		++it;
+		if (it == characters.end()) it = characters.begin();
+		if (it == selectedCharacter) break;
+		if (it->getTeam() == getCurrentPlayer()) {
+			selectedCharacter = it;
+			break;
+		}
+	}
+}

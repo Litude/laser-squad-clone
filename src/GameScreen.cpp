@@ -255,6 +255,9 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 		}
 		break;
 
+	case sf::Keyboard::Tab:
+		game->selectNextCharacter();
+		break;
 
 
 	case sf::Keyboard::Left:

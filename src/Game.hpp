@@ -54,6 +54,7 @@ public:
 	GameState								getGameState() { return gameState; }
 	StatusMessage&							getStatusMessage() {return statusMessage; }
 	void									removeDeadCharacters();
+	void									selectNextCharacter();
 private:
 	unsigned int							playerTurnIdx;
 	bool									recalculateLOS = true;
