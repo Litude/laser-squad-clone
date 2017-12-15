@@ -43,9 +43,13 @@ void NewMapMenuScreen::openScreen(ScreenResult res)
 	if (res == ScreenResult::EditorScene) {
 		if (mapInitType == MapInitType::new_map) {
 			try {
-				if (getMapSizeX() > 0 && getMapSizeX() <= 1000 && getMapSizeY() > 0 && getMapSizeY() <= 1000) {
+				if (getMapSizeX() > 250 || getMapSizeY() > 250) {
+					screenStatusMessage.setString("Max size 250x250!");
+					errorMessage = true;
+					errorClock.restart();
+				} else if (getMapSizeX() > 0 && getMapSizeY() > 0) {
 					m_screenResult = res;
-				}else{
+				} else {
 					screenStatusMessage.setString("Invalid dimensions!");
 					errorMessage = true;
 					errorClock.restart();
