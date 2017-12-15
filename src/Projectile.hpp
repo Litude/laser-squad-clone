@@ -116,6 +116,11 @@ private:
 	int delay;
 	// How much to degrees spin projectile each tick 
 	int m_spin;
+	// Clock used to normalize projectile speed
+	sf::Clock moveClock;
+	// Clock used to normalize depart delay
+	sf::Clock delayClock;
+
 	sf::Vector2f m_offset;
 	sf::Sprite proj;
 	int ticks = 0;

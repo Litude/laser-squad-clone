@@ -1,4 +1,5 @@
 #include "Projectile.hpp"
+#define FRAME_DURATION 2
 
 std::shared_ptr<sf::Texture> Projectile::PROJ_TEXTURES = Util::loadTextures("img/projectiles.png");
 std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_PISTOL = Util::loadSound("sound/pistol.wav");
@@ -35,13 +36,22 @@ sf::Sprite Projectile::drawable() {
 	if (!soundPlayed) {
 		playSound();
 	}
-	proj.move(m_offset);
-	proj.rotate(static_cast<float>(m_spin));
+	int delta = moveClock.getElapsedTime().asMilliseconds();
+	if (delta > FRAME_DURATION) {
+		proj.move(m_offset);
+		proj.rotate(static_cast<float>(m_spin));
+		moveClock.restart();		
+	}
 	return proj;
 }
 
 bool Projectile::hasDeparted() {
-	return ++ticks > delay;
+	int delta = delayClock.getElapsedTime().asMilliseconds();
+	if (delta > FRAME_DURATION) {
+		++ticks;
+		delayClock.restart();
+	}
+	return ticks > delay;
 }
 
 void Projectile::playSound() {
