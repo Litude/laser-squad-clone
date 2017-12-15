@@ -103,8 +103,8 @@ void NewMapMenuScreen::updateLayout(sf::RenderWindow & App)
 	mapSizeXField.setPosition(sf::Vector2f(menuCenterX - mapSizeYField.getGlobalBounds().width / 2 - mapSizeXField.getGlobalBounds().width / 2 - margin, componentOffsetY));
 	mapSizeYField.setPosition(sf::Vector2f(menuCenterX, componentOffsetY));
 	buttonCreateMap.setPosition(sf::Vector2f(menuCenterX + mapSizeYField.getGlobalBounds().width / 2 + buttonCreateMap.getGlobalBounds().width / 2 + margin, componentOffsetY));
-	mapNameField.setPosition(sf::Vector2f(menuCenterX - mapNameField.getGlobalBounds().width / 2 - margin, mapSizeYField.getPos().y + mapSizeYField.getGlobalBounds().height + margin));
-	buttonLoadMap.setPosition(sf::Vector2f(menuCenterX + buttonLoadMap.getGlobalBounds().width / 2 + margin, mapSizeYField.getPos().y + mapSizeYField.getGlobalBounds().height + margin));
+	mapNameField.setPosition(sf::Vector2f(menuCenterX - mapNameField.getGlobalBounds().width / 2 - margin / 2, mapSizeYField.getPos().y + mapSizeYField.getGlobalBounds().height + margin));
+	buttonLoadMap.setPosition(sf::Vector2f(menuCenterX + buttonLoadMap.getGlobalBounds().width / 2 + margin / 2, mapSizeYField.getPos().y + mapSizeYField.getGlobalBounds().height + margin));
 	buttonBack.setPosition(sf::Vector2f(menuCenterX, mapNameField.getPos().y + mapNameField.getGlobalBounds().height + margin));
 }
 

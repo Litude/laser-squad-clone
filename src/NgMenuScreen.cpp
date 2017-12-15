@@ -99,16 +99,15 @@ void NgMenuScreen::updateLayout(sf::RenderWindow & App)
 	screenStatusMessage.setPosition(sf::Vector2f(0, App.getSize().y - screenStatusMessage.getGlobalBounds().height * 1.2f));
 
 	float margin = 10.f;
-
-	tField.setPosition({ App.getSize().x * 0.5f - buttons[0].getGlobalBounds().width / 2 - margin / 2,
-		logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + buttons[0].getGlobalBounds().height * 1.5f });
-	buttons[0].setPosition({ App.getView().getSize().x * 0.5f + buttons[0].getGlobalBounds().width / 2 + margin / 2,
-		logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + buttons[0].getGlobalBounds().height * 1.5f });
-	buttons[1].setPosition({ App.getView().getSize().x * 0.5f,
-		logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f + buttons[1].getGlobalBounds().height * 3.0f });
-
 	float componentOffsetY = logoSprite.getPosition().y + logoSprite.getGlobalBounds().height * 1.1f;
 	float menuCenterX = App.getView().getSize().x / 2;
+
+	tField.setPosition({ App.getSize().x * 0.5f - buttons[0].getGlobalBounds().width / 2 - margin / 2,
+		componentOffsetY + tField.getGlobalBounds().height + margin});
+	buttons[0].setPosition({ App.getView().getSize().x * 0.5f + buttons[0].getGlobalBounds().width / 2 + margin / 2,
+		componentOffsetY + tField.getGlobalBounds().height + margin});
+	buttons[1].setPosition({ App.getView().getSize().x * 0.5f,
+		componentOffsetY + (tField.getGlobalBounds().height + margin) * 2});
 
 	buttons[2].setPosition(sf::Vector2f(menuCenterX - buttons[3].getGlobalBounds().width / 2 - buttons[2].getGlobalBounds().width / 2 - margin, componentOffsetY));
 	buttons[3].setPosition(sf::Vector2f(menuCenterX, componentOffsetY));
