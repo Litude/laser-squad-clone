@@ -28,10 +28,10 @@ ScreenResult NewMapMenuScreen::Run(sf::RenderWindow & App)
 			{
 				return ScreenResult::Exit;
 			}
+			buttonCreateMap.update(Event, App);
+			buttonLoadMap.update(Event, App);
+			buttonBack.update(Event, App);
 		}
-		buttonCreateMap.update(Event, App);
-		buttonLoadMap.update(Event, App);
-		buttonBack.update(Event, App);
 		drawUI(App);
 	}
 
