@@ -257,6 +257,7 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 
 	case sf::Keyboard::Tab:
 		game->selectNextCharacter();
+		centerCharacter = true;
 		break;
 
 
