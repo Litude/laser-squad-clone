@@ -103,7 +103,7 @@ if (test)
   ##############
   # Unit Tests
   ##############
-  add_executable(${UNITTESTS_EXECUTABLE_NAME} test/test_Grid.cpp test/test_Game.cpp test/test_Inventory.cpp test/test_Button.cpp)
+  add_executable(${UNITTESTS_EXECUTABLE_NAME} test/test_Grid.cpp test/test_Game.cpp test/test_Inventory.cpp test/test_Button.cpp test/test_GridLoader.cpp)
 
   # Standard linking to gtest stuff.
   target_link_libraries(${UNITTESTS_EXECUTABLE_NAME} gtest gtest_main)
