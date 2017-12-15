@@ -85,7 +85,7 @@ private:
 	int timeAccumulator = 0;
 	std::shared_ptr<sf::RenderTexture> renderTexture_visibleTiles;
 	sf::RectangleShape visibleTileShape;
-	sf::Shader* shader;
+	std::shared_ptr<sf::Shader> shader;
 	std::deque<Projectile> activeProjectiles;
 	std::deque<Explosion> activeExplosions;
 	std::vector<sf::Vector2u> visibleTiles;
