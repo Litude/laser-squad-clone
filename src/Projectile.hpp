@@ -1,6 +1,5 @@
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
-#define OFFSET_LEN 4.0f
 
 #include <memory>
 #include <iostream>
@@ -96,7 +95,6 @@ public:
 		sf::Vector2f path = m_destination - m_origin;
 		distance = std::sqrt(std::pow(path.y, 2) + std::pow(path.x, 2));
 		m_offset = path / distance;
-		m_offset *= OFFSET_LEN;
 		proj.setPosition(m_origin);
 		proj.rotate(Util::vecAngle(path));
 	}
@@ -129,7 +127,6 @@ private:
 	sf::Sprite proj;
 	int ticks = 0;
 	float distance;
-	float distMoved;
 	sf::Sound sound;
 	bool soundPlayed = false;
 	bool exploded = false;
