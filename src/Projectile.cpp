@@ -1,5 +1,5 @@
 #include "Projectile.hpp"
-#define FRAME_DURATION 2
+#define FRAME_DURATION 10
 
 std::shared_ptr<sf::Texture> Projectile::PROJ_TEXTURES = Util::loadTextures("img/projectiles.png");
 std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_PISTOL = Util::loadSound("sound/pistol.wav");
@@ -15,9 +15,8 @@ std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_LASER = Util::loadSound("soun
 std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_CROSSBOW = Util::loadSound("sound/raygun.wav");
 std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_MINIGUN = Util::loadSound("sound/minigun.wav");
 
-// method hasDeparted must be called as often as proj is drawn for this to work
 bool Projectile::reachedDestination() const {
-	return ticks > (distance + delay);
+	return distMoved > distance;
 }
 
 bool Projectile::soundPlaying() const {
@@ -37,8 +36,9 @@ sf::Sprite Projectile::drawable() {
 		playSound();
 	}
 	int delta = moveClock.getElapsedTime().asMilliseconds();
-	if (delta > FRAME_DURATION) {
+	if (delta > FRAME_DURATION && !reachedDestination()) {
 		proj.move(m_offset);
+		distMoved += OFFSET_LEN;
 		proj.rotate(static_cast<float>(m_spin));
 		moveClock.restart();		
 	}

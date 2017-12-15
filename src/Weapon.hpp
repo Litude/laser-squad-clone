@@ -13,7 +13,7 @@
 
 class Weapon : public Item {
 public:
-	Weapon(ItemIcon icon, std::string name, unsigned ap, unsigned loadedAmmo, unsigned damage, unsigned shots, unsigned deviation, int accuracy, unsigned range, AmmoType ammoType, unsigned shot_delay = 100, unsigned area = 0) : Item(Type_Weapon, icon, name), ap(ap), loadedAmmo(loadedAmmo), maxAmmo(loadedAmmo), damage(damage), shots(shots), deviation(deviation), accuracy(accuracy), range(range), ammoType(ammoType), shot_delay(shot_delay), aoe(area) {};
+	Weapon(ItemIcon icon, std::string name, unsigned ap, unsigned loadedAmmo, unsigned damage, unsigned shots, unsigned deviation, int accuracy, unsigned range, AmmoType ammoType, unsigned shot_delay = 50, unsigned area = 0) : Item(Type_Weapon, icon, name), ap(ap), loadedAmmo(loadedAmmo), maxAmmo(loadedAmmo), damage(damage), shots(shots), deviation(deviation), accuracy(accuracy), range(range), ammoType(ammoType), shot_delay(shot_delay), aoe(area) {};
 	Weapon(ItemIcon icon, std::string name, bool stackable, bool consumable, unsigned amount, unsigned ap, unsigned damage, unsigned shots, unsigned deviation, int accuracy, unsigned range, AmmoType ammoType, unsigned shot_delay = 100, unsigned area = 0) : Item(Type_Weapon, icon, name, stackable, consumable, amount), ap(ap), loadedAmmo(1), maxAmmo(loadedAmmo), damage(damage), shots(shots), deviation(deviation), accuracy(accuracy), range(range), ammoType(ammoType), shot_delay(shot_delay), aoe(area) {};
 	bool 		reload(unsigned numberOfAmmo);
 	bool		canFire() const;
@@ -106,7 +106,7 @@ public:
 
 class Laser : public Weapon {
 public:
-	Laser(): Weapon(Icon_Weapon_Laser, "Heavy Laser", 6, 9, 5, 3, 0, 100, 15, Ammo_Laser_Pack, 50) {}
+	Laser(): Weapon(Icon_Weapon_Laser, "Heavy Laser", 6, 9, 5, 3, 0, 100, 15, Ammo_Laser_Pack, 25) {}
 };
 
 class Sniper : public Weapon {
@@ -121,7 +121,7 @@ public:
 
 class Minigun : public Weapon {
 public:
-	Minigun() : Weapon(Icon_Weapon_Minigun, "Minigun", 8, 300, 1, 30, 1, 0, 10, Ammo_Pellets, 20, 0) {}
+	Minigun() : Weapon(Icon_Weapon_Minigun, "Minigun", 8, 300, 1, 30, 1, 0, 10, Ammo_Pellets, 10, 0) {}
 };
 	
 
