@@ -306,13 +306,15 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 			 "Scroll view",
 			 "Move character",
 			 "Switch between modes",
-			 "Access controls in-game"
+			 "Access controls in-game",
+			 "Cycle characters"
 		 		};
 		 IGk = {
 			 "Arrow keys",
 			 "WASD",
 			 "Q",
-			 "F1"
+			 "F1",
+			 "TAB"
 			 };
 	// Map editor
 		MEdes = {
