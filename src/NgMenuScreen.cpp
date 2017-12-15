@@ -198,7 +198,7 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	map3.setCallback([&] {this->startGameWithMap("default_level3"); });
 	mapButtons.push_back(map3);
 
-	Button map4("Big Base", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	Button map4("Mountain Pass", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	map4.setCallback([&] {this->startGameWithMap("big_level"); });
 	mapButtons.push_back(map4);
 
