@@ -55,16 +55,12 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 				selectedButtonItem = it;
 			}
 		}
-
-
-
 		if(listOpen) {
 			for (auto it = mapButtons.begin(); it != mapButtons.end(); ++it) {
 				it->setState(Button::state::normal);
 				it->update(Event, App);
 			}
 		}
-
 		if (selectedButtonItem->getState() != Button::state::clicked) {
 			selectedButtonItem->setState(Button::state::hovered);
 		}
@@ -130,14 +126,10 @@ void NgMenuScreen::updateLayout(sf::RenderWindow & App)
 
 	unsigned int i = 0;
 	for (auto &button : mapButtons) {
-		button.setPosition({ App.getSize().x - button.getGlobalBounds().width / 2 - margin,
+		button.setPosition({ logoSprite.getPosition().x + logoSprite.getGlobalBounds().width + margin,
 			 buttons[0].getPos().y - (button.getGlobalBounds().height + margin) * 5 + (button.getGlobalBounds().height + margin) * i });
 		i++;
 	}
-	/*
-	buttons[3].setPosition(sf::Vector2f(menuCenterX, componentOffsetY));
-	buttons[4].setPosition(sf::Vector2f(menuCenterX + buttons[3].getGlobalBounds().width / 2 + buttons[4].getGlobalBounds().width / 2 + margin, componentOffsetY));
-	*/
 }
 
 bool NgMenuScreen::initComponents(sf::RenderWindow & App)
@@ -194,44 +186,41 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	 });
 	mlist = maplist;
 
-	Button map1("Map 1", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	Button map1("default_level1", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	map1.setCallback([&] {this->startGameWithMap("default_level1"); });
 	mapButtons.push_back(map1);
 
-	Button map2("Map 2", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	Button map2("default_level2", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	map2.setCallback([&] {this->startGameWithMap("default_level2"); });
 	mapButtons.push_back(map2);
 
-	Button map3("Map 3", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	Button map3("default_level3", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	map3.setCallback([&] {this->startGameWithMap("default_level3"); });
 	mapButtons.push_back(map3);
 
-	Button map4("Map 4", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
-	map4.setCallback([&] {this->startGameWithMap("default_level4"); });
+	Button map4("big_level", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map4.setCallback([&] {this->startGameWithMap("big_level"); });
 	mapButtons.push_back(map4);
 
-	Button map5("Map 5", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
-	map5.setCallback([&] {this->startGameWithMap("default_level5"); });
+	Button map5("Courtyard", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map5.setCallback([&] {this->startGameWithMap("courtyard"); });
 	mapButtons.push_back(map5);
 
-	Button map6("Map 6", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
-	map6.setCallback([&] {this->startGameWithMap("default_level6"); });
+	Button map6("Killhouse", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map6.setCallback([&] {this->startGameWithMap("killhouse"); });
 	mapButtons.push_back(map6);
 
-	Button map7("Map 7", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
-	map7.setCallback([&] {this->startGameWithMap("default_level7"); });
+	Button map7("level3", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map7.setCallback([&] {this->startGameWithMap("level3"); });
 	mapButtons.push_back(map7);
 
-	Button map8("Map 8", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
-	map8.setCallback([&] {this->startGameWithMap("default_level8"); });
+	Button map8("Temple", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map8.setCallback([&] {this->startGameWithMap("temple"); });
 	mapButtons.push_back(map8);
 
-	Button map9("Map 9", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
-	map9.setCallback([&] {this->startGameWithMap("default_level9"); });
+	Button map9("Warehouse", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map9.setCallback([&] {this->startGameWithMap("warehouse"); });
 	mapButtons.push_back(map9);
-
-
-
 
 #if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
 	screenStatusMessage.setOutlineThickness(4);
@@ -244,7 +233,6 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	errorMessage = false;
 
 	updateLayout(App);
-
 	return true;
 }
 
