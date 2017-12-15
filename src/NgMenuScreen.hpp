@@ -32,9 +32,12 @@ private:
 	sf::Sprite logoSprite;
 	std::shared_ptr<sf::Font> font;
 	std::vector<Button> buttons;
+	std::vector<Button> mapButtons;
 	TextField tField;
+	Button mlist;
 	sf::Text screenStatusMessage;
 	bool errorMessage;
+	bool listOpen = false;
 	sf::Clock errorClock;
 	std::string mapNameToOpen;
 };

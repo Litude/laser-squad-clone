@@ -46,12 +46,22 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 					break;
 				}
 			}
+			mlist.update(Event, App);
 		}
 		for (auto it = buttons.begin(); it != buttons.end(); ++it) {
 			it->setState(Button::state::normal);
 			it->update(Event, App);
 			if (it->getState() == Button::state::hovered) {
 				selectedButtonItem = it;
+			}
+		}
+
+
+
+		if(listOpen) {
+			for (auto it = mapButtons.begin(); it != mapButtons.end(); ++it) {
+				it->setState(Button::state::normal);
+				it->update(Event, App);
 			}
 		}
 
@@ -78,6 +88,14 @@ void NgMenuScreen::drawUI(sf::RenderWindow &App)
 		App.draw(button);
 	}
 	App.draw(tField);
+	App.draw(mlist);
+
+	if (listOpen) {
+		for (auto button : mapButtons) {
+			App.draw(button);
+		}
+	}
+
 	if (errorMessage) {
 		float errorTime = errorClock.getElapsedTime().asSeconds();
 		if (errorTime < 1.5f) {
@@ -108,10 +126,18 @@ void NgMenuScreen::updateLayout(sf::RenderWindow & App)
 		componentOffsetY + tField.getGlobalBounds().height + margin});
 	buttons[1].setPosition({ App.getView().getSize().x * 0.5f,
 		componentOffsetY + (tField.getGlobalBounds().height + margin) * 2});
+	mlist.setPosition(sf::Vector2f(menuCenterX, componentOffsetY));
 
-	buttons[2].setPosition(sf::Vector2f(menuCenterX - buttons[3].getGlobalBounds().width / 2 - buttons[2].getGlobalBounds().width / 2 - margin, componentOffsetY));
+	unsigned int i = 0;
+	for (auto &button : mapButtons) {
+		button.setPosition({ App.getSize().x - button.getGlobalBounds().width / 2 - margin,
+			 buttons[0].getPos().y - (button.getGlobalBounds().height + margin) * 5 + (button.getGlobalBounds().height + margin) * i });
+		i++;
+	}
+	/*
 	buttons[3].setPosition(sf::Vector2f(menuCenterX, componentOffsetY));
 	buttons[4].setPosition(sf::Vector2f(menuCenterX + buttons[3].getGlobalBounds().width / 2 + buttons[4].getGlobalBounds().width / 2 + margin, componentOffsetY));
+	*/
 }
 
 bool NgMenuScreen::initComponents(sf::RenderWindow & App)
@@ -157,17 +183,55 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	back.setCallback([&] {this->openScreen(ScreenResult::MainMenuScene); });
 	buttons.push_back(back);
 
+	Button maplist("Map list", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	maplist.setCallback([&] {
+		listOpen = !listOpen;
+		if(listOpen){
+			mlist.setText("Close");
+		}else{
+			mlist.setText("Map list");
+		}
+	 });
+	mlist = maplist;
+
 	Button map1("Map 1", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	map1.setCallback([&] {this->startGameWithMap("default_level1"); });
-	buttons.push_back(map1);
+	mapButtons.push_back(map1);
 
 	Button map2("Map 2", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	map2.setCallback([&] {this->startGameWithMap("default_level2"); });
-	buttons.push_back(map2);
+	mapButtons.push_back(map2);
 
-	Button map3("Map3", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	Button map3("Map 3", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	map3.setCallback([&] {this->startGameWithMap("default_level3"); });
-	buttons.push_back(map3);
+	mapButtons.push_back(map3);
+
+	Button map4("Map 4", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map4.setCallback([&] {this->startGameWithMap("default_level4"); });
+	mapButtons.push_back(map4);
+
+	Button map5("Map 5", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map5.setCallback([&] {this->startGameWithMap("default_level5"); });
+	mapButtons.push_back(map5);
+
+	Button map6("Map 6", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map6.setCallback([&] {this->startGameWithMap("default_level6"); });
+	mapButtons.push_back(map6);
+
+	Button map7("Map 7", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map7.setCallback([&] {this->startGameWithMap("default_level7"); });
+	mapButtons.push_back(map7);
+
+	Button map8("Map 8", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map8.setCallback([&] {this->startGameWithMap("default_level8"); });
+	mapButtons.push_back(map8);
+
+	Button map9("Map 9", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	map9.setCallback([&] {this->startGameWithMap("default_level9"); });
+	mapButtons.push_back(map9);
+
+
+
 
 #if SFML_VERSION_MAJOR >= 2 && SFML_VERSION_MINOR >= 4
 	screenStatusMessage.setOutlineThickness(4);
