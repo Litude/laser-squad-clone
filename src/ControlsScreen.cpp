@@ -122,6 +122,10 @@ void ControlsScreen::updateLayout(sf::RenderWindow & App)
 	MEtitle.setScale(helperScale);
 	MEtitle.setPosition({rec.getPosition().x + rec.getGlobalBounds().width * 0.75f + spacing * 0.5f,
 		rec.getPosition().y + MEtitle.getGlobalBounds().height});
+	help.setScale(helperScale);
+	help.setPosition({  App.getSize().x * 0.5f,
+		rec.getPosition().y + rec.getGlobalBounds().height - help.getGlobalBounds().height - spacing / 2 * helperScale.y});
+
 
 	unsigned int i = 0;
 	for (auto &button : buttons) {
@@ -134,19 +138,16 @@ void ControlsScreen::updateLayout(sf::RenderWindow & App)
 	for (auto &description : IGDescriptions) {
 		description.setScale(helperScale);
 		description.setPosition({  rec.getPosition().x + spacing * 0.5f,
-			rec.getPosition().y + rec.getGlobalBounds().height / 5 + spacing * helperScale.y * i});
+			rec.getPosition().y + rec.getGlobalBounds().height / 7 + spacing * helperScale.y * i});
 		i++;
 	}
 
-	help.setScale(helperScale);
-	help.setPosition({  App.getSize().x * 0.5f,
-		rec.getPosition().y + rec.getGlobalBounds().height - help.getGlobalBounds().height - spacing * helperScale.y});
 
 	i = 0;
 	for (auto &key : IGKeys) {
 		key.setScale(helperScale);
 		key.setPosition({ rec.getPosition().x + rec.getGlobalBounds().width * 0.5f - spacing * 0.5f - maxIGkey / 2 * helperScale.x ,
-			rec.getPosition().y + rec.getGlobalBounds().height / 5 + spacing * helperScale.y * i});
+			rec.getPosition().y + rec.getGlobalBounds().height / 7 + spacing * helperScale.y * i});
 		i++;
 	}
 
@@ -154,7 +155,7 @@ void ControlsScreen::updateLayout(sf::RenderWindow & App)
 	for (auto &description : MEDescriptions) {
 		description.setScale(helperScale);
 		description.setPosition({  rec.getPosition().x + rec.getGlobalBounds().width * 0.5f + spacing * 0.5f,
-			rec.getPosition().y + rec.getGlobalBounds().height / 5 + spacing * helperScale.y * i});
+			rec.getPosition().y + rec.getGlobalBounds().height / 7 + spacing * helperScale.y * i});
 		i++;
 	}
 
@@ -162,7 +163,7 @@ void ControlsScreen::updateLayout(sf::RenderWindow & App)
 	for (auto &key : MEKeys) {
 		key.setScale(helperScale);
 		key.setPosition({ rec.getPosition().x + rec.getGlobalBounds().width - spacing * 0.5f - maxMEkey / 2 * helperScale.x,
-			  rec.getPosition().y + rec.getGlobalBounds().height / 5 + spacing * helperScale.y * i});
+			  rec.getPosition().y + rec.getGlobalBounds().height / 7 + spacing * helperScale.y * i});
 		i++;
 	}
 }
@@ -308,8 +309,8 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 			 "Access controls in-game"
 		 		};
 		 IGk = {
-			 "WASD",
 			 "Arrow keys",
+			 "WASD",
 			 "Q",
 			 "F1"
 			 };
@@ -325,13 +326,15 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 			"Move",
 			"Pick up item",
 			"Drop item",
-			"Reload",
+			"Use item",
+			"Reload"
 		};
 		Actionk = {
+			"2",
 			"1",
 			"1",
-			"1",
-			"1",
+			"2",
+			"2"
 		};
 
 	// Item AP costs
@@ -345,19 +348,27 @@ bool ControlsScreen::initComponents(sf::RenderWindow & App)
 			"Sword",
 			"Throwing Knife",
 			"Rocket Launcher",
-			"Heavy Laser"
+			"Grenade",
+			"Heavy Laser",
+			"Sniper",
+			"Crossbow",
+			"Minigun"
 		};
 		Itemk = {
-			"1",
-			"5",
-			"5",
+			"2",
 			"4",
 			"5",
+			"4",
+			"6",
 			"8",
-			"10",
+			"3",
 			"5",
 			"8",
-			"6"
+			"2",
+			"6",
+			"9",
+			"12",
+			"8"
 		};
 
 	/*
