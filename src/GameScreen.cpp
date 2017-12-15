@@ -80,7 +80,7 @@ GameScreen::GameScreen(sf::RenderWindow &App, std::string mapName)
 	visibleTileShape.setFillColor(sf::Color(150,150,150,255));
 
 	// Create shader for line of sight rendering
-	shader = new sf::Shader();
+	shader = std::make_shared<sf::Shader>();
 	if (!shader->loadFromFile("img/lineofsight_shader.frag", sf::Shader::Fragment))
 	{
 		std::cout << "Could not load 'img/lineofsight_shader.frag'\n";
@@ -425,7 +425,7 @@ void GameScreen::DrawVisibleArea(sf::RenderWindow &App, std::vector<sf::Vector2u
 	// Draw visible tiles
 	shader->setShaderUniform("textureSize", sf::Vector2f(texture.getSize()));
 	sf::Sprite sprite(texture);
-	App.draw(sprite, shader);
+	App.draw(sprite, shader.get());
 }
 
 void GameScreen::drawUI(sf::RenderWindow &App) {
