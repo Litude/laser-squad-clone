@@ -47,18 +47,18 @@ ScreenResult NgMenuScreen::Run(sf::RenderWindow & App)
 				}
 			}
 			mlist.update(Event, App);
-		}
-		for (auto it = buttons.begin(); it != buttons.end(); ++it) {
-			it->setState(Button::state::normal);
-			it->update(Event, App);
-			if (it->getState() == Button::state::hovered) {
-				selectedButtonItem = it;
-			}
-		}
-		if(listOpen) {
-			for (auto it = mapButtons.begin(); it != mapButtons.end(); ++it) {
+			for (auto it = buttons.begin(); it != buttons.end(); ++it) {
 				it->setState(Button::state::normal);
 				it->update(Event, App);
+				if (it->getState() == Button::state::hovered) {
+					selectedButtonItem = it;
+				}
+			}
+			if (listOpen) {
+				for (auto it = mapButtons.begin(); it != mapButtons.end(); ++it) {
+					it->setState(Button::state::normal);
+					it->update(Event, App);
+				}
 			}
 		}
 		if (selectedButtonItem->getState() != Button::state::clicked) {
