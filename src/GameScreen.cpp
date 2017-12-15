@@ -278,6 +278,7 @@ void GameScreen::handleKeyPress(sf::Event& event, sf::RenderWindow& App) {
 		ControlsScreen helpScreen;
 		helpScreen.setBackScreen(ScreenResult::GameScene);
 		m_screenResult = helpScreen.Run(App);
+		updateLayout(App);
 		break;
 	}
 	case sf::Keyboard::Numpad0:
@@ -510,6 +511,7 @@ void GameScreen::endTurn(sf::RenderWindow &App) {
 	EndTurnScreen endTurnScr;
 	endTurnScr.setTurn(game->getCurrentPlayer());
 	m_screenResult = endTurnScr.Run(App);
+	updateLayout(App);
 
 	// Retrieve view for the next player
 	gameView.setCenter(playerViews[game->getCurrentPlayer() - 1].viewCenter);
