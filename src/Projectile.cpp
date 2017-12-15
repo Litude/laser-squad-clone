@@ -12,7 +12,9 @@ std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_KNIFE = Util::loadSound("soun
 std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_SWORD = Util::loadSound("sound/sword.wav");
 std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_LASER = Util::loadSound("sound/laser.wav");
 std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_CROSSBOW = Util::loadSound("sound/raygun.wav");
+std::shared_ptr<sf::SoundBuffer> Projectile::SOUND_MINIGUN = Util::loadSound("sound/minigun.wav");
 
+// method hasDeparted must be called as often as proj is drawn for this to work
 bool Projectile::reachedDestination() const {
 	return ticks > (distance + delay);
 }

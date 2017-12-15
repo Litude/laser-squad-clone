@@ -15,6 +15,7 @@ enum AmmoType {
 	Ammo_Laser_Pack,
 	Ammo_50cal_Bullets,
 	Ammo_Crossbow,
+	Ammo_Pellets,
 };
 
 class Ammo : public Item {

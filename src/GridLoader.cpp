@@ -49,6 +49,8 @@ std::shared_ptr<Item> jreader::create_item(std::string item_str) {
 		return std::make_shared<Sniper>();
 	} else if (item_str == "Crossbow") {
 		return std::make_shared<Crossbow>();
+	} else if (item_str == "Minigun") {
+		return std::make_shared<Minigun>();
 	} else {
 		return nullptr;
 	}

@@ -118,6 +118,11 @@ class Crossbow : public Weapon {
 public:
 	Crossbow() : Weapon(Icon_Weapon_Crossbow, "Crossbow", 12, 6, 30, 3, 3, 0, 12, Ammo_Crossbow, 0, 1) {}
 };
+
+class Minigun : public Weapon {
+public:
+	Minigun() : Weapon(Icon_Weapon_Minigun, "Minigun", 8, 300, 1, 30, 1, 0, 10, Ammo_Pellets, 20, 0) {}
+};
 	
 
 #endif
