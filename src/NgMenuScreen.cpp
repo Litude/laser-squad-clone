@@ -186,19 +186,19 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	 });
 	mlist = maplist;
 
-	Button map1("default_level1", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	Button map1("Laser Field", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	map1.setCallback([&] {this->startGameWithMap("default_level1"); });
 	mapButtons.push_back(map1);
 
-	Button map2("default_level2", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	Button map2("Mansion", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	map2.setCallback([&] {this->startGameWithMap("default_level2"); });
 	mapButtons.push_back(map2);
 
-	Button map3("default_level3", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	Button map3("Zen Garden", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	map3.setCallback([&] {this->startGameWithMap("default_level3"); });
 	mapButtons.push_back(map3);
 
-	Button map4("big_level", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	Button map4("Big Base", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	map4.setCallback([&] {this->startGameWithMap("big_level"); });
 	mapButtons.push_back(map4);
 
@@ -210,7 +210,7 @@ bool NgMenuScreen::initComponents(sf::RenderWindow & App)
 	map6.setCallback([&] {this->startGameWithMap("killhouse"); });
 	mapButtons.push_back(map6);
 
-	Button map7("level3", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
+	Button map7("Huge Base", *font, sf::Text::Regular, 25, sf::Vector2f(0, 0), rs);
 	map7.setCallback([&] {this->startGameWithMap("level3"); });
 	mapButtons.push_back(map7);
 
