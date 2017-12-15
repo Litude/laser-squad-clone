@@ -46,13 +46,13 @@ ScreenResult EndTurnScreen::Run(sf::RenderWindow & App)
 					break;
 				}
 			}
-		}
 
-		for (auto it = buttons.begin(); it != buttons.end(); ++it) {
-			it->setState(Button::state::normal);
-			it->update(Event, App);
-			if(it->getState() == Button::state::hovered){
-				selectedButtonItem = it;
+			for (auto it = buttons.begin(); it != buttons.end(); ++it) {
+				it->setState(Button::state::normal);
+				it->update(Event, App);
+				if (it->getState() == Button::state::hovered) {
+					selectedButtonItem = it;
+				}
 			}
 		}
 
