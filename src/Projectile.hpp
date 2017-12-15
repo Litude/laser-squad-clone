@@ -83,6 +83,8 @@ public:
 				sound.setBuffer(*SOUND_MINIGUN);
 				rect.left = 96;
 				rect.top = 32;
+				proj.setTextureRect(rect);
+				break;
 			default:
 				std::cout << "Unknown weapontype, default texture chosen." << std::endl;
 				proj.setTextureRect(rect);
