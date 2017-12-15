@@ -97,17 +97,22 @@ if (test)
   # Include the gtest library. gtest_SOURCE_DIR is available due to
   # 'project(gtest)' above.
   include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+  
+  ADD_LIBRARY(game ${GAME_SOURCES})
 
   ##############
   # Unit Tests
   ##############
-  add_executable(${UNITTESTS_EXECUTABLE_NAME} test/test_Grid.cpp test/test_Game.cpp test/test_Inventory.cpp test/test_Button.cpp ${GAME_SOURCES})
+  add_executable(${UNITTESTS_EXECUTABLE_NAME} test/test_Grid.cpp test/test_Game.cpp test/test_Inventory.cpp test/test_Button.cpp)
 
   # Standard linking to gtest stuff.
   target_link_libraries(${UNITTESTS_EXECUTABLE_NAME} gtest gtest_main)
 
   # Extra linking for the project.
   target_link_libraries(${UNITTESTS_EXECUTABLE_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+  
+  # Link to main project itself
+  target_link_libraries(${UNITTESTS_EXECUTABLE_NAME} game)
 
   # This is so you can do 'make test' to see all your tests run, instead of
   # manually running the executable ${UNITTESTS_EXECUTABLE_NAME} to see those specific tests.
