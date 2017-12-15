@@ -98,7 +98,8 @@ Grid jreader::loadGrid(nlohmann::json& jgrid) {
 		throw JSONLoadException();
 	}
 
-	std::cout << "mapsize:" << mapSize << " width:" << mapWidth << std::endl;
+	// Use for debugging
+	//std::cout << "mapsize:" << mapSize << " width:" << mapWidth << std::endl;
 	Grid g = Grid(mapSize, mapWidth);
 	
 	unsigned u = 0;
@@ -110,7 +111,8 @@ Grid jreader::loadGrid(nlohmann::json& jgrid) {
 		++u;
 	}
 	
-	std::cout << g << std::endl;
+	// Use for debugging
+	//std::cout << g << std::endl;
 
 	return g;
 }

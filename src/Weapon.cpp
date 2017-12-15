@@ -37,7 +37,8 @@ bool Weapon::deviate(sf::Vector2u& target) const {
 		int dy = rand() % (deviation*2 + 1) - deviation;
 		deviated.x += dx;
 		deviated.y += dy;
-		std::cout << "Shot deviated by: (" << dx << ", " << dy << ")" << std::endl;
+		// Use for debugging
+		//std::cout << "Shot deviated by: (" << dx << ", " << dy << ")" << std::endl;
 		if (deviated.x < 0) deviated.x = 0;
 		if (deviated.y < 0) deviated.y = 0;
 		target = static_cast<sf::Vector2u>(deviated);

@@ -66,7 +66,6 @@ bool Game::characterMoveUp(gc_iterator it) {
 }
 
 bool Game::characterMoveDown(gc_iterator it) {
-	//std::cout << "Moved\n";
 	sf::Vector2i dir(0, 1);
 	return characterMove(it, dir);
 }
@@ -186,9 +185,10 @@ const sf::Vector2u Game::traceFromCharacter(gc_iterator gc, sf::Vector2u target,
 // Try to shoot at Tile on coordinates sf::Vector2u target
 // Actual Tile hit may deviate based on weapon statistics
 const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2u target) {
-	std::cout << "===================" << std::endl;
-	std::cout << "character origin: (" << it->getPosition().x << ", " << it->getPosition().y << ")" << std::endl;
-	std::cout << "shoot called with coords: (" << target.x << ", " << target.y << ")" << std::endl;
+	// Use lines below when debugging
+	//std::cout << "===================" << std::endl;
+	//std::cout << "character origin: (" << it->getPosition().x << ", " << it->getPosition().y << ")" << std::endl;
+	//std::cout << "shoot called with coords: (" << target.x << ", " << target.y << ")" << std::endl;
 
 	std::vector<sf::Vector2u> endTiles;
 	int numberOfShots = 0;
@@ -217,7 +217,7 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 		} 
 
         auto affectedTiles = getAffected(endTile, weapon->getArea());
-		std::cout << "landed at tile at coords: (" << endTile.x << ", " << endTile.y << ")" << std::endl;
+		//std::cout << "landed at tile at coords: (" << endTile.x << ", " << endTile.y << ")" << std::endl;
 		for (auto &gc : characters) {
 			if (std::find(affectedTiles.begin(), affectedTiles.end(), gc.getPosition()) != affectedTiles.end()) {
 				int dmg = weapon->getDamage();
@@ -225,14 +225,14 @@ const std::vector<sf::Vector2u> Game::characterShoot(gc_iterator it, sf::Vector2
 					characterDropAllItems(gc);
 					recalculateLOS = true;
 				}
-				std::cout << "character suffered " << dmg << " damage" << std::endl;
+				//std::cout << "character suffered " << dmg << " damage" << std::endl;
 				//break;
 			}
 		}
 		endTiles.push_back(endTile);
 	}
 
-	std::cout << "Number of shots fired: " << numberOfShots << std::endl;
+	//std::cout << "Number of shots fired: " << numberOfShots << std::endl;
 	it->checkStackableWeaponAmmo();
 	updateGameState();
 	return endTiles;

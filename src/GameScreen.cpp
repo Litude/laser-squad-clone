@@ -168,10 +168,11 @@ ScreenResult GameScreen::Run(sf::RenderWindow & App)
 							tileMap->updateTile(dest);
 						}
 						
+						// Lines below for debugging
 						//std::cout << "PROJS:" << std::endl;
-						for (auto proj : activeProjectiles) {
+						/*for (auto proj : activeProjectiles) {
 							std::cout << proj;
-						}
+						}*/
 					}
 					//In select mode
 					else {
@@ -547,7 +548,8 @@ void GameScreen::equipItem() {
 
 void GameScreen::toggleAttackMode() {
 	mouseMode = (mouseMode == MouseMode::shoot) ? MouseMode::select : MouseMode::shoot;
-	std::cout << "mousemode changed to " << mouseMode << std::endl;
+	// Line below for debugging
+	//std::cout << "mousemode changed to " << mouseMode << std::endl;
 }
 
 sf::Vector2u GameScreen::getClickedTilePosition(const sf::RenderWindow& App) const {
