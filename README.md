@@ -20,3 +20,12 @@ make
 ```
 The game can then be started with the `LaserSquad` (Windows) or `./LaserSquad` (Linux) command.
 
+This project uses Google Tests framework for unit testing. Add the variable 'test' and set it ON when building with cmake `cmake -Dtest=ON` to build unit tests.
+```
+cd build
+cmake Dtest=ON  ../src
+make LaserSquad_UnitTests
+```
+
+This creates `LaserSquad_UnitTests` that executes the unit tests.
+
